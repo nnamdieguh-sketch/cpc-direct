@@ -127,6 +127,12 @@ textarea{resize:vertical;min-height:80px}
 .atab{display:none}.atab.active{display:block}
 .empty{color:var(--dim);font-size:0.84rem;padding:24px 12px;text-align:center}
 .table-scroll{overflow-x:auto}
+.table-scroll.tall{max-height:560px;overflow-y:auto}
+.table-scroll.tall thead th{position:sticky;top:0;background:var(--card);z-index:1}
+.tbl-toolbar{display:flex;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap}
+.tbl-search{flex:1;min-width:200px;max-width:360px;background:var(--ink);border:1px solid var(--border2);border-radius:8px;color:var(--white);font-family:var(--body);font-size:0.86rem;padding:9px 13px}
+.tbl-search::placeholder{color:var(--dim)}
+.tbl-count{font-size:0.74rem;color:var(--dim);font-weight:500;white-space:nowrap;letter-spacing:0.02em}
 
 /* PASSWORD REVEAL */
 .pw-reveal{background:rgba(224,155,26,0.07);border:1px dashed rgba(224,155,26,0.4);border-radius:10px;padding:18px;margin-top:18px;text-align:center}
@@ -235,7 +241,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="plate">
       <div>
         <h2>Board Member Portal</h2>
-        <p>Sign in with your registered email and the password issued to you by the administrator.</p>
+        <p>Once inside, submit qualified leads straight to the executive team and track every introduction you’ve made — all in one place.</p>
       </div>
       <button class="btn" onclick="document.getElementById('loginCard').scrollIntoView({behavior:'smooth'});document.getElementById('li-email').focus()">Member Sign In →</button>
     </div>
@@ -322,6 +328,10 @@ textarea{resize:vertical;min-height:80px}
     </div>
     <div class="card">
       <h3>Board Members</h3>
+      <div class="tbl-toolbar">
+        <input type="search" class="tbl-search" id="membersSearch" placeholder="Search name, email, or status…" oninput="renderMembers()" aria-label="Search members">
+        <span class="tbl-count" id="membersCount"></span>
+      </div>
       <div class="table-scroll">
         <table class="ledger"><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Last login</th><th>Actions</th></tr></thead>
         <tbody id="membersBody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody></table>
@@ -337,7 +347,11 @@ textarea{resize:vertical;min-height:80px}
   <div class="atab" id="atab-leads">
     <div class="card">
       <h3>All Board Leads</h3>
-      <div class="table-scroll">
+      <div class="tbl-toolbar">
+        <input type="search" class="tbl-search" id="leadsSearch" placeholder="Search lead, sector, member, contact…" oninput="renderAllLeads()" aria-label="Search leads">
+        <span class="tbl-count" id="leadsCount"></span>
+      </div>
+      <div class="table-scroll tall">
         <table class="ledger"><thead><tr><th>Date</th><th>By</th><th>Lead</th><th>Sector</th><th>Contact</th><th>Value</th><th>For</th><th>Notes</th></tr></thead>
         <tbody id="allLeadsBody"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody></table>
       </div>
@@ -348,7 +362,11 @@ textarea{resize:vertical;min-height:80px}
     <div class="card">
       <h3>Activity Feed</h3>
       <div class="c-sub">Logins, submissions, and admin actions — most recent first.</div>
-      <div class="table-scroll">
+      <div class="tbl-toolbar">
+        <input type="search" class="tbl-search" id="activitySearch" placeholder="Search who, action, or details…" oninput="renderActivity()" aria-label="Search activity">
+        <span class="tbl-count" id="activityCount"></span>
+      </div>
+      <div class="table-scroll tall">
         <table class="ledger"><thead><tr><th>When</th><th>Who</th><th>Action</th><th>Details</th></tr></thead>
         <tbody id="activityBody"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table>
       </div>
@@ -382,6 +400,16 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbww5UOr4bjy3Bn1ZpitcVoQ
 let session = null;   // {email, password, name} for member
 let adminKey = null;  // string for admin
 const STORE_KEY = 'cpcAdvisorySession';
+const ROW_CAP = 250;  // max rows rendered per admin table; search narrows beyond this
+let membersData = [], allLeadsData = [], activityData = [];
+
+/* Build the "12 total" / "3 of 40 match" label shown beside each admin search box */
+function countLabel(matched, total, q){
+  if(!total) return '';
+  let s = q ? (matched + ' of ' + total + ' match') : (total + ' total');
+  if(matched > ROW_CAP) s += ' · showing first ' + ROW_CAP;
+  return s;
+}
 
 /* Persist auth across refreshes (sessionStorage: survives reload, clears on tab close) */
 function saveAuth(){
@@ -400,8 +428,20 @@ function togglePw(){
 }
 
 async function api(payload){
-  const r = await fetch(API_URL, {method:'POST', body: JSON.stringify(payload)});
-  return await r.json();
+  let r, text;
+  try{
+    r = await fetch(API_URL, {method:'POST', body: JSON.stringify(payload)});
+  }catch(err){
+    // Network-level failure: offline, DNS, blocked, or CORS rejection
+    throw new Error('Could not reach the sign-in service. Check your internet connection and try again.');
+  }
+  text = await r.text();
+  try{
+    return JSON.parse(text);
+  }catch(err){
+    // Backend returned HTML/redirect instead of JSON — almost always a deployment/access issue
+    throw new Error('The sign-in service returned an unexpected response (HTTP ' + r.status + '). The backend may need to be re-deployed with access set to "Anyone".');
+  }
 }
 function $(id){return document.getElementById(id)}
 function openModal(id){$(id).classList.add('open')}
@@ -409,6 +449,7 @@ function closeModal(id){$(id).classList.remove('open')}
 function show(id){$(id).style.display='block'}
 function hide(id){$(id).style.display='none'}
 function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML}
+function isEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)}
 function setView(v){
   $('publicView').style.display = v==='public' ? 'block' : 'none';
   $('memberView').classList.toggle('active', v==='member');
@@ -440,7 +481,9 @@ async function sendLead(){
     contact:$('l-contact').value.trim(), phone:$('l-phone').value.trim(),
     email:$('l-email').value.trim(), value:$('l-value').value.trim(),
     product:$('l-product').value, notes:$('l-notes').value.trim()};
-  if(!lead.leadName){$('leadErr').textContent='Lead / company name is required';show('leadErr');return}
+  if(!lead.leadName){$('leadErr').textContent='Lead / company name is required';show('leadErr');$('l-name').focus();return}
+  if(lead.email && !isEmail(lead.email)){$('leadErr').textContent='That contact email doesn’t look valid — check it or leave it blank';show('leadErr');$('l-email').focus();return}
+  if(lead.phone && lead.phone.replace(/[^0-9]/g,'').length < 7){$('leadErr').textContent='That phone number looks too short — check it or leave it blank';show('leadErr');$('l-phone').focus();return}
   $('leadBtn').disabled=true; $('leadBtn').textContent='Submitting…';
   try{
     const res = await api({action:'submitLead', email:session.email, password:session.password, lead});
@@ -487,25 +530,34 @@ function adminTab(t){
 async function loadMembers(){
   try{
     const res = await api({action:'listMembers', adminKey});
-    const rows = (res.members||[]).map(m=>{
-      const pill = m.status==='Active' ? '<span class="pill pill-active">Active</span>' : '<span class="pill pill-revoked">Revoked</span>';
-      const d = `data-email="${esc(m.email)}" data-name="${esc(m.name)}"`;
-      const toggle = m.status==='Active'
-        ? `<button class="btn-ghost btn-sm btn-danger" data-act="status" data-status="Revoked" ${d}>Revoke</button>`
-        : `<button class="btn-ghost btn-sm" data-act="status" data-status="Active" ${d}>Restore</button>`;
-      return `<tr><td style="color:var(--white)">${esc(m.name)}</td><td>${esc(m.email)}</td><td>${pill}</td><td>${esc(m.lastLogin)}</td>
-        <td style="white-space:nowrap"><button class="btn-ghost btn-sm" data-act="reset" ${d}>Reset PW</button>
-        ${toggle}
-        <button class="btn-ghost btn-sm btn-danger" data-act="remove" ${d}>Remove</button></td></tr>`;
-    }).join('');
-    $('membersBody').innerHTML = rows || '<tr><td colspan="5" class="empty">No members yet — add your first board member above.</td></tr>';
-  }catch(e){$('membersBody').innerHTML='<tr><td colspan="5" class="empty">Could not load members.</td></tr>'}
+    membersData = res.members||[];
+    renderMembers();
+  }catch(e){membersData=[];$('membersBody').innerHTML='<tr><td colspan="5" class="empty">Could not load members.</td></tr>';$('membersCount').textContent=''}
+}
+function renderMembers(){
+  const q = ($('membersSearch').value||'').toLowerCase().trim();
+  const list = q ? membersData.filter(m=>[m.name,m.email,m.status].some(v=>String(v||'').toLowerCase().includes(q))) : membersData;
+  const rows = list.slice(0,ROW_CAP).map(m=>{
+    const pill = m.status==='Active' ? '<span class="pill pill-active">Active</span>' : '<span class="pill pill-revoked">Revoked</span>';
+    const d = `data-email="${esc(m.email)}" data-name="${esc(m.name)}"`;
+    const toggle = m.status==='Active'
+      ? `<button class="btn-ghost btn-sm btn-danger" data-act="status" data-status="Revoked" ${d}>Revoke</button>`
+      : `<button class="btn-ghost btn-sm" data-act="status" data-status="Active" ${d}>Restore</button>`;
+    return `<tr><td style="color:var(--white)">${esc(m.name)}</td><td>${esc(m.email)}</td><td>${pill}</td><td>${esc(m.lastLogin)}</td>
+      <td style="white-space:nowrap"><button class="btn-ghost btn-sm" data-act="reset" ${d}>Reset PW</button>
+      ${toggle}
+      <button class="btn-ghost btn-sm btn-danger" data-act="remove" ${d}>Remove</button></td></tr>`;
+  }).join('');
+  const empty = q ? 'No members match your search.' : 'No members yet — add your first board member above.';
+  $('membersBody').innerHTML = rows || `<tr><td colspan="5" class="empty">${empty}</td></tr>`;
+  $('membersCount').textContent = countLabel(list.length, membersData.length, q);
 }
 
 async function addMember(){
   hide('addErr'); hide('addReveal');
   const name=$('am-name').value.trim(), email=$('am-email').value.trim();
   if(!name||!email){$('addErr').textContent='Name and email are required';show('addErr');return}
+  if(!isEmail(email)){$('addErr').textContent='Enter a valid email address';show('addErr');$('am-email').focus();return}
   $('addBtn').disabled=true;
   try{
     const res = await api({action:'addMember', adminKey, name, email});
@@ -541,7 +593,9 @@ async function setStatus(email, status){
 }
 
 async function removeMember(email, name){
-  if(!confirm('Permanently remove ' + name + ' from the board? This cannot be undone.')) return;
+  const typed = prompt('This permanently removes ' + name + ' (' + email + ') from the board and cannot be undone.\n\nType REMOVE to confirm:', '');
+  if(typed===null) return;                         // cancelled
+  if(typed.trim().toUpperCase()!=='REMOVE'){ alert('Removal cancelled — you didn’t type REMOVE.'); return; }
   try{
     const res = await api({action:'removeMember', adminKey, email});
     if(!res.ok) throw new Error(res.error||'Remove failed');
@@ -552,17 +606,33 @@ async function removeMember(email, name){
 async function loadAllLeads(){
   try{
     const res = await api({action:'allLeads', adminKey});
-    const rows = (res.leads||[]).map(l=>`<tr><td>${esc(l.date)}</td><td>${esc(l.by)}</td><td style="color:var(--white)">${esc(l.leadName)}</td><td>${esc(l.sector)}</td><td>${esc(l.contact)}<br>${esc(l.phone)}<br>${esc(l.email)}</td><td>${esc(l.value)}</td><td>${esc(l.product)}</td><td style="max-width:220px">${esc(l.notes)}</td></tr>`).join('');
-    $('allLeadsBody').innerHTML = rows || '<tr><td colspan="8" class="empty">No leads submitted yet.</td></tr>';
-  }catch(e){$('allLeadsBody').innerHTML='<tr><td colspan="8" class="empty">Could not load leads.</td></tr>'}
+    allLeadsData = res.leads||[];
+    renderAllLeads();
+  }catch(e){allLeadsData=[];$('allLeadsBody').innerHTML='<tr><td colspan="8" class="empty">Could not load leads.</td></tr>';$('leadsCount').textContent=''}
+}
+function renderAllLeads(){
+  const q = ($('leadsSearch').value||'').toLowerCase().trim();
+  const list = q ? allLeadsData.filter(l=>[l.by,l.leadName,l.sector,l.contact,l.phone,l.email,l.value,l.product,l.notes].some(v=>String(v||'').toLowerCase().includes(q))) : allLeadsData;
+  const rows = list.slice(0,ROW_CAP).map(l=>`<tr><td>${esc(l.date)}</td><td>${esc(l.by)}</td><td style="color:var(--white)">${esc(l.leadName)}</td><td>${esc(l.sector)}</td><td>${esc(l.contact)}<br>${esc(l.phone)}<br>${esc(l.email)}</td><td>${esc(l.value)}</td><td>${esc(l.product)}</td><td style="max-width:220px">${esc(l.notes)}</td></tr>`).join('');
+  const empty = q ? 'No leads match your search.' : 'No leads submitted yet.';
+  $('allLeadsBody').innerHTML = rows || `<tr><td colspan="8" class="empty">${empty}</td></tr>`;
+  $('leadsCount').textContent = countLabel(list.length, allLeadsData.length, q);
 }
 
 async function loadActivity(){
   try{
     const res = await api({action:'activity', adminKey});
-    const rows = (res.events||[]).map(ev=>`<tr><td>${esc(ev.date)}</td><td>${esc(ev.actor)}</td><td style="color:var(--white)">${esc(ev.action)}</td><td>${esc(ev.details)}</td></tr>`).join('');
-    $('activityBody').innerHTML = rows || '<tr><td colspan="4" class="empty">No activity yet.</td></tr>';
-  }catch(e){$('activityBody').innerHTML='<tr><td colspan="4" class="empty">Could not load activity.</td></tr>'}
+    activityData = res.events||[];
+    renderActivity();
+  }catch(e){activityData=[];$('activityBody').innerHTML='<tr><td colspan="4" class="empty">Could not load activity.</td></tr>';$('activityCount').textContent=''}
+}
+function renderActivity(){
+  const q = ($('activitySearch').value||'').toLowerCase().trim();
+  const list = q ? activityData.filter(ev=>[ev.actor,ev.action,ev.details].some(v=>String(v||'').toLowerCase().includes(q))) : activityData;
+  const rows = list.slice(0,ROW_CAP).map(ev=>`<tr><td>${esc(ev.date)}</td><td>${esc(ev.actor)}</td><td style="color:var(--white)">${esc(ev.action)}</td><td>${esc(ev.details)}</td></tr>`).join('');
+  const empty = q ? 'No activity matches your search.' : 'No activity yet.';
+  $('activityBody').innerHTML = rows || `<tr><td colspan="4" class="empty">${empty}</td></tr>`;
+  $('activityCount').textContent = countLabel(list.length, activityData.length, q);
 }
 
 function toggleMobileNav(){document.getElementById('mobileNav').classList.toggle('open')}
