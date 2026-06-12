@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advisory Board — CPC Direct Ventures Ltd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#080C1A;--ink2:#0E1428;--card:#181E35;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--gold:#E09B1A;--gold-lt:#F5C050;--teal:#00C4A0;--sky:#4D9EF5;--red:#E05555;--white:#EFF1FA;--muted:rgba(239,241,250,0.48);--dim:rgba(239,241,250,0.25);--head:'Syne',sans-serif;--body:'Outfit',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:var(--body);overflow-x:hidden;min-height:100vh}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+button{font-family:var(--body)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* NAV — mirrors main site */
+nav{display:flex;align-items:center;justify-content:space-between;padding:20px 52px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,12,26,0.92);backdrop-filter:blur(14px);z-index:50}
+.logo{font-family:var(--head);font-weight:800;font-size:1.1rem;letter-spacing:-0.02em;color:var(--white);text-decoration:none}
+.logo-dot{color:var(--gold)}
+.nav-pills{display:flex;gap:4px}
+.nav-pills a{font-size:0.8rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:6px 14px;border-radius:100px;transition:all .2s}
+.nav-pills a:hover{color:var(--white);background:rgba(255,255,255,0.06)}
+.nav-pills a.nav-active{color:var(--gold);background:rgba(224,155,26,0.08)}
+.nav-btn{background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;padding:9px 20px;border-radius:6px;transition:all .2s;text-decoration:none}
+.nav-btn:hover{background:var(--gold-lt)}
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.nav-toggle span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px}
+.mobile-nav{display:none;position:fixed;top:65px;left:0;right:0;z-index:199;background:rgba(8,12,26,0.98);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:20px 24px;flex-direction:column;gap:4px}
+.mobile-nav.open{display:flex}
+.mobile-nav a{font-size:0.9rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:12px 16px;border-radius:8px;transition:all .2s}
+.mobile-nav a:hover{color:var(--white);background:rgba(255,255,255,0.06)}
+.mobile-nav .mob-btn{background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.88rem;letter-spacing:0.06em;text-transform:uppercase;padding:12px 20px;border-radius:6px;margin-top:8px;text-align:center}
+@media(max-width:900px){.nav-pills,.nav-btn{display:none}.nav-toggle{display:flex}}
+
+/* HERO — ledger motif */
+.hero{position:relative;padding:88px 52px 72px;max-width:1100px;margin:0 auto;overflow:hidden}
+.ghost{position:absolute;top:8px;left:44px;font-family:var(--head);font-weight:800;font-size:clamp(4rem,12vw,9rem);letter-spacing:0.02em;color:rgba(239,241,250,0.028);pointer-events:none;user-select:none;white-space:nowrap}
+.eyebrow{font-family:var(--head);font-size:0.74rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.hero h1{font-family:var(--head);font-size:clamp(2.2rem,4.5vw,3.6rem);font-weight:800;line-height:1.08;letter-spacing:-0.025em;max-width:620px}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero p{color:var(--muted);font-size:1.02rem;line-height:1.7;max-width:560px;margin-top:20px;font-weight:300}
+.gold-rule{height:1px;background:linear-gradient(90deg,var(--gold) 0%,rgba(224,155,26,0.08) 70%,transparent);margin:36px 0 0;max-width:620px}
+
+
+/* SPLIT HERO + LOGIN CARD */
+.hero-split{display:grid;grid-template-columns:1.2fr 0.8fr;gap:48px;align-items:center}
+.login-card{background:linear-gradient(150deg,var(--ink2),var(--card));border:1px solid rgba(224,155,26,0.3);border-radius:16px;padding:30px;position:relative;z-index:2;box-shadow:0 24px 60px rgba(0,0,0,0.35)}
+.lc-badge{display:inline-flex;align-items:center;gap:7px;font-family:var(--head);font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);background:rgba(224,155,26,0.08);border:1px solid rgba(224,155,26,0.25);border-radius:100px;padding:6px 14px;margin-bottom:18px}
+.lc-help{font-size:0.76rem;color:var(--dim);margin-top:16px;text-align:center}
+@media(max-width:900px){.hero-split{grid-template-columns:1fr;gap:36px}}
+
+/* BOARD MEMBERS */
+.members-wrap{max-width:1100px;margin:0 auto;padding:8px 52px 72px}
+.mem-label{font-family:var(--head);font-size:0.74rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:28px}
+.members{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.member{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px 22px;text-align:center;transition:border-color .2s,transform .2s}
+.member:hover{border-color:rgba(224,155,26,0.35);transform:translateY(-3px)}
+.avatar{width:88px;height:88px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(140deg,var(--ink2),var(--card));border:2px solid rgba(224,155,26,0.4);display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:800;font-size:1.5rem;color:var(--gold);object-fit:cover}
+img.avatar{padding:0}
+.mem-name{font-family:var(--head);font-weight:700;font-size:0.98rem;margin-bottom:4px}
+.mem-title{color:var(--muted);font-size:0.8rem;font-weight:300;margin-bottom:8px;line-height:1.45}
+.mem-loc{display:inline-block;font-size:0.68rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);background:rgba(224,155,26,0.07);border:1px solid rgba(224,155,26,0.2);border-radius:100px;padding:4px 12px}
+@media(max-width:1000px){.members{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.members{grid-template-columns:1fr}.members-wrap{padding-left:24px;padding-right:24px}}
+
+/* PORTAL CTA — brass plate */
+.plate-wrap{max-width:1100px;margin:0 auto;padding:0 52px 96px}
+.plate{background:linear-gradient(135deg,var(--ink2),var(--card));border:1px solid rgba(224,155,26,0.25);border-radius:14px;padding:40px 44px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.plate h2{font-family:var(--head);font-size:1.4rem;font-weight:800;letter-spacing:-0.01em}
+.plate p{color:var(--muted);font-size:0.88rem;margin-top:6px;font-weight:300}
+.btn{background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.8rem;letter-spacing:0.07em;text-transform:uppercase;padding:14px 30px;border-radius:8px;transition:all .2s}
+.btn:hover{background:var(--gold-lt);transform:translateY(-1px)}
+.btn-ghost{background:none;border:1px solid var(--border2);color:var(--white);cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.74rem;letter-spacing:0.06em;text-transform:uppercase;padding:10px 20px;border-radius:8px;transition:all .2s}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{font-size:0.68rem;padding:7px 14px}
+.btn-danger{border-color:rgba(224,85,85,0.4);color:var(--red)}
+.btn-danger:hover{border-color:var(--red);color:var(--red)}
+
+footer{padding:28px 52px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:0.76rem;color:var(--dim);flex-wrap:wrap;gap:12px}
+footer button{background:none;border:none;color:var(--dim);font-size:0.76rem;cursor:pointer;transition:color .2s;padding:0}
+footer button:hover{color:var(--gold)}
+
+/* MODALS */
+.modal{display:none;position:fixed;inset:0;background:rgba(4,6,14,0.82);backdrop-filter:blur(6px);z-index:100;align-items:center;justify-content:center;padding:20px}
+.modal.open{display:flex}
+.modal-box{background:var(--ink2);border:1px solid var(--border2);border-radius:16px;padding:36px;width:100%;max-width:420px;position:relative}
+.modal-x{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--dim);font-size:1.3rem;cursor:pointer;line-height:1}
+.modal-x:hover{color:var(--white)}
+.m-title{font-family:var(--head);font-size:1.2rem;font-weight:800;margin-bottom:6px}
+.m-sub{color:var(--muted);font-size:0.84rem;margin-bottom:24px;font-weight:300}
+label{display:block;font-size:0.74rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+input,select,textarea{width:100%;background:var(--ink);border:1px solid var(--border2);border-radius:8px;color:var(--white);font-family:var(--body);font-size:0.92rem;padding:11px 14px}
+input::placeholder,textarea::placeholder{color:var(--dim)}
+textarea{resize:vertical;min-height:80px}
+.err{color:var(--red);font-size:0.82rem;margin-top:12px;display:none}
+.ok-msg{color:var(--teal);font-size:0.82rem;margin-top:12px;display:none}
+.full-btn{width:100%;margin-top:22px}
+.spinner{display:none;margin-top:14px;color:var(--muted);font-size:0.82rem}
+
+/* PORTAL VIEWS */
+.portal{display:none;max-width:1100px;margin:0 auto;padding:48px 52px 80px}
+.portal.active{display:block}
+.p-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:36px}
+.p-head h2{font-family:var(--head);font-size:1.6rem;font-weight:800}
+.p-head h2 span{color:var(--gold)}
+.p-who{color:var(--muted);font-size:0.84rem;margin-top:4px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:24px}
+.card h3{font-family:var(--head);font-size:1rem;font-weight:700;margin-bottom:4px}
+.card .c-sub{color:var(--muted);font-size:0.82rem;font-weight:300;margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.ledger{width:100%;border-collapse:collapse;margin-top:14px;font-size:0.84rem}
+.ledger th{text-align:left;font-family:var(--head);font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);padding:10px 12px;border-bottom:1px solid rgba(224,155,26,0.3)}
+.ledger td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top}
+.ledger tr:hover td{background:rgba(255,255,255,0.02)}
+.pill{display:inline-block;font-size:0.68rem;font-weight:600;padding:3px 10px;border-radius:100px}
+.pill-active{background:rgba(0,196,160,0.1);color:var(--teal);border:1px solid rgba(0,196,160,0.25)}
+.pill-revoked{background:rgba(224,85,85,0.1);color:var(--red);border:1px solid rgba(224,85,85,0.25)}
+.tabbar{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tabbar button{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--head);font-size:0.76rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:11px 16px;cursor:pointer}
+.tabbar button.active{color:var(--gold);border-bottom-color:var(--gold)}
+.atab{display:none}.atab.active{display:block}
+.empty{color:var(--dim);font-size:0.84rem;padding:24px 12px;text-align:center}
+.table-scroll{overflow-x:auto}
+
+/* PASSWORD REVEAL */
+.pw-reveal{background:rgba(224,155,26,0.07);border:1px dashed rgba(224,155,26,0.4);border-radius:10px;padding:18px;margin-top:18px;text-align:center}
+.pw-reveal .pw{font-family:monospace;font-size:1.3rem;font-weight:700;color:var(--gold);letter-spacing:0.1em;user-select:all}
+.pw-reveal p{font-size:0.74rem;color:var(--muted);margin-top:8px}
+
+@media(max-width:900px){
+  nav,.hero,.plate-wrap,.portal,footer{padding-left:24px;padding-right:24px}
+  .grid2{grid-template-columns:1fr}
+  .hero{padding-top:56px;padding-bottom:48px}
+  .ghost{left:16px}
+  .plate{padding:28px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">CPC<span class="logo-dot">.</span>Direct</a>
+  <div class="nav-pills">
+    <a href="index.html#products">Products</a>
+    <a href="index.html#ideaforge">IdeaForge</a>
+    <a href="index.html#portfolio">Portfolio</a>
+    <a href="index.html#services">Services</a>
+    <a href="advisory.html" class="nav-active" style="display:inline-flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Advisory</a>
+  </div>
+  <a class="nav-btn" href="index.html">Get Started</a>
+  <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html#products">Products</a>
+  <a href="index.html#ideaforge">IdeaForge</a>
+  <a href="index.html#portfolio">Portfolio</a>
+  <a href="index.html#services">Services</a>
+  <a href="advisory.html" style="color:var(--gold);display:inline-flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Advisory Board</a>
+  <a class="mob-btn" href="index.html" style="text-decoration:none">Get Started →</a>
+</div>
+
+<!-- ════════ PUBLIC VIEW ════════ -->
+<div id="publicView">
+  <div class="hero hero-split">
+    <div class="ghost">ADVISORY</div>
+    <div>
+      <div class="eyebrow">CPC Direct Ventures Ltd</div>
+      <h1>The people who open doors <em>before we knock.</em></h1>
+      <p>The CPC Direct Advisory Board is a circle of senior operators across Nigeria, Canada, and the wider diaspora. They bring market intelligence, qualified introductions, and hard-won judgement to every product we build — from our apps and websites to all IdeaForge ventures.</p>
+      <div class="gold-rule"></div>
+    </div>
+    <div class="login-card" id="loginCard">
+      <div class="lc-badge"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Members Only</div>
+      <div class="m-title">Member Sign In</div>
+      <div class="m-sub">Use your registered email and the password issued to you by the administrator.</div>
+      <label>Email</label><input id="li-email" type="email" placeholder="you@email.com">
+      <label>Password</label><input id="li-pass" type="password" placeholder="••••••••••">
+      <button class="btn full-btn" id="liBtn" onclick="doLogin()">Sign In →</button>
+      <div class="err" id="liErr"></div>
+      <div class="spinner" id="liSpin">Checking…</div>
+      <div class="lc-help">Forgot your password? Message the administrator on WhatsApp for a reset.</div>
+    </div>
+  </div>
+
+  <!-- BOARD MEMBERS — replace initials/names/titles, or swap the .avatar div for <img class="avatar" src="photo.jpg"> when photos are ready -->
+  <div class="members-wrap">
+    <div class="mem-label">The Board</div>
+    <div class="members">
+
+      <div class="member">
+        <div class="avatar">MN</div>
+        <div class="mem-name">Member Name</div>
+        <div class="mem-title">Title / Organisation</div>
+        <div class="mem-loc">Lagos, Nigeria</div>
+      </div>
+
+      <div class="member">
+        <div class="avatar">MN</div>
+        <div class="mem-name">Member Name</div>
+        <div class="mem-title">Title / Organisation</div>
+        <div class="mem-loc">Abuja, Nigeria</div>
+      </div>
+
+      <div class="member">
+        <div class="avatar">MN</div>
+        <div class="mem-name">Member Name</div>
+        <div class="mem-title">Title / Organisation</div>
+        <div class="mem-loc">Toronto, Canada</div>
+      </div>
+
+      <div class="member">
+        <div class="avatar">MN</div>
+        <div class="mem-name">Member Name</div>
+        <div class="mem-title">Title / Organisation</div>
+        <div class="mem-loc">Diaspora</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="plate-wrap">
+    <div class="plate">
+      <div>
+        <h2>Board Member Portal</h2>
+        <p>Sign in with your registered email and the password issued to you by the administrator.</p>
+      </div>
+      <button class="btn" onclick="document.getElementById('loginCard').scrollIntoView({behavior:'smooth'});document.getElementById('li-email').focus()">Member Sign In →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MEMBER PORTAL ════════ -->
+<div class="portal" id="memberView">
+  <div class="p-head">
+    <div>
+      <h2>Board <span>Portal</span></h2>
+      <div class="p-who" id="whoami"></div>
+    </div>
+    <button class="btn-ghost" onclick="logout()">Sign out</button>
+  </div>
+
+  <div class="card">
+    <h3>Submit a Lead</h3>
+    <div class="c-sub">Every submission lands directly with the CPC Direct executive team, attributed to you.</div>
+    <div class="grid2">
+      <div><label>Lead / Company name *</label><input id="l-name" placeholder="e.g. Zenith Agro Holdings"></div>
+      <div><label>Sector</label><input id="l-sector" placeholder="e.g. Agriculture, Fintech, Government"></div>
+      <div><label>Contact person</label><input id="l-contact" placeholder="Full name"></div>
+      <div><label>Phone</label><input id="l-phone" placeholder="+234 ..."></div>
+      <div><label>Email</label><input id="l-email" placeholder="contact@company.com"></div>
+      <div><label>Estimated value</label><input id="l-value" placeholder="e.g. ₦5M / $10k / Unknown"></div>
+      <div><label>Relevant to</label>
+        <select id="l-product">
+          <option value="">— Select —</option>
+          <option>Taxplify</option><option>Legaltice</option><option>Native Platter</option>
+          <option>DidiCommune</option><option>IdeaForge</option><option>Services (Build / Automate / Advise)</option>
+          <option>General / Other</option>
+        </select>
+      </div>
+      <div></div>
+    </div>
+    <label>Notes / context</label>
+    <textarea id="l-notes" placeholder="How do you know them? What's the opportunity? Any timing considerations?"></textarea>
+    <button class="btn full-btn" id="leadBtn" onclick="sendLead()">Submit Lead</button>
+    <div class="err" id="leadErr"></div>
+    <div class="ok-msg" id="leadOk">✓ Lead submitted — thank you. The team has it.</div>
+  </div>
+
+  <div class="card">
+    <h3>My Submissions</h3>
+    <div class="c-sub">Your 25 most recent leads.</div>
+    <div class="table-scroll">
+      <table class="ledger"><thead><tr><th>Date</th><th>Lead</th><th>Sector</th><th>Relevant to</th></tr></thead>
+      <tbody id="myLeadsBody"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ SUPER ADMIN ════════ -->
+<div class="portal" id="adminView">
+  <div class="p-head">
+    <div>
+      <h2>Super <span>Admin</span></h2>
+      <div class="p-who">Advisory Board administration</div>
+    </div>
+    <button class="btn-ghost" onclick="logout()">Sign out</button>
+  </div>
+
+  <div class="tabbar">
+    <button class="active" id="at-members" onclick="adminTab('members')">Members</button>
+    <button id="at-leads" onclick="adminTab('leads')">All Leads</button>
+    <button id="at-activity" onclick="adminTab('activity')">Activity</button>
+  </div>
+
+  <div class="atab active" id="atab-members">
+    <div class="card">
+      <h3>Add Board Member</h3>
+      <div class="c-sub">A password is generated once — copy it and send to the member on WhatsApp.</div>
+      <div class="grid2">
+        <div><label>Full name *</label><input id="am-name" placeholder="e.g. Chief Ada Okafor"></div>
+        <div><label>Email *</label><input id="am-email" placeholder="member@email.com"></div>
+      </div>
+      <button class="btn full-btn" id="addBtn" onclick="addMember()">Add Member &amp; Generate Password</button>
+      <div class="err" id="addErr"></div>
+      <div class="pw-reveal" id="addReveal" style="display:none">
+        <div class="pw" id="addPw"></div>
+        <p>Shown once only. Copy now and send to the member via WhatsApp.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Board Members</h3>
+      <div class="table-scroll">
+        <table class="ledger"><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Last login</th><th>Actions</th></tr></thead>
+        <tbody id="membersBody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody></table>
+      </div>
+      <div class="pw-reveal" id="resetReveal" style="display:none">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:6px" id="resetWho"></div>
+        <div class="pw" id="resetPw"></div>
+        <p>New password — shown once. Send to the member via WhatsApp.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="atab" id="atab-leads">
+    <div class="card">
+      <h3>All Board Leads</h3>
+      <div class="table-scroll">
+        <table class="ledger"><thead><tr><th>Date</th><th>By</th><th>Lead</th><th>Sector</th><th>Contact</th><th>Value</th><th>For</th><th>Notes</th></tr></thead>
+        <tbody id="allLeadsBody"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="atab" id="atab-activity">
+    <div class="card">
+      <h3>Activity Feed</h3>
+      <div class="c-sub">Logins, submissions, and admin actions — most recent first.</div>
+      <div class="table-scroll">
+        <table class="ledger"><thead><tr><th>When</th><th>Who</th><th>Action</th><th>Details</th></tr></thead>
+        <tbody id="activityBody"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>© 2026 CPC Direct Ventures Ltd · Advisory Board</div>
+  <button onclick="openModal('adminModal')">Admin</button>
+</footer>
+
+<!-- ADMIN MODAL -->
+<div class="modal" id="adminModal">
+  <div class="modal-box">
+    <button class="modal-x" onclick="closeModal('adminModal')">×</button>
+    <div class="m-title">Super Admin</div>
+    <div class="m-sub">Enter the administrator master key.</div>
+    <label>Admin key</label><input id="ak-input" type="password" placeholder="Master key">
+    <button class="btn full-btn" id="akBtn" onclick="doAdminLogin()">Enter Admin</button>
+    <div class="err" id="akErr"></div>
+    <div class="spinner" id="akSpin">Checking…</div>
+  </div>
+</div>
+
+<script>
+/* ═══════════ CONFIG ═══════════ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbww5UOr4bjy3Bn1ZpitcVoQ_ZuafW-Nyoq5UHob1RnMniMKU9Sadiwrn8JpeCTlMttRCQ/exec';
+
+/* ═══════════ STATE ═══════════ */
+let session = null;   // {email, password, name} for member
+let adminKey = null;  // string for admin
+
+async function api(payload){
+  const r = await fetch(API_URL, {method:'POST', body: JSON.stringify(payload)});
+  return await r.json();
+}
+function $(id){return document.getElementById(id)}
+function openModal(id){$(id).classList.add('open')}
+function closeModal(id){$(id).classList.remove('open')}
+function show(id){$(id).style.display='block'}
+function hide(id){$(id).style.display='none'}
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML}
+function setView(v){
+  $('publicView').style.display = v==='public' ? 'block' : 'none';
+  $('memberView').classList.toggle('active', v==='member');
+  $('adminView').classList.toggle('active', v==='admin');
+  window.scrollTo(0,0);
+}
+function logout(){session=null;adminKey=null;setView('public')}
+
+/* ═══════════ MEMBER ═══════════ */
+async function doLogin(){
+  const email=$('li-email').value.trim(), password=$('li-pass').value;
+  hide('liErr'); if(!email||!password){$('liErr').textContent='Enter both email and password';show('liErr');return}
+  show('liSpin'); $('liBtn').disabled=true;
+  try{
+    const res = await api({action:'login', email, password});
+    if(!res.ok) throw new Error(res.error||'Sign in failed');
+    session = {email, password, name: res.name};
+    setView('member');
+    $('whoami').textContent = res.name + ' · ' + email;
+    loadMyLeads();
+  }catch(e){$('liErr').textContent=e.message;show('liErr')}
+  hide('liSpin'); $('liBtn').disabled=false;
+}
+
+async function sendLead(){
+  hide('leadErr'); hide('leadOk');
+  const lead = {leadName:$('l-name').value.trim(), sector:$('l-sector').value.trim(),
+    contact:$('l-contact').value.trim(), phone:$('l-phone').value.trim(),
+    email:$('l-email').value.trim(), value:$('l-value').value.trim(),
+    product:$('l-product').value, notes:$('l-notes').value.trim()};
+  if(!lead.leadName){$('leadErr').textContent='Lead / company name is required';show('leadErr');return}
+  $('leadBtn').disabled=true; $('leadBtn').textContent='Submitting…';
+  try{
+    const res = await api({action:'submitLead', email:session.email, password:session.password, lead});
+    if(!res.ok) throw new Error(res.error||'Submission failed');
+    show('leadOk');
+    ['l-name','l-sector','l-contact','l-phone','l-email','l-value','l-notes'].forEach(i=>$(i).value='');
+    $('l-product').value='';
+    loadMyLeads();
+  }catch(e){$('leadErr').textContent=e.message;show('leadErr')}
+  $('leadBtn').disabled=false; $('leadBtn').textContent='Submit Lead';
+}
+
+async function loadMyLeads(){
+  try{
+    const res = await api({action:'myLeads', email:session.email, password:session.password});
+    const rows = (res.leads||[]).map(l=>`<tr><td>${esc(l.date)}</td><td style="color:var(--white)">${esc(l.leadName)}</td><td>${esc(l.sector)}</td><td>${esc(l.product)}</td></tr>`).join('');
+    $('myLeadsBody').innerHTML = rows || '<tr><td colspan="4" class="empty">No submissions yet — your first lead will appear here.</td></tr>';
+  }catch(e){$('myLeadsBody').innerHTML='<tr><td colspan="4" class="empty">Could not load submissions.</td></tr>'}
+}
+
+/* ═══════════ ADMIN ═══════════ */
+async function doAdminLogin(){
+  const key=$('ak-input').value.trim();
+  hide('akErr'); if(!key){$('akErr').textContent='Enter the admin key';show('akErr');return}
+  show('akSpin'); $('akBtn').disabled=true;
+  try{
+    const res = await api({action:'adminLogin', adminKey:key});
+    if(!res.ok) throw new Error(res.error||'Invalid key');
+    adminKey = key;
+    closeModal('adminModal'); setView('admin');
+    loadMembers(); loadAllLeads(); loadActivity();
+  }catch(e){$('akErr').textContent=e.message;show('akErr')}
+  hide('akSpin'); $('akBtn').disabled=false;
+}
+
+function adminTab(t){
+  ['members','leads','activity'].forEach(x=>{
+    $('atab-'+x).classList.toggle('active', x===t);
+    $('at-'+x).classList.toggle('active', x===t);
+  });
+}
+
+async function loadMembers(){
+  try{
+    const res = await api({action:'listMembers', adminKey});
+    const rows = (res.members||[]).map(m=>{
+      const pill = m.status==='Active' ? '<span class="pill pill-active">Active</span>' : '<span class="pill pill-revoked">Revoked</span>';
+      const toggle = m.status==='Active'
+        ? `<button class="btn-ghost btn-sm btn-danger" onclick="setStatus('${esc(m.email)}','Revoked')">Revoke</button>`
+        : `<button class="btn-ghost btn-sm" onclick="setStatus('${esc(m.email)}','Active')">Restore</button>`;
+      return `<tr><td style="color:var(--white)">${esc(m.name)}</td><td>${esc(m.email)}</td><td>${pill}</td><td>${esc(m.lastLogin)}</td>
+        <td style="white-space:nowrap"><button class="btn-ghost btn-sm" onclick="resetPw('${esc(m.email)}','${esc(m.name)}')">Reset PW</button>
+        ${toggle}
+        <button class="btn-ghost btn-sm btn-danger" onclick="removeMember('${esc(m.email)}','${esc(m.name)}')">Remove</button></td></tr>`;
+    }).join('');
+    $('membersBody').innerHTML = rows || '<tr><td colspan="5" class="empty">No members yet — add your first board member above.</td></tr>';
+  }catch(e){$('membersBody').innerHTML='<tr><td colspan="5" class="empty">Could not load members.</td></tr>'}
+}
+
+async function addMember(){
+  hide('addErr'); hide('addReveal');
+  const name=$('am-name').value.trim(), email=$('am-email').value.trim();
+  if(!name||!email){$('addErr').textContent='Name and email are required';show('addErr');return}
+  $('addBtn').disabled=true;
+  try{
+    const res = await api({action:'addMember', adminKey, name, email});
+    if(!res.ok) throw new Error(res.error||'Could not add member');
+    $('addPw').textContent = res.password;
+    show('addReveal');
+    $('am-name').value=''; $('am-email').value='';
+    loadMembers();
+  }catch(e){$('addErr').textContent=e.message;show('addErr')}
+  $('addBtn').disabled=false;
+}
+
+async function resetPw(email, name){
+  if(!confirm('Generate a new password for ' + name + '? Their old password stops working immediately.')) return;
+  hide('resetReveal');
+  try{
+    const res = await api({action:'resetPassword', adminKey, email});
+    if(!res.ok) throw new Error(res.error||'Reset failed');
+    $('resetWho').textContent = name + ' · ' + email;
+    $('resetPw').textContent = res.password;
+    show('resetReveal');
+  }catch(e){alert(e.message)}
+}
+
+async function setStatus(email, status){
+  const verb = status==='Active' ? 'restore access for' : 'revoke access for';
+  if(!confirm('Are you sure you want to ' + verb + ' ' + email + '?')) return;
+  try{
+    const res = await api({action:'setStatus', adminKey, email, status});
+    if(!res.ok) throw new Error(res.error||'Update failed');
+    loadMembers();
+  }catch(e){alert(e.message)}
+}
+
+async function removeMember(email, name){
+  if(!confirm('Permanently remove ' + name + ' from the board? This cannot be undone.')) return;
+  try{
+    const res = await api({action:'removeMember', adminKey, email});
+    if(!res.ok) throw new Error(res.error||'Remove failed');
+    loadMembers();
+  }catch(e){alert(e.message)}
+}
+
+async function loadAllLeads(){
+  try{
+    const res = await api({action:'allLeads', adminKey});
+    const rows = (res.leads||[]).map(l=>`<tr><td>${esc(l.date)}</td><td>${esc(l.by)}</td><td style="color:var(--white)">${esc(l.leadName)}</td><td>${esc(l.sector)}</td><td>${esc(l.contact)}<br>${esc(l.phone)}<br>${esc(l.email)}</td><td>${esc(l.value)}</td><td>${esc(l.product)}</td><td style="max-width:220px">${esc(l.notes)}</td></tr>`).join('');
+    $('allLeadsBody').innerHTML = rows || '<tr><td colspan="8" class="empty">No leads submitted yet.</td></tr>';
+  }catch(e){$('allLeadsBody').innerHTML='<tr><td colspan="8" class="empty">Could not load leads.</td></tr>'}
+}
+
+async function loadActivity(){
+  try{
+    const res = await api({action:'activity', adminKey});
+    const rows = (res.events||[]).map(ev=>`<tr><td>${esc(ev.date)}</td><td>${esc(ev.actor)}</td><td style="color:var(--white)">${esc(ev.action)}</td><td>${esc(ev.details)}</td></tr>`).join('');
+    $('activityBody').innerHTML = rows || '<tr><td colspan="4" class="empty">No activity yet.</td></tr>';
+  }catch(e){$('activityBody').innerHTML='<tr><td colspan="4" class="empty">Could not load activity.</td></tr>'}
+}
+
+function toggleMobileNav(){document.getElementById('mobileNav').classList.toggle('open')}
+
+/* Enter key submits in modals */
+$('li-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+$('ak-input').addEventListener('keydown',e=>{if(e.key==='Enter')doAdminLogin()});
+</script>
+</body>
+</html>

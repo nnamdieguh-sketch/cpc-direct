@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPC Direct — Your Idea. Our Execution. Your Growth.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#080C1A;--ink2:#0E1428;--card:#181E35;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--gold:#E09B1A;--gold-lt:#F5C050;--teal:#00C4A0;--sky:#4D9EF5;--white:#EFF1FA;--muted:rgba(239,241,250,0.48);--dim:rgba(239,241,250,0.25);--head:'Syne',sans-serif;--body:'Outfit',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:var(--body);overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px 52px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,12,26,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{font-family:var(--head);font-weight:800;font-size:1.1rem;letter-spacing:-0.02em;color:var(--white);cursor:pointer}
+.logo-dot{color:var(--gold)}
+.nav-pills{display:flex;gap:4px}
+.nav-pills a{font-size:0.8rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:6px 14px;border-radius:100px;transition:all .2s}
+.nav-pills a:hover{color:var(--white);background:rgba(255,255,255,0.06)}
+.nav-btn{background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;padding:9px 20px;border-radius:6px;transition:all .2s}
+.nav-btn:hover{background:var(--gold-lt)}
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+.nav-toggle span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s}
+.mobile-nav{display:none;position:fixed;top:65px;left:0;right:0;z-index:199;background:rgba(8,12,26,0.98);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:20px 24px;flex-direction:column;gap:4px}
+.mobile-nav.open{display:flex}
+.mobile-nav a{font-size:0.9rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:12px 16px;border-radius:8px;transition:all .2s}
+.mobile-nav a:hover{color:var(--white);background:rgba(255,255,255,0.06)}
+.mobile-nav .mob-btn{background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.88rem;letter-spacing:0.06em;text-transform:uppercase;padding:12px 20px;border-radius:6px;margin-top:8px;text-align:center}
+
+section{padding:96px 52px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--gold)}
+.sec-title{font-family:var(--head);font-size:clamp(1.9rem,3vw,2.8rem);font-weight:800;line-height:1.12;letter-spacing:-0.025em}
+.sec-sub{color:var(--muted);font-size:1rem;line-height:1.75;margin-top:12px;max-width:520px;font-weight:300}
+
+/* HERO */
+.hero{min-height:100vh;padding:130px 52px 80px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.hg1{position:absolute;z-index:0;width:900px;height:700px;top:-100px;right:-200px;background:radial-gradient(ellipse,rgba(224,155,26,0.07) 0%,transparent 65%);pointer-events:none}
+.hg2{position:absolute;z-index:0;width:500px;height:500px;bottom:0;left:-100px;background:radial-gradient(ellipse,rgba(0,196,160,0.05) 0%,transparent 65%);pointer-events:none}
+.hgrid{position:absolute;z-index:0;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:56px 56px}
+.hi{position:relative;z-index:1}
+.h-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(224,155,26,0.08);border:1px solid rgba(224,155,26,0.2);border-radius:100px;padding:6px 14px 6px 8px;font-size:0.72rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;width:fit-content}
+.pdot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(0.65);opacity:0.4}}
+.hero h1{font-family:var(--head);font-size:clamp(2.6rem,6.5vw,6rem);font-weight:800;line-height:0.95;letter-spacing:-0.035em;max-width:780px}
+.hero h1 .ac{color:var(--gold);display:block}
+.h-sub{margin-top:28px;font-size:1.1rem;font-weight:300;color:var(--muted);max-width:500px;line-height:1.75}
+.h-ctas{display:flex;gap:14px;margin-top:44px;flex-wrap:wrap}
+.btn-g{background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;padding:14px 28px;border-radius:6px;transition:all .2s}
+.btn-g:hover{background:var(--gold-lt);transform:translateY(-2px)}
+.btn-o{background:transparent;color:var(--white);cursor:pointer;font-family:var(--head);font-weight:600;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;padding:14px 28px;border:1px solid var(--border2);border-radius:6px;transition:all .2s}
+.btn-o:hover{background:rgba(255,255,255,0.06)}
+.h-bar{display:flex;gap:40px;margin-top:72px;padding-top:44px;border-top:1px solid var(--border);flex-wrap:wrap}
+.sn{font-family:var(--head);font-size:2rem;font-weight:800}
+.sn .u{color:var(--gold)}
+.sl{font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px}
+
+/* ═══ IDEAFORGE — REDESIGNED ═══ */
+.ifbg{background:var(--ink2)}
+.if-hero{text-align:center;max-width:720px;margin:0 auto 64px}
+.if-hero .sec-sub{max-width:600px;margin:12px auto 0;font-size:1.05rem}
+.if-tagline{font-family:var(--head);font-size:1.15rem;font-weight:700;color:var(--gold);margin-top:20px;font-style:italic}
+
+/* Two partnership types */
+.if-types{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:56px}
+.if-type-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;overflow:hidden;transition:transform .2s}
+.if-type-card:hover{transform:translateY(-4px)}
+.if-type-card.featured{border-color:rgba(224,155,26,0.4)}
+.if-type-top{padding:32px 32px 24px;border-bottom:1px solid var(--border)}
+.if-type-badge{display:inline-flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:16px}
+.badge-gold{background:rgba(224,155,26,0.1);border:1px solid rgba(224,155,26,0.25);color:var(--gold)}
+.badge-teal{background:rgba(0,196,160,0.08);border:1px solid rgba(0,196,160,0.2);color:var(--teal)}
+.if-type-card h3{font-family:var(--head);font-size:1.4rem;font-weight:800;margin-bottom:10px}
+.if-type-card p{font-size:0.88rem;color:var(--muted);line-height:1.7}
+.if-type-bottom{padding:24px 32px}
+.if-brings{display:flex;flex-direction:column;gap:8px}
+.if-brings-label{font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.if-bring-item{display:flex;align-items:flex-start;gap:10px;font-size:0.84rem;color:rgba(239,241,250,0.7)}
+.if-bring-item .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.dot-gold{background:var(--gold)}
+.dot-teal{background:var(--teal)}
+
+/* How it works steps */
+.if-process{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:16px;padding:40px;margin-bottom:56px}
+.if-process-title{font-family:var(--head);font-size:1rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;text-align:center}
+.if-steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+.if-steps-row::before{content:'';position:absolute;top:24px;left:12.5%;right:12.5%;height:1px;background:linear-gradient(90deg,var(--gold),rgba(224,155,26,0.2));z-index:0}
+.if-step-item{text-align:center;position:relative;z-index:1;padding:0 16px}
+.if-step-num{width:48px;height:48px;border-radius:50%;background:var(--gold);color:var(--ink);font-family:var(--head);font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.if-step-title{font-family:var(--head);font-size:0.88rem;font-weight:700;margin-bottom:6px}
+.if-step-desc{font-size:0.78rem;color:var(--muted);line-height:1.6}
+
+/* What we evaluate */
+.if-evaluate{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.if-eval-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px}
+.if-eval-icon{font-size:1.4rem;margin-bottom:14px}
+.if-eval-title{font-family:var(--head);font-size:1rem;font-weight:700;margin-bottom:8px}
+.if-eval-desc{font-size:0.84rem;color:var(--muted);line-height:1.65}
+
+/* CTA inside section */
+.if-cta-box{background:linear-gradient(135deg,rgba(224,155,26,0.08) 0%,rgba(0,196,160,0.04) 100%);border:1px solid rgba(224,155,26,0.2);border-radius:16px;padding:40px;text-align:center;margin-top:56px}
+.if-cta-box h3{font-family:var(--head);font-size:1.6rem;font-weight:800;margin-bottom:10px}
+.if-cta-box p{font-size:0.92rem;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto 28px}
+
+/* PILOT SUITE */
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:52px}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .25s}
+.pc:hover{border-color:var(--border2);transform:translateY(-3px)}
+.pc.live{border-color:rgba(0,196,160,0.25)}
+.pt{padding:28px 28px 22px;border-bottom:1px solid var(--border)}
+.pst{display:inline-flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:14px}
+.sl1{background:rgba(0,196,160,0.1);color:var(--teal);border:1px solid rgba(0,196,160,0.2)}
+.sl2{background:rgba(77,158,245,0.08);color:var(--sky);border:1px solid rgba(77,158,245,0.18)}
+.pn{font-family:var(--head);font-size:1.6rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:8px}
+.pn .w{color:var(--muted);font-weight:400}
+.pn .wa{color:var(--gold);font-weight:800}
+.pd{font-size:0.875rem;color:var(--muted);line-height:1.7}
+.pb{padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.ptags{display:flex;gap:6px;flex-wrap:wrap}
+.ptag{font-size:0.7rem;color:var(--dim);padding:3px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px}
+.pa{font-size:0.8rem;color:var(--gold);font-family:var(--head);font-weight:700;cursor:pointer;background:none;border:none;text-decoration:none;transition:color .2s;white-space:nowrap}
+.pa:hover{color:var(--gold-lt)}
+
+/* SERVICES */
+.svbg{background:var(--ink2)}
+.svg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:52px}
+.svc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;transition:border-color .2s}
+.svc:hover{border-color:var(--border2)}
+.svic{width:40px;height:40px;border-radius:10px;margin-bottom:18px;background:rgba(224,155,26,0.08);border:1px solid rgba(224,155,26,0.15);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.svc h4{font-family:var(--head);font-size:1.05rem;font-weight:700;margin-bottom:8px}
+.svc p{font-size:0.84rem;color:var(--muted);line-height:1.65}
+.svl{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.svi{display:flex;align-items:flex-start;gap:8px;font-size:0.8rem;color:rgba(239,241,250,0.6)}
+.svi::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:6px}
+
+/* CTA */
+.ctasec{text-align:center;padding:96px 52px;background:linear-gradient(180deg,var(--ink) 0%,rgba(14,20,40,1) 100%);border-top:1px solid var(--border);position:relative;overflow:hidden}
+.ctar{position:absolute;width:700px;height:700px;left:50%;top:50%;transform:translate(-50%,-50%);border:1px solid rgba(224,155,26,0.06);border-radius:50%}
+.ctar2{position:absolute;width:460px;height:460px;left:50%;top:50%;transform:translate(-50%,-50%);border:1px solid rgba(224,155,26,0.09);border-radius:50%}
+.ctai{position:relative;z-index:1}
+.ctasec h2{font-family:var(--head);font-size:clamp(1.8rem,4vw,3.5rem);font-weight:800;letter-spacing:-0.025em;max-width:580px;margin:0 auto 16px}
+.ctasec p{color:var(--muted);font-size:1rem;margin-bottom:36px;font-weight:300}
+
+footer{padding:32px 52px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;color:var(--dim);flex-wrap:wrap;gap:12px}
+
+/* NOTIFY MODAL */
+.mov{display:none;position:fixed;inset:0;z-index:500;background:rgba(4,6,16,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.mov.open{display:flex}
+.mo{background:#131830;border:1px solid var(--border2);border-radius:20px;padding:40px;width:100%;max-width:460px;position:relative;animation:mi .3s ease;max-height:90vh;overflow-y:auto}
+@keyframes mi{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.moc{position:absolute;top:16px;right:20px;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1}
+.moc:hover{color:var(--white)}
+.mtag{display:inline-block;background:rgba(224,155,26,0.1);border:1px solid rgba(224,155,26,0.2);color:var(--gold);font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:14px}
+.mo h3{font-family:var(--head);font-size:1.4rem;font-weight:800;margin-bottom:6px}
+.mo-sub{font-size:0.85rem;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.mo-suc{display:none;text-align:center;padding:20px 0}
+.mo-suc .tk{font-size:2.5rem;margin-bottom:14px}
+.mo-suc h4{font-family:var(--head);font-size:1.2rem;font-weight:800;margin-bottom:8px}
+.mo-suc p{font-size:0.88rem;color:var(--muted);line-height:1.6}
+.nfi{margin-bottom:14px}
+.nfi label{display:block;font-size:0.76rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.nfi input,.nfi select{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:8px;padding:11px 14px;color:var(--white);font-family:var(--body);font-size:0.9rem;outline:none;transition:border-color .2s;appearance:none}
+.nfi input::placeholder{color:var(--dim)}
+.nfi input:focus,.nfi select:focus{border-color:var(--gold)}
+.nfi select option{background:#131830}
+.nsub{width:100%;background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.88rem;letter-spacing:0.05em;text-transform:uppercase;padding:13px;border-radius:8px;margin-top:6px;transition:all .2s}
+.nsub:hover{background:var(--gold-lt)}
+
+/* IDEAFORGE PANEL */
+.ifp-overlay{display:none;position:fixed;inset:0;z-index:399;background:rgba(4,6,16,0.75);backdrop-filter:blur(4px)}
+.ifp-overlay.open{display:block}
+.ifp{position:fixed;top:0;right:0;bottom:0;z-index:400;width:100%;max-width:880px;background:var(--ink);border-left:1px solid var(--border2);transform:translateX(100%);transition:transform .4s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;display:flex;flex-direction:column}
+.ifp.open{transform:translateX(0)}
+.ifp-hdr{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--ink);z-index:10}
+.ifp-close{background:rgba(255,255,255,0.06);border:1px solid var(--border2);color:var(--muted);font-size:0.85rem;font-family:var(--body);padding:7px 16px;border-radius:6px;cursor:pointer;transition:all .2s}
+.ifp-close:hover{color:var(--white);background:rgba(255,255,255,0.1)}
+.ifp-body{display:grid;grid-template-columns:1fr 1.4fr;flex:1}
+.ifp-left{background:var(--ink2);padding:48px 36px;border-right:1px solid var(--border);position:relative;overflow:hidden}
+.ifp-left-glow{position:absolute;width:300px;height:300px;top:-60px;left:-60px;background:radial-gradient(circle,rgba(224,155,26,0.07) 0%,transparent 65%);pointer-events:none}
+.ifp-left-inner{position:relative;z-index:1}
+.ptag2{display:inline-flex;align-items:center;gap:7px;background:rgba(224,155,26,0.08);border:1px solid rgba(224,155,26,0.2);border-radius:100px;padding:5px 12px 5px 7px;font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;width:fit-content}
+.pdot2{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2.2s ease-in-out infinite}
+.ifp-left h2{font-family:var(--head);font-size:1.8rem;font-weight:800;line-height:1.1;letter-spacing:-0.025em;margin-bottom:12px}
+.ifp-left h2 span{color:var(--gold)}
+.ifp-left p{font-size:0.88rem;color:var(--muted);line-height:1.7;font-weight:300}
+.plist{margin-top:32px;display:flex;flex-direction:column;gap:14px}
+.pi-item{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px}
+.pi-em{font-size:1rem;flex-shrink:0;margin-top:1px}
+.pi-t{font-family:var(--head);font-size:0.82rem;font-weight:700;margin-bottom:2px}
+.pi-d{font-size:0.76rem;color:var(--muted);line-height:1.5}
+.ifp-right{padding:48px 40px;overflow-y:auto}
+.form-title{font-family:var(--head);font-size:1.3rem;font-weight:800;margin-bottom:4px}
+.form-sub{font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:28px}
+.fsec{font-family:var(--head);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin:24px 0 14px;display:flex;align-items:center;gap:8px}
+.fsec::after{content:'';flex:1;height:1px;background:var(--border)}
+.fi{margin-bottom:14px}
+.fi label{display:block;font-size:0.74rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fi label .r{color:var(--gold)}
+.fi input,.fi select,.fi textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:8px;padding:11px 14px;color:var(--white);font-family:var(--body);font-size:0.9rem;outline:none;transition:border-color .2s;resize:none;appearance:none}
+.fi input::placeholder,.fi textarea::placeholder{color:var(--dim)}
+.fi input:focus,.fi select:focus,.fi textarea:focus{border-color:var(--gold);background:rgba(224,155,26,0.03)}
+.fi select option{background:#131830;color:var(--white)}
+.fi textarea{min-height:90px;line-height:1.6}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sub-btn{width:100%;background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.95rem;letter-spacing:0.05em;text-transform:uppercase;padding:15px;border-radius:8px;margin-top:8px;transition:all .2s}
+.sub-btn:hover{background:var(--gold-lt);transform:translateY(-1px)}
+.sub-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.form-note{font-size:0.72rem;color:var(--dim);text-align:center;margin-top:10px;line-height:1.6}
+.p-success{display:none;text-align:center;padding:60px 20px}
+.p-success .s-icon{font-size:3rem;margin-bottom:16px}
+.p-success h3{font-family:var(--head);font-size:1.8rem;font-weight:800;margin-bottom:10px}
+.p-success p{font-size:0.92rem;color:var(--muted);line-height:1.7;margin-bottom:28px;max-width:340px;margin-left:auto;margin-right:auto}
+.back-btn{background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.88rem;letter-spacing:0.05em;text-transform:uppercase;padding:14px 28px;border-radius:8px;transition:all .2s}
+.back-btn:hover{background:var(--gold-lt)}
+
+/* MOBILE */
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  .nav-pills,.nav-btn{display:none}
+  .nav-toggle{display:flex}
+  section{padding:64px 20px}
+  .hero{padding:100px 20px 60px;min-height:auto}
+  .hero h1{font-size:2.6rem;line-height:1.0}
+  .h-sub{font-size:1rem}
+  .h-ctas{flex-direction:column;gap:12px}
+  .btn-g,.btn-o{width:100%;text-align:center;padding:14px 20px}
+  .h-bar{gap:24px;margin-top:48px;padding-top:32px}
+  .h-bar > div{min-width:calc(50% - 12px)}
+  .if-types{grid-template-columns:1fr}
+  .if-steps-row{grid-template-columns:1fr 1fr;gap:24px}
+  .if-steps-row::before{display:none}
+  .if-evaluate{grid-template-columns:1fr}
+  .sg{grid-template-columns:1fr}
+  .svg{grid-template-columns:1fr}
+  .ctasec{padding:64px 20px}
+  footer{padding:24px 20px;flex-direction:column;text-align:center}
+  .ifp{max-width:100%;border-left:none}
+  .ifp-hdr{padding:16px 20px}
+  .ifp-body{grid-template-columns:1fr}
+  .ifp-left{display:none}
+  .ifp-right{padding:24px 20px}
+  .frow{grid-template-columns:1fr}
+  .if-process{padding:24px 20px}
+  .mo{padding:28px 20px;border-radius:16px}
+}
+@media(min-width:769px) and (max-width:1024px){
+  nav{padding:16px 28px}
+  section{padding:80px 32px}
+  .hero{padding:120px 32px 70px}
+  .svg{grid-template-columns:repeat(2,1fr)}
+  footer{padding:28px 32px}
+}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+
+/* ═══ PORTFOLIO TABS ═══ */
+.port-tabs{display:flex;gap:8px;margin-top:44px;border-bottom:1px solid var(--border);padding-bottom:0}
+.port-tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--head);font-size:0.82rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:12px 20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px}
+.port-tab:hover{color:var(--white)}
+.port-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.port-tab .tab-count{background:rgba(224,155,26,0.12);color:var(--gold);font-size:0.68rem;padding:2px 8px;border-radius:100px;border:1px solid rgba(224,155,26,0.2)}
+.port-tab:not(.active) .tab-count{background:rgba(255,255,255,0.05);color:var(--dim);border-color:var(--border)}
+.port-group{display:none}
+.port-group.active{display:block}
+@media(min-width:1025px){.port-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.port-tab{padding:10px 12px;font-size:0.72rem}}
+
+/* ═══ MOU PANEL ═══ */
+.mou-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(4,6,16,0.88);backdrop-filter:blur(6px)}
+.mou-overlay.open{display:block}
+.mou-panel{position:fixed;top:0;right:0;bottom:0;z-index:601;width:100%;max-width:780px;background:#fff;transform:translateX(100%);transition:transform .4s cubic-bezier(0.4,0,0.2,1);overflow:hidden;display:flex;flex-direction:column}
+.mou-panel.open{transform:translateX(0)}
+.mou-panel-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;background:#080C1A;border-bottom:3px solid #E09B1A;flex-shrink:0}
+.mou-panel-hdr .mou-logo{font-family:var(--head);font-weight:800;font-size:1rem;color:#fff}
+.mou-panel-hdr .mou-logo span{color:#E09B1A}
+.mou-back{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:rgba(239,241,250,0.7);font-size:0.82rem;font-family:var(--body);padding:7px 16px;border-radius:6px;cursor:pointer;transition:all .2s}
+.mou-back:hover{color:#fff;background:rgba(255,255,255,0.14)}
+.mou-disclaimer{background:#FEF3C7;border-bottom:2px solid #E09B1A;padding:16px 28px;flex-shrink:0}
+.mou-disclaimer-title{font-family:var(--head);font-size:0.82rem;font-weight:700;color:#92400E;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em}
+.mou-disclaimer p{font-size:0.78rem;color:#92400E;line-height:1.55}
+.mou-body{flex:1;overflow-y:auto;padding:36px 40px;background:#fff}
+
+/* MOU document styles */
+.mou-doc{max-width:640px;margin:0 auto;font-family:'Georgia',serif;color:#1F2937}
+.mou-doc-title{font-family:var(--head);font-size:1.6rem;font-weight:800;color:#080C1A;text-align:center;margin-bottom:4px}
+.mou-doc-sub{font-family:var(--head);font-size:0.95rem;color:#E09B1A;font-weight:700;text-align:center;margin-bottom:4px}
+.mou-doc-note{font-size:0.78rem;color:#6B7280;text-align:center;font-style:italic;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #E09B1A}
+.mou-section{margin-bottom:28px}
+.mou-section-title{font-family:var(--head);font-size:0.9rem;font-weight:800;color:#080C1A;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #E5E7EB}
+.mou-section-subtitle{font-family:var(--head);font-size:0.82rem;font-weight:700;color:#374151;margin:12px 0 6px}
+.mou-p{font-size:0.85rem;line-height:1.75;color:#374151;margin-bottom:8px}
+.mou-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.82rem}
+.mou-table td,.mou-table th{border:1px solid #E5E7EB;padding:8px 12px;vertical-align:top}
+.mou-table th{background:#F9FAFB;font-family:var(--head);font-weight:700;color:#080C1A;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.04em}
+.mou-table td:first-child{background:#F9FAFB;font-weight:600;color:#374151;width:35%}
+.mou-ul{margin:6px 0 8px 20px}
+.mou-ul li{font-size:0.84rem;color:#374151;line-height:1.7;margin-bottom:2px}
+.mou-sig-box{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px}
+.mou-sig{border:1px solid #E5E7EB;border-radius:8px;padding:16px}
+.mou-sig-label{font-size:0.72rem;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.mou-sig-name{font-family:var(--head);font-size:0.88rem;font-weight:700;color:#080C1A;margin-bottom:16px}
+.mou-sig-line{border-top:1px solid #9CA3AF;padding-top:6px;font-size:0.72rem;color:#9CA3AF;font-style:italic}
+.mou-info-box{background:#F0F9FF;border-left:4px solid #0EA5E9;border-radius:0 8px 8px 0;padding:14px 16px;margin:16px 0;font-size:0.82rem;color:#0369A1;line-height:1.6}
+.mou-info-box strong{font-family:var(--head);display:block;margin-bottom:4px}
+.mou-footer-note{text-align:center;font-size:0.75rem;color:#9CA3AF;border-top:1px solid #E5E7EB;padding-top:16px;margin-top:28px;font-style:italic}
+
+/* Disclaimer gate */
+.mou-gate{display:none;position:fixed;inset:0;z-index:700;background:rgba(4,6,16,0.88);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.mou-gate.open{display:flex}
+.mou-gate-box{background:#fff;border-radius:16px;padding:40px;max-width:500px;width:100%;position:relative;animation:mi .3s ease}
+.mou-gate-title{font-family:var(--head);font-size:1.3rem;font-weight:800;color:#080C1A;margin-bottom:6px}
+.mou-gate-sub{font-size:0.85rem;color:#6B7280;line-height:1.6;margin-bottom:20px}
+.mou-gate-terms{background:#FEF3C7;border:1px solid #E09B1A;border-radius:8px;padding:16px;margin-bottom:20px;font-size:0.82rem;color:#92400E;line-height:1.65}
+.mou-gate-terms strong{display:block;font-family:var(--head);margin-bottom:6px;font-size:0.85rem}
+.mou-gate-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:24px;cursor:pointer}
+.mou-gate-check input{margin-top:3px;width:16px;height:16px;cursor:pointer;accent-color:#E09B1A}
+.mou-gate-check label{font-size:0.84rem;color:#374151;line-height:1.55;cursor:pointer}
+.mou-gate-btn{width:100%;background:#E09B1A;color:#080C1A;border:none;cursor:pointer;font-family:var(--head);font-weight:700;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;padding:14px;border-radius:8px;transition:all .2s}
+.mou-gate-btn:hover{background:#F5C050}
+.mou-gate-btn:disabled{opacity:.4;cursor:not-allowed}
+.mou-gate-cancel{width:100%;background:none;border:none;color:#9CA3AF;font-size:0.82rem;padding:10px;margin-top:6px;cursor:pointer;font-family:var(--body)}
+.mou-gate-cancel:hover{color:#374151}
+
+@media(max-width:768px){
+  .mou-panel{max-width:100%}
+  .mou-body{padding:24px 20px}
+  .mou-sig-box{grid-template-columns:1fr}
+}
+
+
+/* ═══ LEGAL PANEL ═══ */
+.legal-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(4,6,16,0.88);backdrop-filter:blur(6px)}
+.legal-overlay.open{display:block}
+.legal-panel{position:fixed;top:0;right:0;bottom:0;z-index:601;width:100%;max-width:780px;background:#fff;transform:translateX(100%);transition:transform .4s cubic-bezier(0.4,0,0.2,1);overflow:hidden;display:flex;flex-direction:column}
+.legal-panel.open{transform:translateX(0)}
+.legal-panel-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;background:#080C1A;border-bottom:3px solid #E09B1A;flex-shrink:0}
+.legal-panel-hdr .lp-logo{font-family:var(--head);font-weight:800;font-size:1rem;color:#fff}
+.legal-panel-hdr .lp-logo span{color:#E09B1A}
+.legal-panel-tabs{display:flex;gap:0;border-bottom:1px solid #E5E7EB;flex-shrink:0;background:#F9FAFB}
+.lp-tab{padding:12px 20px;font-family:var(--head);font-size:0.78rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;border:none;background:none;cursor:pointer;color:#6B7280;border-bottom:2px solid transparent;transition:all .2s}
+.lp-tab.active{color:#080C1A;border-bottom-color:#E09B1A;background:#fff}
+.lp-tab:hover{color:#080C1A}
+.legal-back{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:rgba(239,241,250,0.7);font-size:0.82rem;font-family:var(--body);padding:7px 16px;border-radius:6px;cursor:pointer;transition:all .2s}
+.legal-back:hover{color:#fff;background:rgba(255,255,255,0.14)}
+.legal-body{flex:1;overflow-y:auto;padding:36px 40px;background:#fff}
+.legal-doc{max-width:640px;margin:0 auto;font-family:'Georgia',serif;color:#1F2937}
+.legal-doc h1{font-family:var(--head);font-size:1.5rem;font-weight:800;color:#080C1A;margin-bottom:4px}
+.legal-doc .l-sub{font-size:0.8rem;color:#6B7280;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #E09B1A}
+.legal-doc h2{font-family:var(--head);font-size:0.88rem;font-weight:800;color:#080C1A;text-transform:uppercase;letter-spacing:0.05em;margin:24px 0 8px;padding-bottom:5px;border-bottom:1px solid #E5E7EB}
+.legal-doc p{font-size:0.84rem;line-height:1.75;color:#374151;margin-bottom:10px}
+.legal-doc ul{margin:6px 0 10px 20px}
+.legal-doc ul li{font-size:0.84rem;line-height:1.7;color:#374151;margin-bottom:4px}
+.legal-doc .highlight{background:#FEF3C7;border-left:3px solid #E09B1A;padding:12px 16px;border-radius:0 6px 6px 0;margin:14px 0;font-size:0.82rem;color:#92400E;line-height:1.6}
+.legal-doc .highlight strong{font-family:var(--head);display:block;margin-bottom:4px}
+.legal-doc table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.82rem}
+.legal-doc table td,.legal-doc table th{border:1px solid #E5E7EB;padding:8px 12px;vertical-align:top}
+.legal-doc table th{background:#F9FAFB;font-family:var(--head);font-weight:700;color:#080C1A;font-size:0.76rem;text-transform:uppercase}
+.legal-doc table td:first-child{font-weight:600;color:#374151;background:#F9FAFB;width:35%}
+.legal-doc .l-footer{text-align:center;font-size:0.75rem;color:#9CA3AF;border-top:1px solid #E5E7EB;padding-top:16px;margin-top:28px;font-style:italic}
+.legal-content{display:none}
+.legal-content.active{display:block}
+@media(max-width:768px){.legal-panel{max-width:100%}.legal-body{padding:24px 20px}.lp-tab{font-size:0.7rem;padding:10px 12px}}
+
+
+/* ═══ PORTFOLIO SECTION ═══ */
+.port-bg{background:var(--ink2)}
+.port-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:28px}
+.port-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .3s;cursor:pointer}
+.port-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.3)}
+.port-preview{height:168px;position:relative;overflow:hidden}
+.port-browser{background:#1a1a2e;height:28px;display:flex;align-items:center;padding:0 12px;gap:6px;border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0}
+.port-browser-dots{display:flex;gap:4px}
+.port-browser-dot{width:8px;height:8px;border-radius:50%}
+.port-browser-bar{flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:14px;margin:0 8px;display:flex;align-items:center;padding:0 8px}
+.port-browser-url{font-size:9px;color:rgba(255,255,255,0.4);font-family:monospace;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.port-screen{flex:1;overflow:hidden;position:relative}
+
+/* Taxplify preview */
+.prev-taxplify{background:linear-gradient(135deg,#080C1A 0%,#0E1428 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center}
+.prev-taxplify .p-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;opacity:0.7}
+.prev-taxplify .p-logo{font-size:10px;font-weight:700;color:#E09B1A;font-family:var(--head)}
+.prev-taxplify .p-btn{font-size:7px;background:#E09B1A;color:#080C1A;padding:3px 7px;border-radius:3px;font-weight:700}
+.prev-taxplify h3{font-size:18px;font-weight:800;color:#fff;line-height:1.1;font-family:var(--head);margin-bottom:6px}
+.prev-taxplify h3 span{color:#E09B1A;display:block}
+.prev-taxplify p{font-size:8px;color:rgba(239,241,250,0.5);line-height:1.5}
+
+/* Cable Concrete preview */
+.prev-cable{background:linear-gradient(135deg,#0a1628 0%,#0d2040 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center}
+.prev-cable .p-badge{font-size:7px;background:rgba(0,196,150,0.15);border:1px solid rgba(0,196,150,0.3);color:#00c496;padding:3px 8px;border-radius:100px;margin-bottom:10px;width:fit-content;font-weight:600;text-transform:uppercase;letter-spacing:0.04em}
+.prev-cable h3{font-size:16px;font-weight:800;color:#fff;line-height:1.1;font-family:var(--head);margin-bottom:6px}
+.prev-cable h3 span{color:#00c496}
+.prev-cable p{font-size:8px;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:10px}
+.prev-cable .p-tags{display:flex;gap:4px}
+.prev-cable .p-tag{font-size:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);padding:2px 6px;border-radius:3px}
+
+/* AEM preview */
+.prev-aem{background:linear-gradient(135deg,#0a0f1e 0%,#0d1535 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center}
+.prev-aem .p-eyebrow{font-size:7px;color:#4D9EF5;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:6px}
+.prev-aem h3{font-size:15px;font-weight:800;color:#fff;line-height:1.1;font-family:var(--head);margin-bottom:6px}
+.prev-aem h3 span{color:#4D9EF5}
+.prev-aem p{font-size:8px;color:rgba(255,255,255,0.45);line-height:1.5;margin-bottom:10px}
+.prev-aem .p-stats{display:flex;gap:12px}
+.prev-aem .p-stat .n{font-size:12px;font-weight:800;color:#4D9EF5;font-family:var(--head)}
+.prev-aem .p-stat .l{font-size:6px;color:rgba(255,255,255,0.35);text-transform:uppercase}
+
+/* HECL preview */
+.prev-hecl{background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center}
+.prev-hecl .p-logo{font-size:11px;font-weight:800;color:#E09B1A;font-family:var(--head);margin-bottom:4px;letter-spacing:0.08em}
+.prev-hecl .p-tagline{font-size:7px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.prev-hecl h3{font-size:15px;font-weight:800;color:#fff;line-height:1.1;font-family:var(--head);margin-bottom:6px}
+.prev-hecl p{font-size:8px;color:rgba(255,255,255,0.45);line-height:1.5}
+.prev-hecl .p-divider{width:24px;height:2px;background:#E09B1A;margin:8px 0}
+
+.port-info{padding:14px 18px}
+.port-info-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.port-name{font-family:var(--head);font-size:1rem;font-weight:800;color:var(--white)}
+.port-status{font-size:0.68rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border-radius:100px}
+.port-live{background:rgba(0,196,160,0.1);color:var(--teal);border:1px solid rgba(0,196,160,0.2)}
+.port-desc{font-size:0.82rem;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.port-footer{display:flex;align-items:center;justify-content:space-between}
+.port-tags{display:flex;gap:6px;flex-wrap:wrap}
+.port-tag{font-size:0.68rem;color:var(--dim);padding:2px 8px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:100px}
+.port-link{font-size:0.78rem;color:var(--gold);font-family:var(--head);font-weight:700;text-decoration:none;letter-spacing:0.04em;transition:color .2s}
+.port-link:hover{color:var(--gold-lt)}
+
+@media(max-width:768px){
+  .port-grid{grid-template-columns:1fr}
+  .port-preview{height:160px}
+  .prev-taxplify,.prev-cable,.prev-aem,.prev-hecl{height:120px}
+}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">CPC<span class="logo-dot">.</span>Direct</span>
+  <div class="nav-pills">
+    <a href="#products">Products</a>
+    <a href="#ideaforge">IdeaForge</a>
+    <a href="#portfolio">Portfolio</a><a href="#services">Services</a>
+    <a href="advisory.html" style="color:var(--gold);display:inline-flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Advisory</a>
+  </div>
+  <button class="nav-btn" onclick="openPanel()">Get Started</button>
+  <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#products" onclick="closeMobileNav()">Products</a>
+  <a href="#ideaforge" onclick="closeMobileNav()">IdeaForge</a>
+  <a href="#portfolio" onclick="closeMobileNav()">Portfolio</a><a href="#services" onclick="closeMobileNav()">Services</a>
+  <a href="advisory.html" style="color:var(--gold);display:inline-flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Advisory Board</a>
+  <button class="mob-btn" onclick="closeMobileNav();openPanel()">Get Started →</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hg1"></div><div class="hg2"></div><div class="hgrid"></div>
+  <div class="hi">
+    <div class="h-pill"><div class="pdot"></div>Backing Nigerian Business Ideas</div>
+    <h1>Your Idea.<br><span class="ac">Our Execution.</span>Your Growth.</h1>
+    <p class="h-sub">CPC Direct builds the digital tools, automation, and products that help Nigerian SMEs and entrepreneurs run better businesses — and we co-build with founders who have ideas worth backing.</p>
+    <div class="h-ctas">
+      <button class="btn-g" onclick="openPanel()">Submit Your Idea</button>
+      <button class="btn-o" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Explore Our Products</button>
+    </div>
+    <div class="h-bar">
+      <div><div class="sn">4<span class="u">+</span></div><div class="sl">Pilot Suite Products</div></div>
+      <div><div class="sn">40<span class="u">M+</span></div><div class="sl">Target users in Nigeria</div></div>
+      <div><div class="sn">0<span class="u">%</span></div><div class="sl">Upfront cost to you</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ IDEAFORGE — REDESIGNED ═══ -->
+<section class="ifbg" id="ideaforge">
+
+  <!-- Hero intro -->
+  <div class="if-hero">
+    <div class="eyebrow" style="justify-content:center">IdeaForge</div>
+    <div class="sec-title" style="text-align:center">Most Ideas Die Because<br>Nobody Builds Them. <span style="color:var(--gold)">We Do.</span></div>
+    <p class="sec-sub">CPC Direct doesn't consult. We co-build. When you bring us an idea worth backing, we bring everything needed to make it real — the technology, the execution, and the market strategy.</p>
+    <p class="if-tagline">"The more we invest, the more we share in the success. The more you bring, the more you keep."</p>
+  </div>
+
+  <!-- Two partnership types -->
+  <div class="if-types">
+    <div class="if-type-card featured">
+      <div class="if-type-top">
+        <div class="if-type-badge badge-gold">🚀 Full Co-Build Partnership</div>
+        <h3>You Have an Idea.<br>We Build the Business.</h3>
+        <p>You bring a problem worth solving and the drive to see it through. CPC Direct brings everything else — domain, company registration, app, funding, marketing, and operations. We build it from zero together.</p>
+      </div>
+      <div class="if-type-bottom">
+        <div class="if-brings-label">What each party contributes</div>
+        <div class="if-brings">
+          <div class="if-bring-item"><div class="dot dot-gold"></div>You — The idea, market knowledge, and business development</div>
+          <div class="if-bring-item"><div class="dot dot-gold"></div>CPC Direct — Domain, registration, full app build, funding &amp; marketing</div>
+          <div class="if-bring-item"><div class="dot dot-gold"></div>Partnership terms — Structured around actual contribution</div>
+          <div class="if-bring-item"><div class="dot dot-gold"></div>On success — CPC Direct shares in growth and any exit event</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="if-type-card">
+      <div class="if-type-top">
+        <div class="if-type-badge badge-teal">📈 Existing Business Upgrade</div>
+        <h3>You Have a Business.<br>We Digitise &amp; Scale It.</h3>
+        <p>Your business is running but not growing the way it should. You have customers, operations, and domain knowledge. CPC Direct adds the digital layer — the app, the automation, and the reach — that unlocks your next level.</p>
+      </div>
+      <div class="if-type-bottom">
+        <div class="if-brings-label">What each party contributes</div>
+        <div class="if-brings">
+          <div class="if-bring-item"><div class="dot dot-teal"></div>You — Existing business, customers, and operational capacity</div>
+          <div class="if-bring-item"><div class="dot dot-teal"></div>CPC Direct — App build, automation, digital marketing &amp; strategy</div>
+          <div class="if-bring-item"><div class="dot dot-teal"></div>Partnership terms — Reflects your stronger existing contribution</div>
+          <div class="if-bring-item"><div class="dot dot-teal"></div>On success — CPC Direct earns from the digital layer it built</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Process steps -->
+  <div class="if-process">
+    <div class="if-process-title">How IdeaForge Works</div>
+    <div class="if-steps-row">
+      <div class="if-step-item">
+        <div class="if-step-num">01</div>
+        <div class="if-step-title">Submit Your Idea</div>
+        <div class="if-step-desc">Tell us the problem, the market, and what you bring to the table. No technical knowledge needed.</div>
+      </div>
+      <div class="if-step-item">
+        <div class="if-step-num">02</div>
+        <div class="if-step-title">We Evaluate Together</div>
+        <div class="if-step-desc">Our team assesses the idea, the market size, and what it will take to win. Honest, no fluff.</div>
+      </div>
+      <div class="if-step-item">
+        <div class="if-step-num">03</div>
+        <div class="if-step-title">We Structure the Deal</div>
+        <div class="if-step-desc">Every partnership is unique. We agree on terms that reflect what each party genuinely contributes.</div>
+      </div>
+      <div class="if-step-item">
+        <div class="if-step-num">04</div>
+        <div class="if-step-title">We Build &amp; Win Together</div>
+        <div class="if-step-desc">CPC Direct executes. You grow. We both share in every milestone — revenue, scale, and exit.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What we evaluate -->
+  <div class="if-evaluate">
+    <div class="if-eval-card">
+      <div class="if-eval-icon">🎯</div>
+      <div class="if-eval-title">Is it solving a real Nigerian problem?</div>
+      <div class="if-eval-desc">We back ideas with clear, painful problems that Nigerians are already trying to solve — with money, time, or workarounds.</div>
+    </div>
+    <div class="if-eval-card">
+      <div class="if-eval-icon">💰</div>
+      <div class="if-eval-title">Is there a market willing to pay?</div>
+      <div class="if-eval-desc">An idea is only valuable if someone will pay for the solution. We assess the market size and willingness to pay before committing.</div>
+    </div>
+    <div class="if-eval-card">
+      <div class="if-eval-icon">🤝</div>
+      <div class="if-eval-title">What does the idea owner bring?</div>
+      <div class="if-eval-desc">Beyond the idea — industry knowledge, networks, sales ability, existing customers. The more you bring, the better your terms.</div>
+    </div>
+    <div class="if-eval-card">
+      <div class="if-eval-icon">⚙️</div>
+      <div class="if-eval-title">What will it cost us to build and win?</div>
+      <div class="if-eval-desc">We assess the full cost of building, launching, and scaling the product. This directly shapes how the partnership is structured.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="if-cta-box">
+    <h3>Ready to Find Out If Your Idea Is Worth Building?</h3>
+    <p>Submit your idea. We review every submission personally and respond within 5 business days — with a straight answer.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-g" onclick="openPanel()" style="font-size:0.95rem;padding:14px 32px">Submit Your Idea →</button>
+      <button onclick="openMOUGate()" style="background:transparent;border:1px solid rgba(224,155,26,0.4);color:var(--gold);font-family:var(--head);font-weight:600;font-size:0.85rem;letter-spacing:0.04em;text-transform:uppercase;padding:14px 24px;border-radius:6px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(224,155,26,0.08)'" onmouseout="this.style.background='transparent'">View Sample MOU</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- SERVICES -->
+
+<!-- PORTFOLIO -->
+<section class="port-bg" id="portfolio">
+  <div class="eyebrow">Our Work</div>
+  <div class="sec-title">What We've Built</div>
+  <p class="sec-sub">From mobile apps to institutional websites — every product and platform below was designed, built, and deployed by CPC Direct Ventures Ltd.</p>
+
+  <!-- PORTFOLIO TABS -->
+  <div class="port-tabs" id="products">
+    <button class="port-tab active" id="ptab-apps" onclick="showPortTab('apps')">📱 Apps <span class="tab-count">4</span></button>
+    <button class="port-tab" id="ptab-sites" onclick="showPortTab('sites')">🌐 Websites <span class="tab-count">6</span></button>
+  </div>
+
+  <!-- APPS -->
+  <div class="port-group active" id="pgroup-apps">
+    <div class="port-grid">
+
+      <!-- Taxplify -->
+      <div class="port-card">
+        <div class="port-preview">
+          <div class="port-browser">
+            <div class="port-browser-dots"><div class="port-browser-dot" style="background:#ff5f57"></div><div class="port-browser-dot" style="background:#febc2e"></div><div class="port-browser-dot" style="background:#28c840"></div></div>
+            <div class="port-browser-bar"><div class="port-browser-url">taxplify.app</div></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#080C1A 0%,#0E1428 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center">
+            <div style="font-size:9px;color:#E09B1A;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px">Welcome to</div>
+            <div style="font-size:20px;font-weight:800;color:#E09B1A;font-family:var(--head);margin-bottom:4px">Tax<span style="color:#fff">plify</span></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:12px">Nigeria's tax filing, made simple</div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;background:#E09B1A;border-radius:6px;padding:7px;text-align:center;font-size:8px;font-weight:700;color:#080C1A">I'm an individual — file now</div>
+              <div style="flex:1;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:7px;text-align:center;font-size:8px;font-weight:700;color:#fff">I run a business — file SME</div>
+            </div>
+          </div>
+        </div>
+        <div class="port-info">
+          <div class="port-info-top"><div class="port-name">Taxplify</div><div class="port-status" style="background:rgba(224,155,26,0.1);color:var(--gold);border:1px solid rgba(224,155,26,0.2)">Coming Soon</div></div>
+          <div class="port-desc">Nigeria's most accessible tax filing platform — 2026 Tax Reform Act compliant, available in 5 Nigerian languages.</div>
+          <div class="port-footer"><div class="port-tags"><span class="port-tag">Fintech</span><span class="port-tag">Compliance</span><span class="port-tag">PWA</span></div><button class="port-link" style="background:none;border:none;font-family:var(--body);font-size:inherit;padding:0" onclick="event.stopPropagation();openNotify('Taxplify')">Notify me on Launch →</button></div>
+        </div>
+      </div>
+
+      <!-- Legaltice -->
+      <div class="port-card">
+        <div class="port-preview">
+          <div class="port-browser">
+            <div class="port-browser-dots"><div class="port-browser-dot" style="background:#ff5f57"></div><div class="port-browser-dot" style="background:#febc2e"></div><div class="port-browser-dot" style="background:#28c840"></div></div>
+            <div class="port-browser-bar"><div class="port-browser-url">legaltice.com</div></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#050f05 0%,#0a1a0a 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center">
+            <div style="font-size:9px;color:#2d8a2d;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px">Welcome to</div>
+            <div style="font-size:20px;font-weight:800;color:#2d8a2d;font-family:var(--head);margin-bottom:4px">Legal<span style="color:#fff">tice</span></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:12px">Know your rights. Nigerian law made simple</div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;background:#2d8a2d;border-radius:6px;padding:7px;text-align:center;font-size:8px;font-weight:700;color:#fff">Know my rights</div>
+              <div style="flex:1;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:7px;text-align:center;font-size:8px;font-weight:700;color:#fff">Generate a document</div>
+            </div>
+          </div>
+        </div>
+        <div class="port-info">
+          <div class="port-info-top"><div class="port-name">Legaltice</div><div class="port-status" style="background:rgba(224,155,26,0.1);color:var(--gold);border:1px solid rgba(224,155,26,0.2)">Coming Soon</div></div>
+          <div class="port-desc">Nigeria's legal information and self-help platform. Know your rights, generate legal documents, connect with qualified lawyers.</div>
+          <div class="port-footer"><div class="port-tags"><span class="port-tag">Legal</span><span class="port-tag">Self-Help</span><span class="port-tag">AI-Powered</span></div><button class="port-link" style="background:none;border:none;font-family:var(--body);font-size:inherit;padding:0" onclick="event.stopPropagation();openNotify('Legaltice')">Notify me on Launch →</button></div>
+        </div>
+      </div>
+
+      <!-- Native Platter -->
+      <div class="port-card">
+        <div class="port-preview">
+          <div class="port-browser">
+            <div class="port-browser-dots"><div class="port-browser-dot" style="background:#ff5f57"></div><div class="port-browser-dot" style="background:#febc2e"></div><div class="port-browser-dot" style="background:#28c840"></div></div>
+            <div class="port-browser-bar"><div class="port-browser-url">nativeplatter.com</div></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#1a0f05 0%,#2d1a08 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center">
+            <div style="font-size:9px;color:#c8860a;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px">Welcome to</div>
+            <div style="font-size:20px;font-weight:800;color:#2d6a2d;font-family:var(--head);margin-bottom:4px">Native Platter</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:12px">Home food away from home</div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;background:#2d6a2d;border-radius:6px;padding:7px;text-align:center;font-size:8px;font-weight:700;color:#fff">I'm hungry — find a cook</div>
+              <div style="flex:1;background:#c8860a;border-radius:6px;padding:7px;text-align:center;font-size:8px;font-weight:700;color:#fff">I cook — open kitchen</div>
+            </div>
+          </div>
+        </div>
+        <div class="port-info">
+          <div class="port-info-top"><div class="port-name">Native Platter</div><div class="port-status" style="background:rgba(224,155,26,0.1);color:var(--gold);border:1px solid rgba(224,155,26,0.2)">Coming Soon</div></div>
+          <div class="port-desc">Pan-African home cook marketplace connecting African travellers with authentic home cooks globally.</div>
+          <div class="port-footer"><div class="port-tags"><span class="port-tag">Pan-African</span><span class="port-tag">Marketplace</span><span class="port-tag">Food</span></div><button class="port-link" style="background:none;border:none;font-family:var(--body);font-size:inherit;padding:0" onclick="event.stopPropagation();openNotify('Native Platter')">Notify me on Launch →</button></div>
+        </div>
+      </div>
+
+      <!-- DidiCommune -->
+      <div class="port-card">
+        <div class="port-preview">
+          <div class="port-browser">
+            <div class="port-browser-dots"><div class="port-browser-dot" style="background:#ff5f57"></div><div class="port-browser-dot" style="background:#febc2e"></div><div class="port-browser-dot" style="background:#28c840"></div></div>
+            <div class="port-browser-bar"><div class="port-browser-url">didicommune.com</div></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#080C1A 0%,#0d1535 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center">
+            <div style="font-size:9px;color:#4D9EF5;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px">Welcome to</div>
+            <div style="font-size:20px;font-weight:800;color:#4D9EF5;font-family:var(--head);margin-bottom:4px">Didi<span style="color:#fff">Commune</span></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-bottom:12px">Connecting communities that matter</div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;background:#4D9EF5;border-radius:6px;padding:7px;text-align:center;font-size:8px;font-weight:700;color:#080C1A">I'm diaspora — fund home</div>
+              <div style="flex:1;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:7px;text-align:center;font-size:8px;font-weight:700;color:#fff">Track a project</div>
+            </div>
+          </div>
+        </div>
+        <div class="port-info">
+          <div class="port-info-top"><div class="port-name">DidiCommune</div><div class="port-status" style="background:rgba(224,155,26,0.1);color:var(--gold);border:1px solid rgba(224,155,26,0.2)">Coming Soon</div></div>
+          <div class="port-desc">Civic platform connecting Nigerian home communities, diaspora, and elected representatives for transparent project funding.</div>
+          <div class="port-footer"><div class="port-tags"><span class="port-tag">Civic Tech</span><span class="port-tag">Diaspora</span><span class="port-tag">Community</span></div><button class="port-link" style="background:none;border:none;font-family:var(--body);font-size:inherit;padding:0" onclick="event.stopPropagation();openNotify('DidiCommune')">Notify me on Launch →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- WEBSITES -->
+  <div class="port-group" id="pgroup-sites">
+    <div class="port-grid">
+
+      <!-- AEM -->
+      <div class="port-card" onclick="window.open('https://accessemergingmarkets.com','_blank')">
+        <div class="port-preview">
+          <div class="port-browser">
+            <div class="port-browser-dots"><div class="port-browser-dot" style="background:#ff5f57"></div><div class="port-browser-dot" style="background:#febc2e"></div><div class="port-browser-dot" style="background:#28c840"></div></div>
+            <div class="port-browser-bar"><div class="port-browser-url">accessemergingmarkets.com</div></div>
+          </div>
+          <div class="prev-aem">
+            <div class="p-eyebrow">Access Emerging Markets</div>
+            <h3>Local Intelligence.<br><span>Global Capital.</span></h3>
+            <p>Institutional intelligence for foreign companies entering Sub-Saharan African infrastructure markets</p>
+            <div class="p-stats">
+              <div class="p-stat"><div class="n">$4.2B+</div><div class="l">Facilitated</div></div>
+              <div class="p-stat"><div class="n">5</div><div class="l">Markets</div></div>
+              <div class="p-stat"><div class="n">33+</div><div class="l">Yrs Exp</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="port-info">
+          <div class="port-info-top"><div class="port-name">Access Emerging Markets</div><div class="port-status port-live">● Live</div></div>
+          <div class="port-desc">SSA investment intelligence platform for foreign corporations, ECAs, and DFIs entering Sub-Saharan African infrastructure markets.</div>
+          <div class="port-footer"><div class="port-tags"><span class="port-tag">Intelligence</span><span class="port-tag">Advisory</span><span class="port-tag">SSA</span></div><a href="https://accessemergingmarkets.com" target="_blank" class="port-link" onclick="event.stopPropagation()">Visit →</a></div>
+        </div>
+      </div>
+
+      <!-- HECL -->
+      <div class="port-card" onclick="window.open('https://huge-construction.com','_blank')">
+        <div class="port-preview">
+          <div class="port-browser">
+            <div class="port-browser-dots"><div class="port-browser-dot" style="background:#ff5f57"></div><div class="port-browser-dot" style="background:#febc2e"></div><div class="port-browser-dot" style="background:#28c840"></div></div>
+            <div class="port-browser-bar"><div class="port-browser-url">huge-construction.com</div></div>
+          </div>
+          <div class="prev-hecl">
+            <div class="p-logo">HECL</div>
+            <div class="p-tagline">Huge Engineering &amp; Construction Ltd</div>
+            <h3>Building Nigeria's Infrastructure</h3>
+            <div class="p-divider"></div>
+            <p>Engineering excellence in civil, structural &amp; infrastructure projects</p>
+          </div>
+        </div>
+        <div class="port-info">
+          <div class="port-info-top"><div class="port-name">HECL</div><div class="port-status port-live">● Live</div></div>
+          <div class="port-desc">Corporate website for Huge Engineering &amp; Construction Ltd — Nigeria's trusted infrastructure and civil engineering firm.</div>
+          <div class="port-footer"><div class="port-tags"><span class="port-tag">Engineering</span><span class="port-tag">Construction</span><span class="port-tag">Nigeria</span></div><a href="https://huge-construction.com" target="_blank" class="port-link" onclick="event.stopPropagation()">Visit →</a></div>
+        </div>
+      </div>
+
+      <!-- CPC Direct -->
+      <div class="port-card" onclick="window.open('https://cpc-direct.com','_blank')">
+        <div class="port-preview">
+          <div class="port-browser">
+            <div class="port-browser-dots"><div class="port-browser-dot" style="background:#ff5f57"></div><div class="port-browser-dot" style="background:#febc2e"></div><div class="port-browser-dot" style="background:#28c840"></div></div>
+            <div class="port-browser-bar"><div class="port-browser-url">cpc-direct.com</div></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#080C1A 0%,#0E1428 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center">
+            <div style="font-size:11px;font-weight:800;color:#fff;font-family:var(--head);margin-bottom:8px">CPC<span style="color:#E09B1A">.</span>Direct</div>
+            <div style="font-size:16px;font-weight:800;color:#fff;font-family:var(--head);line-height:1.1;margin-bottom:6px">Your Idea.<br><span style="color:#E09B1A">Our Execution.</span><br>Your Growth.</div>
+            <div style="font-size:8px;color:rgba(255,255,255,0.4)">Backing Nigerian business ideas</div>
+          </div>
+        </div>
+        <div class="port-info">
+          <div class="port-info-top"><div class="port-name">CPC Direct</div><div class="port-status port-live">● Live</div></div>
+          <div class="port-desc">The CPC Direct corporate website — showcasing the IdeaForge programme, Pilot Suite products, and done-for-you services.</div>
+          <div class="port-footer"><div class="port-tags"><span class="port-tag">Corporate</span><span class="port-tag">IdeaForge</span><span class="port-tag">Nigeria</span></div><a href="https://cpc-direct.com" target="_blank" class="port-link" onclick="event.stopPropagation()">Visit →</a></div>
+        </div>
+      </div>
+
+      <!-- Point Max Consult -->
+      <div class="port-card" onclick="window.open('https://www.pointmaxconsult.com','_blank')">
+        <div class="port-preview">
+          <div class="port-browser">
+            <div class="port-browser-dots"><div class="port-browser-dot" style="background:#ff5f57"></div><div class="port-browser-dot" style="background:#febc2e"></div><div class="port-browser-dot" style="background:#28c840"></div></div>
+            <div class="port-browser-bar"><div class="port-browser-url">pointmaxconsult.com</div></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#0d1117 0%,#161b22 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center">
+            <div style="font-size:9px;color:#58a6ff;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:6px">Independent Advisory</div>
+            <div style="font-size:17px;font-weight:800;color:#fff;font-family:var(--head);line-height:1.1;margin-bottom:6px">Point Max<br><span style="color:#58a6ff">Consulting</span></div>
+            <div style="width:20px;height:2px;background:#58a6ff;margin-bottom:8px"></div>
+            <div style="font-size:8px;color:rgba(255,255,255,0.4);line-height:1.5">Energy sector · Independent expertise · Nigeria</div>
+          </div>
+        </div>
+        <div class="port-info">
+          <div class="port-info-top"><div class="port-name">Point Max Consulting</div><div class="port-status port-live">● Live</div></div>
+          <div class="port-desc">Corporate website for an independent energy sector advisory firm — positioning expertise without regulatory affiliation.</div>
+          <div class="port-footer"><div class="port-tags"><span class="port-tag">Energy</span><span class="port-tag">Advisory</span><span class="port-tag">Nigeria</span></div><a href="https://www.pointmaxconsult.com" target="_blank" class="port-link" onclick="event.stopPropagation()">Visit →</a></div>
+        </div>
+      </div>
+
+      <!-- Mulopwe Mines -->
+      <div class="port-card" onclick="window.open('https://mulopwemines.com','_blank')">
+        <div class="port-preview">
+          <div class="port-browser">
+            <div class="port-browser-dots"><div class="port-browser-dot" style="background:#ff5f57"></div><div class="port-browser-dot" style="background:#febc2e"></div><div class="port-browser-dot" style="background:#28c840"></div></div>
+            <div class="port-browser-bar"><div class="port-browser-url">mulopwemines.com</div></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#1a1205 0%,#2d1f08 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center">
+            <div style="font-size:9px;color:#c8860a;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:6px">Mining &amp; Resources</div>
+            <div style="font-size:18px;font-weight:800;color:#fff;font-family:var(--head);line-height:1.1;margin-bottom:6px">Mulopwe<br><span style="color:#c8860a">Mines</span></div>
+            <div style="width:20px;height:2px;background:#c8860a;margin-bottom:8px"></div>
+            <div style="font-size:8px;color:rgba(255,255,255,0.4);line-height:1.5">Mining operations · Resources · Africa</div>
+          </div>
+        </div>
+        <div class="port-info">
+          <div class="port-info-top"><div class="port-name">Mulopwe Mines</div><div class="port-status port-live">● Live</div></div>
+          <div class="port-desc">Corporate website for Mulopwe Mines — a mining and natural resources company operating in Africa.</div>
+          <div class="port-footer"><div class="port-tags"><span class="port-tag">Mining</span><span class="port-tag">Resources</span><span class="port-tag">Africa</span></div><a href="https://mulopwemines.com" target="_blank" class="port-link" onclick="event.stopPropagation()">Visit →</a></div>
+        </div>
+      </div>
+
+      <!-- Fair Face Construction -->
+      <div class="port-card" onclick="window.open('https://www.fairfaceconstruction.com','_blank')">
+        <div class="port-preview">
+          <div class="port-browser">
+            <div class="port-browser-dots"><div class="port-browser-dot" style="background:#ff5f57"></div><div class="port-browser-dot" style="background:#febc2e"></div><div class="port-browser-dot" style="background:#28c840"></div></div>
+            <div class="port-browser-bar"><div class="port-browser-url">fairfaceconstruction.com</div></div>
+          </div>
+          <div style="background:linear-gradient(135deg,#0f0f0f 0%,#1a1a1a 100%);height:140px;padding:14px;display:flex;flex-direction:column;justify-content:center">
+            <div style="font-size:9px;color:#E09B1A;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:6px">Construction</div>
+            <div style="font-size:17px;font-weight:800;color:#fff;font-family:var(--head);line-height:1.1;margin-bottom:6px">Fair Face<br><span style="color:#E09B1A">Construction</span></div>
+            <div style="width:20px;height:2px;background:#E09B1A;margin-bottom:8px"></div>
+            <div style="font-size:8px;color:rgba(255,255,255,0.4);line-height:1.5">Construction &amp; project delivery</div>
+          </div>
+        </div>
+        <div class="port-info">
+          <div class="port-info-top"><div class="port-name">Fair Face Construction</div><div class="port-status port-live">● Live</div></div>
+          <div class="port-desc">Corporate website for Fair Face Construction — a professional construction and project delivery firm.</div>
+          <div class="port-footer"><div class="port-tags"><span class="port-tag">Construction</span><span class="port-tag">Projects</span><span class="port-tag">Nigeria</span></div><a href="https://www.fairfaceconstruction.com" target="_blank" class="port-link" onclick="event.stopPropagation()">Visit →</a></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<section class="svbg" id="services">
+  <div class="eyebrow">Done-for-You Services</div>
+  <div class="sec-title">Need Something<br>Built Just for You?</div>
+  <p class="sec-sub">We design and build custom digital solutions for businesses that need more than an off-the-shelf product.</p>
+  <div class="svg">
+    <div class="svc"><div class="svic">🛠</div><h4>Custom Product Build</h4><p>From idea to deployed app — design, development, payments, and hosting all handled.</p><div class="svl"><div class="svi">Web &amp; mobile PWAs</div><div class="svi">E-commerce &amp; payments</div><div class="svi">Lead generation tools</div><div class="svi">SaaS development</div></div></div>
+    <div class="svc"><div class="svic">⚡</div><h4>Sales Automation</h4><p>Pipelines that prospect, nurture, convert, and collect — without manual effort.</p><div class="svl"><div class="svi">WhatsApp &amp; email automation</div><div class="svi">CRM &amp; lead capture</div><div class="svi">Make.com workflows</div><div class="svi">Payment gateway integration</div></div></div>
+    <div class="svc"><div class="svic">📐</div><h4>Strategy &amp; Advisory</h4><p>33+ years of executive experience across marketing, sales, and BD in Nigeria.</p><div class="svl"><div class="svi">Digital business strategy</div><div class="svi">Investor-ready positioning</div><div class="svi">Market entry in Nigeria</div><div class="svi">Product-market fit advisory</div></div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="ctasec">
+  <div class="ctar"></div><div class="ctar2"></div>
+  <div class="ctai">
+    <h2>Have an Idea Worth Building?</h2>
+    <p>Tell us your vision. We'll tell you how to make it real.</p>
+    <button class="btn-g" onclick="openPanel()" style="font-size:1rem;padding:16px 36px">Submit Your Idea →</button>
+  </div>
+</section>
+
+<footer style="flex-direction:column;gap:16px;text-align:center">
+  <span class="logo" style="cursor:default;font-size:0.95rem">CPC<span class="logo-dot">.</span>Direct</span>
+  <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+    <div style="font-size:0.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em;font-family:var(--head)">Product Terms &amp; Conditions</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+      <button onclick="openLegal('tc-taxplify')" style="background:none;border:none;color:var(--dim);font-family:var(--body);font-size:0.76rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dim)'">Taxplify T&amp;C</button>
+      <button onclick="openLegal('tc-legaltice')" style="background:none;border:none;color:var(--dim);font-family:var(--body);font-size:0.76rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dim)'">Legaltice T&amp;C</button>
+      <button onclick="openLegal('tc-nativeplatter')" style="background:none;border:none;color:var(--dim);font-family:var(--body);font-size:0.76rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dim)'">Native Platter T&amp;C</button>
+      <button onclick="openLegal('tc-didicommune')" style="background:none;border:none;color:var(--dim);font-family:var(--body);font-size:0.76rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dim)'">DidiCommune T&amp;C</button>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+      <button onclick="openLegal('pp')" style="background:none;border:none;color:var(--dim);font-family:var(--body);font-size:0.76rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dim)'">Privacy Policy</button>
+      <button onclick="openLegal('rp')" style="background:none;border:none;color:var(--dim);font-family:var(--body);font-size:0.76rem;cursor:pointer;padding:0;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dim)'">Refund Policy</button>
+      <a href="advisory.html" style="color:var(--dim);font-family:var(--body);font-size:0.76rem;text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dim)'">Advisory Board</a>
+    </div>
+  </div>
+  <div style="color:var(--dim);font-size:0.76rem">Nigeria &nbsp;|&nbsp; © 2026 CPC Direct Ventures Ltd</div>
+</footer>
+
+<!-- NOTIFY MODAL -->
+<div class="mov" id="notifyModal">
+  <div class="mo">
+    <button class="moc" onclick="closeNotify()">×</button>
+    <div id="nfw">
+      <div class="mtag">Early Access</div>
+      <h3>Join the Launch Waitlist</h3>
+      <p class="mo-sub">Sign up and we'll notify you the moment <strong id="pname" style="color:var(--gold)"></strong> launches — with a special founding member offer.</p>
+      <div class="nfi"><label>Full Name</label><input type="text" id="nn" placeholder="Your full name"/></div>
+      <div class="nfi"><label>Email Address</label><input type="email" id="ne" placeholder="you@example.com"/></div>
+      <div class="nfi"><label>Product</label>
+        <select id="np">
+          <option value="Legaltice">Legaltice — Legal &amp; Compliance</option>
+          <option value="DidiCommune">DidiCommune — Civic &amp; Community Platform</option>
+          <option value="Native Platter">Native Platter — Pan-African Food</option>
+          <option value="Taxplify">Taxplify — Tax Filing</option>
+        </select>
+      </div>
+      <button class="nsub" id="nsb" onclick="submitNotify()">Notify me on Launch →</button>
+    </div>
+    <div class="mo-suc" id="nsuc">
+      <div class="tk">✅</div>
+      <h4>You're on the list!</h4>
+      <p>You're on the waitlist for <strong id="sp" style="color:var(--gold)"></strong>. We'll notify you on launch day with a founding member offer.</p>
+    </div>
+  </div>
+</div>
+
+<!-- IDEAFORGE PANEL -->
+<div class="ifp-overlay" id="ifp-overlay" onclick="closePanel()"></div>
+<div class="ifp" id="ifp">
+  <div class="ifp-hdr">
+    <span class="logo" style="cursor:default">CPC<span class="logo-dot">.</span>Direct — IdeaForge</span>
+    <button class="ifp-close" onclick="closePanel()">← Back</button>
+  </div>
+  <div class="ifp-body">
+    <div class="ifp-left">
+      <div class="ifp-left-glow"></div>
+      <div class="ifp-left-inner">
+        <div class="ptag2"><div class="pdot2"></div>IdeaForge Program</div>
+        <h2>Let's Find Out If Your <span>Idea</span> Is Worth Building.</h2>
+        <p>We review every submission personally and respond within 5 business days — with a straight answer, not a sales pitch.</p>
+        <div class="plist">
+          <div class="pi-item"><div class="pi-em">🔒</div><div><div class="pi-t">Your idea stays yours</div><div class="pi-d">We sign an NDA before any detailed discussion begins.</div></div></div>
+          <div class="pi-item"><div class="pi-em">⚡</div><div><div class="pi-t">No upfront cost</div><div class="pi-d">Zero financial risk to you. We only win when you win.</div></div></div>
+          <div class="pi-item"><div class="pi-em">🤝</div><div><div class="pi-t">Fair terms, always</div><div class="pi-d">Partnership terms reflect what each party actually contributes — nothing more, nothing less.</div></div></div>
+          <div class="pi-item"><div class="pi-em">🎯</div><div><div class="pi-t">Honest evaluation</div><div class="pi-d">If we don't think your idea will work, we'll tell you — and tell you why.</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ifp-right">
+      <div id="idea-form-wrap">
+        <div class="form-title">Tell Us About Your Idea</div>
+        <div class="form-sub">The more detail you share, the faster and more accurately we can assess whether it's a fit.</div>
+        <div class="fsec">Your Details</div>
+        <div class="frow">
+          <div class="fi"><label>Full Name <span class="r">*</span></label><input type="text" id="f-name" placeholder="Your full name"/></div>
+          <div class="fi"><label>Email <span class="r">*</span></label><input type="email" id="f-email" placeholder="you@example.com"/></div>
+        </div>
+        <div class="frow">
+          <div class="fi"><label>Phone / WhatsApp</label><input type="tel" id="f-phone" placeholder="+234 800 000 0000"/></div>
+          <div class="fi"><label>City</label>
+            <select id="f-country"><option value="">Select</option><option>Nigeria — Lagos</option><option>Nigeria — Abuja</option><option>Nigeria — Kano</option><option>Nigeria — Port Harcourt</option><option>Nigeria — Ibadan</option><option>Nigeria — Other</option></select>
+          </div>
+        </div>
+        <div class="fsec">The Idea</div>
+        <div class="fi"><label>Idea / Product Name <span class="r">*</span></label><input type="text" id="f-idea" placeholder="What would you call it?"/></div>
+        <div class="fi"><label>What problem does it solve? <span class="r">*</span></label><textarea id="f-problem" placeholder="Describe the problem clearly. Who has this problem and how painful is it?"></textarea></div>
+        <div class="fi"><label>Who is your target customer? <span class="r">*</span></label><input type="text" id="f-customer" placeholder="e.g. Small shop owners in Lagos who struggle with..."/></div>
+        <div class="frow">
+          <div class="fi"><label>What are you bringing?</label>
+            <select id="f-stage"><option value="">Select</option><option>Just the idea</option><option>Idea + industry knowledge</option><option>Idea + existing network/customers</option><option>Existing business needing digital upgrade</option><option>Existing business with revenue</option></select>
+          </div>
+          <div class="fi"><label>Support Needed</label>
+            <select id="f-need"><option value="">Select</option><option>Build from scratch</option><option>Build + go-to-market</option><option>Full co-founder partnership</option><option>Improve existing product</option><option>Strategy only</option></select>
+          </div>
+        </div>
+        <div class="fi"><label>Anything else?</label><textarea id="f-extra" placeholder="Links, competitors you've spotted, questions for us, or anything that will help us assess your idea..." style="min-height:70px"></textarea></div>
+        <button class="sub-btn" id="idea-submit-btn" onclick="submitIdea()">Submit My Idea →</button>
+        <p class="form-note">We never share your information with third parties. Every submission is treated with full confidentiality.</p>
+      </div>
+      <div class="p-success" id="idea-success">
+        <div class="s-icon">🚀</div>
+        <h3>Idea Received!</h3>
+        <p>Our team will review your submission and reach out within <strong style="color:var(--gold)">5 business days</strong> with a straight answer.</p>
+        <button class="back-btn" onclick="closePanel()">← Back to CPC Direct</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var SHEET='https://script.google.com/macros/s/AKfycbwGjO_HZRxeSJSiUBpVd_Xv6rjkpkSgrllQUZex1o0mgFiTvW4IHC7CjH0hGaKR1hCacg/exec';
+
+function toggleMobileNav(){document.getElementById('mobileNav').classList.toggle('open')}
+function closeMobileNav(){document.getElementById('mobileNav').classList.remove('open')}
+function openPanel(){closeMobileNav();document.getElementById('ifp').classList.add('open');document.getElementById('ifp-overlay').classList.add('open');document.body.style.overflow='hidden'}
+function closePanel(){document.getElementById('ifp').classList.remove('open');document.getElementById('ifp-overlay').classList.remove('open');document.body.style.overflow=''}
+
+function showPortTab(t){
+  document.getElementById('pgroup-apps').classList.toggle('active', t==='apps');
+  document.getElementById('pgroup-sites').classList.toggle('active', t==='sites');
+  document.getElementById('ptab-apps').classList.toggle('active', t==='apps');
+  document.getElementById('ptab-sites').classList.toggle('active', t==='sites');
+}
+function openNotify(p){document.getElementById('pname').textContent=p;document.getElementById('np').value=p;document.getElementById('nfw').style.display='block';document.getElementById('nsuc').style.display='none';document.getElementById('notifyModal').classList.add('open');document.body.style.overflow='hidden'}
+function closeNotify(){document.getElementById('notifyModal').classList.remove('open');document.body.style.overflow=''}
+document.getElementById('notifyModal').addEventListener('click',function(e){if(e.target===this)closeNotify()});
+
+function submitNotify(){
+  var n=document.getElementById('nn').value.trim(),e=document.getElementById('ne').value.trim(),p=document.getElementById('np').value;
+  if(!n||!e){alert('Please enter your name and email.');return}
+  var b=document.getElementById('nsb');b.textContent='Saving...';b.disabled=true;
+  var d=new FormData();d.append('type','waitlist');d.append('name',n);d.append('email',e);d.append('product',p);d.append('date',new Date().toLocaleString());
+  fetch(SHEET,{method:'POST',body:d,mode:'no-cors'}).catch(function(){}).finally(function(){
+    document.getElementById('sp').textContent=p;
+    document.getElementById('nfw').style.display='none';
+    document.getElementById('nsuc').style.display='block';
+    b.textContent='Notify Me →';b.disabled=false;
+  });
+}
+
+function submitIdea(){
+  var n=document.getElementById('f-name').value.trim(),e=document.getElementById('f-email').value.trim(),i=document.getElementById('f-idea').value.trim(),pr=document.getElementById('f-problem').value.trim(),cu=document.getElementById('f-customer').value.trim();
+  if(!n||!e||!i||!pr||!cu){alert('Please fill in all required fields marked with *.');return}
+  var b=document.getElementById('idea-submit-btn');b.textContent='Submitting...';b.disabled=true;
+  var d=new FormData();
+  d.append('type','ideaforge');d.append('name',n);d.append('email',e);
+  d.append('phone',document.getElementById('f-phone').value);d.append('country',document.getElementById('f-country').value);
+  d.append('ideaName',i);d.append('problem',pr);d.append('customer',cu);
+  d.append('stage',document.getElementById('f-stage').value);d.append('need',document.getElementById('f-need').value);
+  d.append('extra',document.getElementById('f-extra').value);d.append('date',new Date().toLocaleString());
+  fetch(SHEET,{method:'POST',body:d,mode:'no-cors'}).catch(function(){}).finally(function(){
+    document.getElementById('idea-form-wrap').style.display='none';
+    document.getElementById('idea-success').style.display='block';
+    b.textContent='Submit My Idea →';b.disabled=false;
+  });
+}
+
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closePanel();closeNotify()}});
+</script>
+
+<!-- MOU DISCLAIMER GATE -->
+<div class="mou-gate" id="mouGate">
+  <div class="mou-gate-box">
+    <div class="mou-gate-title">Before You View</div>
+    <div class="mou-gate-sub">This document is a sample template published for transparency. Please read the notice below before proceeding.</div>
+    <div class="mou-gate-terms">
+      <strong>Important Notice</strong>
+      This Memorandum of Understanding is a sample template only. It is published to give potential partners a clear understanding of how CPC Direct structures its IdeaForge partnerships. It is not legally binding in its current form. Every partnership agreement is individually negotiated and formally executed. All terms are subject to change based on the specific nature of each partnership, the contributions of each party, and the requirements of the project.
+    </div>
+    <div class="mou-gate-check">
+      <input type="checkbox" id="mouAccept" onchange="document.getElementById('mouViewBtn').disabled=!this.checked"/>
+      <label for="mouAccept">I understand that this is a sample template, that all terms are subject to change based on individual discussions with CPC Direct, and that this document does not constitute a binding agreement.</label>
+    </div>
+    <button class="mou-gate-btn" id="mouViewBtn" disabled onclick="proceedToMOU()">I Understand — View Sample MOU</button>
+    <button class="mou-gate-cancel" onclick="closeMOUGate()">Cancel</button>
+  </div>
+</div>
+
+<!-- MOU SLIDE PANEL -->
+<div class="mou-overlay" id="mouOverlay" onclick="closeMOU()"></div>
+<div class="mou-panel" id="mouPanel">
+  <div class="mou-panel-hdr">
+    <div class="mou-logo">CPC<span>.</span>Direct — IdeaForge MOU</div>
+    <button class="mou-back" onclick="closeMOU()">← Back to site</button>
+  </div>
+  <div class="mou-disclaimer">
+    <div class="mou-disclaimer-title">⚠ Sample Template Only</div>
+    <p>This document is for transparency and reference purposes only. All terms are subject to change based on individual partnership discussions. This sample does not constitute a binding agreement.</p>
+  </div>
+  <div class="mou-body">
+    <div class="mou-doc">
+
+      <div class="mou-doc-title">MEMORANDUM OF UNDERSTANDING</div>
+      <div class="mou-doc-sub">IdeaForge Co-Build Partnership</div>
+      <div class="mou-doc-note">Sample Template — Subject to change based on individual partnership discussions</div>
+
+      <!-- 1. PARTIES -->
+      <div class="mou-section">
+        <div class="mou-section-title">1. Parties to This Agreement</div>
+        <p class="mou-p">This Memorandum of Understanding ("MOU") is entered into between:</p>
+        <table class="mou-table">
+          <tr><td>Party A</td><td>CPC Direct Ventures Ltd, a company registered under the laws of Nigeria, operating through its IdeaForge program ("CPC Direct").</td></tr>
+          <tr><td>Party B</td><td>[Full Legal Name], [Capacity — e.g. Individual Entrepreneur / Director of Company Name] ("The Partner").</td></tr>
+        </table>
+      </div>
+
+      <!-- 2. PURPOSE -->
+      <div class="mou-section">
+        <div class="mou-section-title">2. Purpose</div>
+        <p class="mou-p">The purpose of this MOU is to set out the agreed terms under which CPC Direct and The Partner will collaborate to build, launch, and grow the following product or business concept:</p>
+        <table class="mou-table">
+          <tr><td>Product / Business Name</td><td><em style="color:#9CA3AF">[To be completed]</em></td></tr>
+          <tr><td>Target Market</td><td><em style="color:#9CA3AF">[To be completed]</em></td></tr>
+          <tr><td>Partnership Type</td><td>☐ Full Co-Build Partnership &nbsp;&nbsp; ☐ Existing Business Digital Upgrade</td></tr>
+        </table>
+      </div>
+
+      <!-- 3. CONTRIBUTIONS -->
+      <div class="mou-section">
+        <div class="mou-section-title">3. Respective Contributions</div>
+        <p class="mou-p">The parties acknowledge and agree that their respective contributions to this partnership are as follows:</p>
+        <div class="mou-section-subtitle">3.1 CPC Direct Ventures Ltd shall contribute:</div>
+        <ul class="mou-ul">
+          <li>Full product design, user experience, and technical development</li>
+          <li>Domain registration and hosting infrastructure</li>
+          <li>Company registration and statutory compliance (where applicable)</li>
+          <li>Payment integration and automated pipeline setup</li>
+          <li>Digital marketing strategy and initial launch support</li>
+          <li>Ongoing product maintenance, updates, and technical operations</li>
+          <li>Business development advisory and market positioning</li>
+        </ul>
+        <div class="mou-section-subtitle">3.2 The Partner shall contribute:</div>
+        <ul class="mou-ul">
+          <li>The originating idea and its associated market insight</li>
+          <li>Industry knowledge, networks, and access to target customers</li>
+          <li>Day-to-day business operations and client relationship management</li>
+          <li>[Any additional agreed contributions — to be documented at signing]</li>
+        </ul>
+      </div>
+
+      <!-- 4. IP -->
+      <div class="mou-section">
+        <div class="mou-section-title">4. Intellectual Property</div>
+        <p class="mou-p">4.1 All technology, code, systems, platforms, and digital infrastructure built by CPC Direct under this agreement shall remain the intellectual property of CPC Direct Ventures Ltd unless otherwise agreed in writing.</p>
+        <p class="mou-p">4.2 The business concept, brand name, and operational knowledge contributed by The Partner shall remain the intellectual property of The Partner.</p>
+        <p class="mou-p">4.3 Any jointly developed materials, methodologies, or products shall be jointly owned in proportions consistent with the contribution terms set out in Section 3 above.</p>
+      </div>
+
+      <!-- 5. PARTNERSHIP TERMS -->
+      <div class="mou-section">
+        <div class="mou-section-title">5. Partnership &amp; Success Terms</div>
+        <p class="mou-p">5.1 The precise partnership terms — including ownership percentages, success fees, and exit entitlements — shall be individually negotiated and documented in a formal Partnership Agreement to be executed separately.</p>
+        <p class="mou-p">5.2 As a general principle, the terms shall reflect the actual contribution of each party. The greater the investment by CPC Direct, the greater its stake in the success of the venture.</p>
+        <p class="mou-p">5.3 In the event of a sale, acquisition, or investment event involving the jointly developed product or business, CPC Direct Ventures Ltd shall be entitled to a pre-agreed percentage of the proceeds, reflecting the value of the technology and infrastructure it built and owns.</p>
+        <p class="mou-p">5.4 No party shall transfer, assign, or sell their interest in the joint venture without the prior written consent of the other party.</p>
+      </div>
+
+      <!-- 6. NDA -->
+      <div class="mou-section">
+        <div class="mou-section-title">6. Confidentiality &amp; Non-Disclosure</div>
+        <p class="mou-p">6.1 Each party agrees to treat all information shared under this agreement as strictly confidential. This includes business ideas, product strategies, technical methods, customer data, financial projections, and any other proprietary information.</p>
+        <p class="mou-p">6.2 Neither party shall disclose, share, or use the other party's confidential information for any purpose outside of this partnership without prior written consent.</p>
+        <p class="mou-p">6.3 This confidentiality obligation shall remain in force during the term of this agreement and for a period of three (3) years following its termination or expiry.</p>
+        <p class="mou-p">6.4 The obligation of confidentiality shall not apply to information that: (a) is or becomes publicly available through no fault of the receiving party; (b) was already known to the receiving party prior to disclosure; or (c) is required to be disclosed by applicable law or court order.</p>
+      </div>
+
+      <!-- 7. EXCLUSIVITY -->
+      <div class="mou-section">
+        <div class="mou-section-title">7. Exclusivity</div>
+        <p class="mou-p">7.1 During the active period of this partnership, The Partner agrees not to engage any third party to build, replicate, or develop a substantially similar product or service without the prior written consent of CPC Direct.</p>
+        <p class="mou-p">7.2 CPC Direct agrees not to build or develop an identical product for a direct competitor of The Partner within the same market during the active period of this agreement.</p>
+      </div>
+
+      <!-- 8. TERM -->
+      <div class="mou-section">
+        <div class="mou-section-title">8. Term &amp; Termination</div>
+        <p class="mou-p">8.1 This MOU shall take effect from the date of signing and shall remain in force until superseded by a formal Partnership Agreement or terminated by mutual written consent.</p>
+        <p class="mou-p">8.2 Either party may terminate this MOU with thirty (30) days written notice if the parties are unable to agree on formal partnership terms following good faith negotiations.</p>
+        <p class="mou-p">8.3 Upon termination, each party shall return or destroy any confidential information belonging to the other party. The confidentiality obligations in Section 6 shall survive termination.</p>
+      </div>
+
+      <!-- 9. DISPUTE -->
+      <div class="mou-section">
+        <div class="mou-section-title">9. Dispute Resolution</div>
+        <p class="mou-p">9.1 Both parties agree to resolve any disputes arising from this MOU through good faith negotiation in the first instance.</p>
+        <p class="mou-p">9.2 If the parties are unable to resolve the dispute through negotiation within thirty (30) days, the matter shall be referred to mediation under the rules of the Lagos Court of Arbitration or such other mutually agreed body.</p>
+        <p class="mou-p">9.3 This agreement shall be governed by and construed in accordance with the laws of the Federal Republic of Nigeria.</p>
+      </div>
+
+      <!-- 10. GENERAL -->
+      <div class="mou-section">
+        <div class="mou-section-title">10. General Provisions</div>
+        <p class="mou-p">10.1 This MOU constitutes the entire understanding between the parties with respect to its subject matter and supersedes all prior discussions and agreements.</p>
+        <p class="mou-p">10.2 Any amendment to this MOU must be made in writing and signed by both parties.</p>
+        <p class="mou-p">10.3 If any provision of this MOU is found to be invalid or unenforceable, the remaining provisions shall continue in full force and effect.</p>
+        <p class="mou-p">10.4 Neither party shall be liable for delays or failures in performance resulting from circumstances beyond their reasonable control.</p>
+      </div>
+
+      <!-- 11. SIGNATURES -->
+      <div class="mou-section">
+        <div class="mou-section-title">11. Signatures</div>
+        <p class="mou-p">By signing below, both parties confirm they have read, understood, and agreed to the terms set out in this Memorandum of Understanding.</p>
+        <div class="mou-sig-box">
+          <div class="mou-sig">
+            <div class="mou-sig-label">Party A</div>
+            <div class="mou-sig-name">CPC Direct Ventures Ltd<br><span style="font-size:0.78rem;font-weight:400;color:#6B7280">Authorised Signatory</span></div>
+            <div class="mou-sig-line">Signature &amp; Date</div>
+          </div>
+          <div class="mou-sig">
+            <div class="mou-sig-label">Party B</div>
+            <div class="mou-sig-name">Idea Owner / Partner<br><span style="font-size:0.78rem;font-weight:400;color:#6B7280">Full Name &amp; Capacity</span></div>
+            <div class="mou-sig-line">Signature &amp; Date</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mou-info-box">
+        <strong>Next Steps After Signing</strong>
+        Following execution of this MOU, CPC Direct will schedule a detailed discovery session to validate the concept, assess market fit, and agree on the formal Partnership Agreement terms. All subsequent agreements will be executed in writing.
+      </div>
+
+      <div class="mou-footer-note">
+        CPC Direct Ventures Ltd &nbsp;|&nbsp; cpc-direct.com &nbsp;|&nbsp; questions@cpc-direct.com<br>
+        This sample MOU is subject to change. All terms are negotiated individually per partnership.
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// MOU Gate & Panel
+function openMOUGate(){
+  document.getElementById('mouAccept').checked=false;
+  document.getElementById('mouViewBtn').disabled=true;
+  document.getElementById('mouGate').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMOUGate(){
+  document.getElementById('mouGate').classList.remove('open');
+  document.body.style.overflow='';
+}
+function proceedToMOU(){
+  document.getElementById('mouGate').classList.remove('open');
+  document.getElementById('mouPanel').classList.add('open');
+  document.getElementById('mouOverlay').classList.add('open');
+  document.getElementById('mouPanel').querySelector('.mou-body').scrollTop=0;
+}
+function closeMOU(){
+  document.getElementById('mouPanel').classList.remove('open');
+  document.getElementById('mouOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+// Prevent right-click save on MOU panel
+document.addEventListener('contextmenu',function(e){
+  if(e.target.closest('.mou-panel')){e.preventDefault();}
+});
+// Prevent Ctrl+S / Ctrl+P inside MOU
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('mouPanel').classList.contains('open')){
+    if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='p'||e.key==='u')){e.preventDefault();}
+  }
+  if(e.key==='Escape'){closeMOU();closeMOUGate();}
+});
+</script>
+
+
+<!-- LEGAL PANEL -->
+<div class="legal-overlay" id="legalOverlay" onclick="closeLegal()"></div>
+<div class="legal-panel" id="legalPanel">
+  <div class="legal-panel-hdr">
+    <div class="lp-logo">CPC<span>.</span>Direct — Legal</div>
+    <button class="legal-back" onclick="closeLegal()">← Back to site</button>
+  </div>
+  <div class="legal-panel-tabs" style="overflow-x:auto;white-space:nowrap">
+    <button class="lp-tab active" id="tab-tc-taxplify" onclick="switchTab('tc-taxplify')">Taxplify T&amp;C</button>
+    <button class="lp-tab" id="tab-tc-legaltice" onclick="switchTab('tc-legaltice')">Legaltice T&amp;C</button>
+    <button class="lp-tab" id="tab-tc-nativeplatter" onclick="switchTab('tc-nativeplatter')">Native Platter T&amp;C</button>
+    <button class="lp-tab" id="tab-tc-didicommune" onclick="switchTab('tc-didicommune')">DidiCommune T&amp;C</button>
+    <button class="lp-tab" id="tab-pp" onclick="switchTab('pp')">Privacy Policy</button>
+    <button class="lp-tab" id="tab-rp" onclick="switchTab('rp')">Refund Policy</button>
+  </div>
+  <div class="legal-body">
+
+    <!-- TERMS & CONDITIONS -->
+    <div class="legal-content active" id="content-tc-taxplify">
+      <div class="legal-doc">
+        <h1>Terms &amp; Conditions</h1>
+        <div class="l-sub">Taxplify — operated by CPC Direct Ventures Ltd &nbsp;|&nbsp; Effective: January 2026 &nbsp;|&nbsp; Governed by Nigerian Law</div>
+
+        <div class="highlight"><strong>Please Read Carefully</strong>By accessing or using Taxplify, you agree to be bound by these Terms and Conditions. If you do not agree, please do not use this service.</div>
+
+        <h2>1. About This Service</h2>
+        <p>Taxplify is a digital tax filing assistance platform developed and operated by CPC Direct Ventures Ltd ("CPC Direct", "we", "us", "our"). Taxplify helps Nigerian individuals and businesses prepare and submit tax filings in compliance with the Federal Inland Revenue Service (FIRS) requirements and the 2026 Tax Reform Act.</p>
+        <p>Taxplify is a technology platform and filing assistance tool. It does not constitute professional tax advisory, legal advice, or accounting services. For complex tax matters, you should consult a qualified tax professional.</p>
+
+        <h2>2. Eligibility</h2>
+        <p>You must be at least 18 years of age to use Taxplify. By using this service, you confirm that you are legally authorised to submit tax filings on your own behalf or on behalf of the business entity you represent.</p>
+
+        <h2>3. User Obligations</h2>
+        <p>As a user of Taxplify, you agree to:</p>
+        <ul>
+          <li>Provide accurate, complete, and truthful information for all tax filings</li>
+          <li>Keep your account credentials confidential and not share them with third parties</li>
+          <li>Use the platform only for lawful purposes in compliance with Nigerian tax law</li>
+          <li>Not attempt to manipulate, reverse engineer, or misuse the platform</li>
+          <li>Notify us immediately of any unauthorised access to your account</li>
+        </ul>
+        <p>You are solely responsible for the accuracy of information submitted through Taxplify. CPC Direct shall not be liable for penalties, assessments, or consequences arising from inaccurate information you provide.</p>
+
+        <h2>4. Fees &amp; Payment</h2>
+        <p>Taxplify operates on a pay-per-filing and subscription basis. Current pricing is displayed on the platform at the time of use. All fees are quoted in Nigerian Naira (₦) and are inclusive of applicable taxes unless otherwise stated.</p>
+        <p>Payments are processed securely via our secure digital payment system. By making a payment, you authorise CPC Direct to charge the applicable fee to your selected payment method.</p>
+        <p>CPC Direct reserves the right to modify pricing with reasonable notice. Changes will not affect filings already paid for.</p>
+
+        <h2>5. Intellectual Property</h2>
+        <p>All content, software, design, algorithms, and technology on Taxplify are the intellectual property of CPC Direct Ventures Ltd and are protected under Nigerian and international intellectual property laws. You may not copy, reproduce, distribute, or create derivative works from any part of this platform without our express written consent.</p>
+
+        <h2>6. Limitation of Liability</h2>
+        <p>To the maximum extent permitted by law, CPC Direct shall not be liable for:</p>
+        <ul>
+          <li>Penalties, fines, or assessments imposed by FIRS arising from user-provided information</li>
+          <li>Indirect, incidental, or consequential damages arising from use of the platform</li>
+          <li>Service interruptions caused by third-party systems including FIRS portals or payment processors</li>
+          <li>Loss of data arising from circumstances beyond our reasonable control</li>
+        </ul>
+        <p>Our total liability to you for any claim shall not exceed the amount you paid for the specific transaction giving rise to the claim.</p>
+
+        <h2>7. Service Availability</h2>
+        <p>We aim to maintain platform availability at all times but do not guarantee uninterrupted access. Scheduled maintenance will be communicated in advance where possible. CPC Direct shall not be liable for losses arising from temporary service unavailability.</p>
+
+        <h2>8. Termination</h2>
+        <p>CPC Direct reserves the right to suspend or terminate your access to Taxplify if you breach these Terms, engage in fraudulent activity, or use the platform in a manner that compromises other users or the integrity of the service.</p>
+
+        <h2>9. Amendments</h2>
+        <p>CPC Direct may update these Terms from time to time. We will notify users of material changes via the platform or by email. Continued use of Taxplify after changes are posted constitutes acceptance of the revised Terms.</p>
+
+        <h2>10. Governing Law</h2>
+        <p>These Terms are governed by and construed in accordance with the laws of the Federal Republic of Nigeria. Any disputes shall be subject to the exclusive jurisdiction of the courts of Nigeria.</p>
+
+        <h2>11. Contact</h2>
+        <p>For questions regarding these Terms, contact us at <strong>taxplify@taxpilotnigeria.com</strong> or visit <strong>cpc-direct.com</strong>.</p>
+
+        <div class="l-footer">CPC Direct Ventures Ltd &nbsp;|&nbsp; cpc-direct.com &nbsp;|&nbsp; Taxplify is a product of CPC Direct Ventures Ltd</div>
+      </div>
+    </div>
+
+
+    <!-- LEGALTICE T&C -->
+    <div class="legal-content" id="content-tc-legaltice">
+      <div class="legal-doc">
+        <h1>Terms &amp; Conditions</h1>
+        <div class="l-sub">Legaltice — operated by CPC Direct Ventures Ltd &nbsp;|&nbsp; Effective: January 2026 &nbsp;|&nbsp; Governed by Nigerian Law</div>
+
+        <div class="highlight"><strong>Important Disclaimer</strong>Legaltice provides legal information, not legal advice. Nothing on this platform constitutes a solicitor-client relationship or professional legal advice. For specific legal matters, always consult a qualified Nigerian lawyer.</div>
+
+        <h2>1. About Legaltice</h2>
+        <p>Legaltice is a digital legal information and self-help platform developed and operated by CPC Direct Ventures Ltd. Legaltice helps Nigerians understand their legal rights, access document templates, and connect with qualified lawyers. Legaltice is not a law firm and does not provide legal representation or professional legal advice.</p>
+
+        <h2>2. Information vs. Advice</h2>
+        <p>All content on Legaltice is provided for general informational purposes only. Legal information on this platform explains how Nigerian law generally works — it is not advice tailored to your specific situation. You should not act or refrain from acting based solely on information from Legaltice without obtaining proper legal advice from a qualified practitioner.</p>
+
+        <h2>3. User Obligations</h2>
+        <ul>
+          <li>You must be at least 18 years of age to use Legaltice</li>
+          <li>You agree to use the platform only for lawful purposes</li>
+          <li>You are responsible for how you use any document templates or information obtained</li>
+          <li>You agree not to misuse or reproduce platform content without permission</li>
+          <li>You acknowledge that legal information may change and should always be verified</li>
+        </ul>
+
+        <h2>4. Document Templates</h2>
+        <p>Document templates on Legaltice are provided as general starting points only. They may not be suitable for every situation. CPC Direct makes no warranty that any template is legally sufficient for your specific circumstances. You are strongly advised to have any legal document reviewed by a qualified lawyer before use.</p>
+
+        <h2>5. Lawyer Directory</h2>
+        <p>Legaltice connects users with independent Nigerian lawyers registered with the Nigerian Bar Association (NBA). These lawyers are independent professionals and not employees of CPC Direct. CPC Direct is not responsible for the advice or services provided by lawyers in the directory. Any engagement with a listed lawyer is entirely between you and that lawyer.</p>
+
+        <h2>6. AI-Assisted Guidance</h2>
+        <p>Legaltice uses artificial intelligence to assist with legal information queries. AI responses are generated based on general Nigerian legal information and may not reflect recent changes in law. Always verify AI-generated information with a qualified legal professional before acting on it.</p>
+
+        <h2>7. Fees &amp; Payment</h2>
+        <p>Legaltice operates on a pay-as-you-go model. Fees for document generation and lawyer connections are displayed at the time of transaction. All fees are in Nigerian Naira (₦). Payments are processed via our secure digital payment system.</p>
+
+        <h2>8. Limitation of Liability</h2>
+        <p>CPC Direct shall not be liable for any loss, damage, or adverse outcome resulting from your reliance on information obtained through Legaltice. This includes but is not limited to legal consequences arising from use of document templates or AI-generated information without independent legal verification.</p>
+
+        <h2>9. Intellectual Property</h2>
+        <p>All platform content, templates, and technology are the intellectual property of CPC Direct Ventures Ltd. Templates may be used for personal or business purposes but may not be resold or redistributed without prior written consent.</p>
+
+        <h2>10. Governing Law</h2>
+        <p>These Terms are governed by the laws of the Federal Republic of Nigeria. Disputes shall be subject to the jurisdiction of Nigerian courts.</p>
+
+        <h2>11. Contact</h2>
+        <p>For queries about Legaltice, contact <strong>questions@cpc-direct.com</strong>.</p>
+
+        <div class="l-footer">CPC Direct Ventures Ltd &nbsp;|&nbsp; cpc-direct.com &nbsp;|&nbsp; Legaltice is a product of CPC Direct Ventures Ltd</div>
+      </div>
+    </div>
+
+    <!-- NATIVE PLATTER T&C -->
+    <div class="legal-content" id="content-tc-nativeplatter">
+      <div class="legal-doc">
+        <h1>Terms &amp; Conditions</h1>
+        <div class="l-sub">Native Platter — operated by CPC Direct Ventures Ltd &nbsp;|&nbsp; Effective: January 2026 &nbsp;|&nbsp; Governed by Nigerian Law</div>
+
+        <div class="highlight"><strong>Two-Sided Platform</strong>Native Platter connects home cooks with food lovers. These Terms apply to both cooks and diners. Please read your relevant section carefully.</div>
+
+        <h2>1. About Native Platter</h2>
+        <p>Native Platter is a pan-African home cook marketplace developed and operated by CPC Direct Ventures Ltd. The platform connects African home cooks ("Cooks") with individuals seeking authentic African home-cooked meals ("Diners"). CPC Direct operates as a marketplace and is not a food vendor, caterer, or restaurant.</p>
+
+        <h2>2. For Diners</h2>
+        <ul>
+          <li>You must be at least 18 years of age to place orders on Native Platter</li>
+          <li>You agree to provide accurate delivery information and be available to receive your order</li>
+          <li>You acknowledge that meals are prepared in private home kitchens, not commercial catering establishments</li>
+          <li>You are responsible for disclosing any food allergies or dietary requirements directly to your Cook before ordering</li>
+          <li>Native Platter is not liable for allergic reactions arising from failure to disclose dietary requirements</li>
+          <li>You agree to treat Cooks with respect and not engage in abusive or harassing behaviour</li>
+        </ul>
+
+        <h2>3. For Cooks</h2>
+        <ul>
+          <li>You must be at least 18 years of age and legally authorised to prepare food for sale in your jurisdiction</li>
+          <li>You are responsible for ensuring your food preparation meets all applicable food safety and hygiene standards</li>
+          <li>You must accurately describe your dishes, including all ingredients and potential allergens</li>
+          <li>You must fulfil orders you accept. Repeated cancellations may result in account suspension</li>
+          <li>You are an independent operator and not an employee of CPC Direct</li>
+          <li>You are responsible for your own tax obligations arising from income earned through Native Platter</li>
+        </ul>
+
+        <h2>4. Food Safety</h2>
+        <p>Native Platter takes food safety seriously. Cooks agree to maintain proper hygiene standards and comply with applicable food handling regulations. CPC Direct reserves the right to suspend any Cook whose food safety practices are called into question. However, CPC Direct cannot directly inspect or guarantee the hygiene standards of every kitchen on the platform.</p>
+
+        <h2>5. Payments &amp; Fees</h2>
+        <p>All payments are processed through Native Platter's secure digital payment system. CPC Direct charges a platform commission on each completed order — the current rate is displayed on the Cook dashboard. Cooks receive their earnings minus the platform commission within the payout schedule displayed on the platform.</p>
+
+        <h2>6. Cancellations &amp; Refunds</h2>
+        <p>Cancellation and refund terms for Native Platter are governed by the Native Platter Refund Policy, accessible on the platform. Generally, cancellations made before a Cook begins preparation are eligible for a full refund. Cancellations after preparation has begun are not refundable.</p>
+
+        <h2>7. Limitation of Liability</h2>
+        <p>CPC Direct acts as a marketplace facilitator only. We are not liable for the quality, safety, or suitability of food prepared by Cooks, delivery delays, or disputes between Cooks and Diners. Our liability in any circumstance shall not exceed the value of the order in question.</p>
+
+        <h2>8. Governing Law</h2>
+        <p>These Terms are governed by the laws of the Federal Republic of Nigeria. Disputes shall be subject to the jurisdiction of Nigerian courts.</p>
+
+        <h2>9. Contact</h2>
+        <p>For Native Platter queries, contact <strong>questions@cpc-direct.com</strong>.</p>
+
+        <div class="l-footer">CPC Direct Ventures Ltd &nbsp;|&nbsp; cpc-direct.com &nbsp;|&nbsp; Native Platter is a product of CPC Direct Ventures Ltd</div>
+      </div>
+    </div>
+
+    <!-- DIDICOMMUNE T&C -->
+    <div class="legal-content" id="content-tc-didicommune">
+      <div class="legal-doc">
+        <h1>Terms &amp; Conditions</h1>
+        <div class="l-sub">DidiCommune — operated by CPC Direct Ventures Ltd &nbsp;|&nbsp; Effective: January 2026 &nbsp;|&nbsp; Governed by Nigerian Law</div>
+
+        <div class="highlight"><strong>Civic Platform Notice</strong>DidiCommune is a community funding and accountability platform. CPC Direct facilitates connections and payments but does not directly execute community projects. All project accountability remains with registered community representatives.</div>
+
+        <h2>1. About DidiCommune</h2>
+        <p>DidiCommune is a civic technology platform developed and operated by CPC Direct Ventures Ltd. The platform connects Nigerian home communities, their diaspora chapters, and elected political representatives to facilitate transparent funding and delivery of community development projects. CPC Direct operates as a platform facilitator and is not a government body or development agency.</p>
+
+        <h2>2. User Categories</h2>
+        <p>DidiCommune serves three types of users:</p>
+        <ul>
+          <li><strong>Home Community Representatives</strong> — registered community leaders who submit and manage project requests</li>
+          <li><strong>Diaspora Contributors</strong> — Nigerians abroad who contribute funds to verified community projects</li>
+          <li><strong>Political Representatives</strong> — elected officials who are tagged on relevant constituency projects for accountability</li>
+        </ul>
+
+        <h2>3. Project Registration &amp; Verification</h2>
+        <p>All projects submitted on DidiCommune are subject to a verification process before being made available for funding. CPC Direct reserves the right to reject any project that does not meet our verification criteria or appears fraudulent. Verification does not constitute CPC Direct's endorsement of project outcomes.</p>
+
+        <h2>4. Contributions &amp; Fund Disbursement</h2>
+        <ul>
+          <li>All contributions are held in escrow until project milestones are verified</li>
+          <li>Funds are disbursed to verified project accounts upon milestone confirmation</li>
+          <li>CPC Direct charges a platform fee on each disbursement — the current rate is displayed on the platform</li>
+          <li>Contributors will receive progress updates and completion reports for funded projects</li>
+          <li>CPC Direct is not liable for project failures arising from community representative mismanagement</li>
+        </ul>
+
+        <h2>5. Refunds for Contributors</h2>
+        <p>If a project is cancelled before any disbursement is made, contributors are entitled to a full refund of their contribution minus secure payment processing fees. Once funds have been disbursed for project execution, refunds are not available. Disputed disbursements will be investigated and resolved within 14 business days.</p>
+
+        <h2>6. Political Representative Tagging</h2>
+        <p>DidiCommune allows community projects to tag elected representatives for accountability purposes. Tagged representatives are notified of project requests in their constituency. This feature is informational only — CPC Direct does not guarantee any response or action from tagged representatives.</p>
+
+        <h2>7. Community Representative Obligations</h2>
+        <ul>
+          <li>Community representatives must provide accurate information about projects and their community</li>
+          <li>Representatives are responsible for proper use of disbursed funds for stated project purposes</li>
+          <li>Misappropriation of community funds is a criminal offence under Nigerian law and will be reported to appropriate authorities</li>
+          <li>Representatives must submit progress reports at agreed milestones</li>
+        </ul>
+
+        <h2>8. Limitation of Liability</h2>
+        <p>CPC Direct is a technology facilitator and is not liable for project outcomes, community disputes, or misuse of funds by community representatives. Our liability in any circumstance shall not exceed the platform fees collected in relation to the specific project in question.</p>
+
+        <h2>9. Governing Law</h2>
+        <p>These Terms are governed by the laws of the Federal Republic of Nigeria. Disputes shall be subject to the jurisdiction of Nigerian courts.</p>
+
+        <h2>10. Contact</h2>
+        <p>For DidiCommune queries, contact <strong>questions@cpc-direct.com</strong>.</p>
+
+        <div class="l-footer">CPC Direct Ventures Ltd &nbsp;|&nbsp; cpc-direct.com &nbsp;|&nbsp; DidiCommune is a product of CPC Direct Ventures Ltd</div>
+      </div>
+    </div>
+
+    <!-- PRIVACY POLICY -->
+    <div class="legal-content" id="content-pp">
+      <div class="legal-doc">
+        <h1>Privacy Policy</h1>
+        <div class="l-sub">Taxplify — operated by CPC Direct Ventures Ltd &nbsp;|&nbsp; Effective: January 2026 &nbsp;|&nbsp; Compliant with the Nigeria Data Protection Act (NDPA) 2023</div>
+
+        <div class="highlight"><strong>Your Privacy Matters</strong>CPC Direct Ventures Ltd is committed to protecting your personal data. This policy explains what we collect, how we use it, and your rights under Nigerian data protection law.</div>
+
+        <h2>1. Data Controller</h2>
+        <p>CPC Direct Ventures Ltd is the Data Controller for all personal data collected through Taxplify. We are committed to compliance with the Nigeria Data Protection Act (NDPA) 2023 and the guidelines of the Nigeria Data Protection Commission (NDPC).</p>
+
+        <h2>2. Data We Collect</h2>
+        <p>To provide our tax filing services, we collect the following categories of personal data:</p>
+        <table>
+          <tr><th>Category</th><th>Data Collected</th></tr>
+          <tr><td>Identity Data</td><td>Full name, date of birth, Tax Identification Number (TIN), National Identity Number (NIN)</td></tr>
+          <tr><td>Contact Data</td><td>Email address, phone number, residential address</td></tr>
+          <tr><td>Financial Data</td><td>Income information, business revenue, payment card details (via our payment processor — not stored by us)</td></tr>
+          <tr><td>Technical Data</td><td>IP address, browser type, device information, usage data</td></tr>
+          <tr><td>Transaction Data</td><td>Filing history, payment records, subscription details</td></tr>
+        </table>
+
+        <h2>3. How We Use Your Data</h2>
+        <ul>
+          <li>To process and submit your tax filings to FIRS on your behalf</li>
+          <li>To process payments and manage your account</li>
+          <li>To send filing confirmations, reminders, and service updates</li>
+          <li>To comply with legal and regulatory obligations</li>
+          <li>To improve our platform and user experience</li>
+          <li>To detect and prevent fraud or misuse of the platform</li>
+        </ul>
+
+        <h2>4. Legal Basis for Processing</h2>
+        <p>We process your data on the following legal bases under the NDPA 2023:</p>
+        <ul>
+          <li><strong>Contract performance</strong> — to deliver the filing service you have requested</li>
+          <li><strong>Legal obligation</strong> — to comply with FIRS requirements and Nigerian tax law</li>
+          <li><strong>Consent</strong> — for marketing communications (which you may withdraw at any time)</li>
+          <li><strong>Legitimate interests</strong> — for fraud prevention and platform improvement</li>
+        </ul>
+
+        <h2>5. Third Parties We Share Data With</h2>
+        <table>
+          <tr><th>Third Party</th><th>Purpose</th></tr>
+          <tr><td>FIRS (Federal Inland Revenue Service)</td><td>Submission of your tax filings as required by law</td></tr>
+          <tr><td>Secure digital payment processor</td><td>Secure secure payment processing</td></tr>
+          <tr><td>Google (Firebase)</td><td>Secure data storage and authentication</td></tr>
+          <tr><td>Anthropic (Claude AI)</td><td>AI-assisted filing guidance (anonymised)</td></tr>
+        </table>
+        <p>We do not sell your personal data to any third party.</p>
+
+        <h2>6. Data Retention</h2>
+        <p>We retain your personal data for as long as necessary to provide our services and comply with legal obligations. Tax-related records are retained for a minimum of 6 years in accordance with Nigerian tax regulations. You may request deletion of non-statutory data at any time.</p>
+
+        <h2>7. Your Rights</h2>
+        <p>Under the NDPA 2023, you have the following rights regarding your personal data:</p>
+        <ul>
+          <li><strong>Right of access</strong> — request a copy of your data</li>
+          <li><strong>Right to rectification</strong> — correct inaccurate data</li>
+          <li><strong>Right to erasure</strong> — request deletion (subject to legal retention requirements)</li>
+          <li><strong>Right to data portability</strong> — receive your data in a portable format</li>
+          <li><strong>Right to object</strong> — object to certain types of processing</li>
+          <li><strong>Right to withdraw consent</strong> — for consent-based processing at any time</li>
+        </ul>
+        <p>To exercise any of these rights, contact us at <strong>questions@cpc-direct.com</strong>.</p>
+
+        <h2>8. Security</h2>
+        <p>We implement appropriate technical and organisational measures to protect your data against unauthorised access, loss, or destruction. These include encryption in transit and at rest, access controls, and regular security reviews. However, no system is completely infallible and we cannot guarantee absolute security.</p>
+
+        <h2>9. Cookies</h2>
+        <p>Taxplify uses essential cookies to maintain your session and ensure the platform functions correctly. We do not use tracking or advertising cookies without your consent.</p>
+
+        <h2>10. Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. We will notify you of significant changes via the platform or email. The current version is always available at cpc-direct.com.</p>
+
+        <h2>11. Contact &amp; Complaints</h2>
+        <p>For privacy-related queries, contact our Data Protection Officer at <strong>questions@cpc-direct.com</strong>. If you are unsatisfied with our response, you have the right to lodge a complaint with the Nigeria Data Protection Commission (NDPC) at <strong>ndpc.gov.ng</strong>.</p>
+
+        <div class="l-footer">CPC Direct Ventures Ltd &nbsp;|&nbsp; cpc-direct.com &nbsp;|&nbsp; NDPA 2023 Compliant</div>
+      </div>
+    </div>
+
+    <!-- REFUND POLICY -->
+    <div class="legal-content" id="content-rp">
+      <div class="legal-doc">
+        <h1>Refund Policy</h1>
+        <div class="l-sub">Taxplify — operated by CPC Direct Ventures Ltd &nbsp;|&nbsp; Effective: January 2026</div>
+
+        <div class="highlight"><strong>Our Commitment</strong>CPC Direct is committed to fair and transparent refund practices. This policy sets out the conditions under which refunds are available for Taxplify services.</div>
+
+        <h2>1. Pay-Per-Filing Transactions</h2>
+        <p>Taxplify charges a fee per tax filing submitted. Given the nature of digital filing services, the following policy applies:</p>
+        <table>
+          <tr><th>Scenario</th><th>Refund Entitlement</th></tr>
+          <tr><td>Filing not yet submitted to FIRS</td><td>Full refund within 24 hours of payment</td></tr>
+          <tr><td>Filing submitted to FIRS successfully</td><td>No refund — service has been rendered</td></tr>
+          <tr><td>Filing failed due to FIRS system error</td><td>Full refund or free re-submission at your option</td></tr>
+          <tr><td>Duplicate payment for same filing</td><td>Full refund of duplicate amount within 3-5 business days</td></tr>
+          <tr><td>Payment debited but filing not initiated</td><td>Full refund within 24-48 hours</td></tr>
+        </table>
+
+        <h2>2. Subscription Plans</h2>
+        <p>Taxplify offers monthly and annual subscription plans for individuals and SMEs. The following refund terms apply:</p>
+        <table>
+          <tr><th>Plan Type</th><th>Refund Window</th><th>Conditions</th></tr>
+          <tr><td>Monthly Subscription</td><td>7 days from purchase</td><td>No filings used during the 7-day period</td></tr>
+          <tr><td>Annual Subscription</td><td>14 days from purchase</td><td>No filings used during the 14-day period</td></tr>
+          <tr><td>Subscription — Mid-Period Cancellation</td><td>No refund</td><td>Service remains active until end of billing period</td></tr>
+          <tr><td>Subscription — Service Downtime &gt;72 hours</td><td>Pro-rated credit</td><td>Applied to next billing cycle</td></tr>
+        </table>
+        <p>Once any filing has been submitted under a subscription plan, the subscription is considered utilised and no refund will be issued for the current billing period.</p>
+
+        <h2>3. Failed &amp; Disputed Transactions</h2>
+        <p>If your payment was debited by your bank but not confirmed on our platform, please contact us within 48 hours with your transaction reference. We will investigate and process a full refund within 3-5 business days if the payment was not received by us.</p>
+        <p>For disputed transactions, we will cooperate fully with your bank or card issuer's chargeback process. Providing false chargeback claims constitutes fraud and may result in account suspension.</p>
+
+        <h2>4. Non-Refundable Items</h2>
+        <p>The following are not eligible for refunds under any circumstances:</p>
+        <ul>
+          <li>FIRS penalties, late filing charges, or assessments — these are government charges outside our control</li>
+          <li>Filings already submitted and accepted by FIRS</li>
+          <li>Add-on services already rendered (e.g. AI advisory sessions used)</li>
+          <li>Subscriptions cancelled after the refund window has elapsed</li>
+          <li>Fees for filings prepared but not submitted due to incorrect user-provided information</li>
+        </ul>
+
+        <h2>5. How to Request a Refund</h2>
+        <p>To request a refund, contact us at <strong>questions@cpc-direct.com</strong> with the following information:</p>
+        <ul>
+          <li>Your full name and registered email address</li>
+          <li>Transaction reference or payment receipt</li>
+          <li>Date of transaction</li>
+          <li>Reason for refund request</li>
+        </ul>
+        <p>We will acknowledge your request within 24 hours and process eligible refunds within <strong>3-7 business days</strong> to your original payment method.</p>
+
+        <h2>6. Refund Method</h2>
+        <p>Approved refunds will be returned to the original payment method used at the time of purchase. We do not issue refunds via alternative payment methods or as cash. Depending on your bank, refund processing may take an additional 3-5 business days to appear in your account after we have processed it.</p>
+
+        <h2>7. Disputes</h2>
+        <p>If you are unsatisfied with our refund decision, you may escalate your complaint to <strong>questions@cpc-direct.com</strong> marked "REFUND DISPUTE". We will review all escalations within 5 business days and provide a final determination. If you remain unsatisfied, you may seek resolution through the Consumer Protection Council (CPC) or your card issuer.</p>
+
+        <h2>8. Policy Updates</h2>
+        <p>CPC Direct reserves the right to update this Refund Policy. Changes will be posted on this page with an updated effective date. Continued use of Taxplify after changes are posted constitutes acceptance of the revised policy.</p>
+
+        <div class="l-footer">CPC Direct Ventures Ltd &nbsp;|&nbsp; cpc-direct.com &nbsp;|&nbsp; questions@cpc-direct.com</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function openLegal(tab){
+  switchTab(tab);
+  document.getElementById('legalPanel').classList.add('open');
+  document.getElementById('legalOverlay').classList.add('open');
+  document.getElementById('legalPanel').querySelector('.legal-body').scrollTop=0;
+  document.body.style.overflow='hidden';
+}
+function closeLegal(){
+  document.getElementById('legalPanel').classList.remove('open');
+  document.getElementById('legalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function switchTab(tab){
+  ['tc-taxplify','tc-legaltice','tc-nativeplatter','tc-didicommune','pp','rp'].forEach(function(t){
+    var tabEl=document.getElementById('tab-'+t);
+    var conEl=document.getElementById('content-'+t);
+    if(tabEl) tabEl.classList.remove('active');
+    if(conEl) conEl.classList.remove('active');
+  });
+  var activeTab=document.getElementById('tab-'+tab);
+  var activeContent=document.getElementById('content-'+tab);
+  if(activeTab) activeTab.classList.add('active');
+  if(activeContent) activeContent.classList.add('active');
+  var body=document.getElementById('legalPanel');
+  if(body) body.querySelector('.legal-body').scrollTop=0;
+}
+// Prevent right-click and keyboard shortcuts in legal panel
+document.addEventListener('contextmenu',function(e){if(e.target.closest('.legal-panel'))e.preventDefault()});
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('legalPanel').classList.contains('open')){
+    if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='p'||e.key==='u'))e.preventDefault();
+  }
+});
+</script>
+
+</body>
+</html>
