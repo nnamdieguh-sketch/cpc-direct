@@ -121,6 +121,7 @@ textarea{resize:vertical;min-height:80px}
 .pill{display:inline-block;font-size:0.68rem;font-weight:600;padding:3px 10px;border-radius:100px}
 .pill-active{background:rgba(0,196,160,0.1);color:var(--teal);border:1px solid rgba(0,196,160,0.25)}
 .pill-revoked{background:rgba(224,85,85,0.1);color:var(--red);border:1px solid rgba(224,85,85,0.25)}
+.pill-notice{background:rgba(224,155,26,0.12);color:var(--gold);border:1px solid rgba(224,155,26,0.3)}
 .tabbar{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--border);flex-wrap:wrap}
 .tabbar button{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--head);font-size:0.76rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:11px 16px;cursor:pointer}
 .tabbar button.active{color:var(--gold);border-bottom-color:var(--gold)}
@@ -317,7 +318,7 @@ textarea{resize:vertical;min-height:80px}
 
   <div class="card">
     <h3>Leave the Advisory Board</h3>
-    <div class="c-sub">Resign your seat. We’ll email a formal resignation letter to the founder and your access will end. Enter your password to confirm it’s really you.</div>
+    <div class="c-sub">Resign your seat on 30 days’ notice. We’ll email a cordial resignation letter to the founder; your access continues for 30 days, then ends. Enter your password to confirm it’s really you.</div>
     <div class="grid2">
       <div><label for="rs-pass">Confirm your password</label><input id="rs-pass" type="password" autocomplete="current-password" placeholder="••••••••••"></div>
       <div></div>
@@ -598,13 +599,14 @@ async function resignMembership(){
   hide('rsErr'); hide('rsOk');
   const pass=$('rs-pass').value;
   if(!pass){$('rsErr').textContent='Enter your password to confirm';show('rsErr');return}
-  if(!confirm('Resign from the CPC Direct Advisory Board? Your access ends and a resignation letter is emailed to the founder. This cannot be undone from here.')) return;
+  if(!confirm('Give 30 days’ notice and resign from the CPC Direct Advisory Board? A resignation letter is emailed to the founder, and your access continues for 30 days before ending.')) return;
   $('rsBtn').disabled=true; $('rsBtn').textContent='Submitting…';
   try{
     const res = await api({action:'resign', email:session.email, password:pass, origin: location.origin + location.pathname});
     if(!res.ok) throw new Error(res.error||'Could not process your resignation');
-    $('rs-pass').value=''; show('rsOk');
-    setTimeout(logout, 3000);   // let them read the confirmation, then sign out
+    $('rs-pass').value='';
+    $('rsOk').textContent = '✓ Your 30-day notice has been recorded and a letter emailed to the founder' + (res.noticeEnds ? '. Your access continues until ' + res.noticeEnds + '.' : '.');
+    show('rsOk');
   }catch(e){$('rsErr').textContent=e.message;show('rsErr')}
   $('rsBtn').disabled=false; $('rsBtn').textContent='Resign from the Board';
 }
@@ -667,10 +669,12 @@ function renderMembers(){
   const q = ($('membersSearch').value||'').toLowerCase().trim();
   const list = q ? membersData.filter(m=>[m.name,m.email,m.status].some(v=>String(v||'').toLowerCase().includes(q))) : membersData;
   const rows = list.slice(0,ROW_CAP).map(m=>{
-    const pill = m.status==='Active' ? '<span class="pill pill-active">Active</span>' : '<span class="pill pill-revoked">Revoked</span>';
+    const pill = m.status==='Active' ? '<span class="pill pill-active">Active</span>'
+      : m.status==='Notice' ? `<span class="pill pill-notice">Notice${m.noticeEnds?' · ends '+esc(m.noticeEnds):''}</span>`
+      : '<span class="pill pill-revoked">Revoked</span>';
     const d = `data-email="${esc(m.email)}" data-name="${esc(m.name)}"`;
     const toggle = m.status==='Active'
-      ? `<button class="btn-ghost btn-sm btn-danger" data-act="status" data-status="Revoked" ${d}>Revoke</button>`
+      ? `<button class="btn-ghost btn-sm btn-danger" data-act="status" data-status="Notice" ${d}>Give notice</button>`
       : `<button class="btn-ghost btn-sm" data-act="status" data-status="Active" ${d}>Restore</button>`;
     return `<tr><td style="color:var(--white)">${esc(m.name)}</td><td>${esc(m.email)}</td><td>${pill}</td><td>${esc(m.lastLogin)}</td>
       <td style="white-space:nowrap"><button class="btn-ghost btn-sm" data-act="reset" ${d}>Reset PW</button>
@@ -729,11 +733,14 @@ async function changeAdminKey(){
 }
 
 async function setStatus(email, status){
-  const verb = status==='Active' ? 'restore access for' : 'revoke access for';
-  if(!confirm('Are you sure you want to ' + verb + ' ' + email + '?')) return;
+  const msg = status==='Active'
+    ? 'Restore full access for ' + email + '?'
+    : 'Give ' + email + ' 30 days’ notice? A cordial letter is emailed to them, their access continues for 30 days, then ends automatically.';
+  if(!confirm(msg)) return;
   try{
     const res = await api({action:'setStatus', adminKey, email, status});
     if(!res.ok) throw new Error(res.error||'Update failed');
+    if(status==='Notice' && res.noticeEnds) alert('Notice given. Access for ' + email + ' ends ' + res.noticeEnds + '. A letter has been emailed to them.');
     loadMembers();
   }catch(e){alert(e.message)}
 }
