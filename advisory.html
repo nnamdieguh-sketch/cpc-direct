@@ -49,6 +49,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 5
 .login-card{background:linear-gradient(150deg,var(--ink2),var(--card));border:1px solid rgba(224,155,26,0.3);border-radius:16px;padding:30px;position:relative;z-index:2;box-shadow:0 24px 60px rgba(0,0,0,0.35)}
 .lc-badge{display:inline-flex;align-items:center;gap:7px;font-family:var(--head);font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);background:rgba(224,155,26,0.08);border:1px solid rgba(224,155,26,0.25);border-radius:100px;padding:6px 14px;margin-bottom:18px}
 .lc-help{font-size:0.76rem;color:var(--dim);margin-top:16px;text-align:center}
+.pw-field{position:relative}
+.pw-field input{padding-right:46px}
+.pw-toggle{position:absolute;top:50%;right:6px;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+.pw-toggle:hover{color:var(--gold)}
 @media(max-width:900px){.hero-split{grid-template-columns:1fr;gap:36px}}
 
 /* BOARD MEMBERS */
@@ -176,8 +180,14 @@ textarea{resize:vertical;min-height:80px}
       <div class="lc-badge"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Members Only</div>
       <div class="m-title">Member Sign In</div>
       <div class="m-sub">Use your registered email and the password issued to you by the administrator.</div>
-      <label>Email</label><input id="li-email" type="email" placeholder="you@email.com">
-      <label>Password</label><input id="li-pass" type="password" placeholder="••••••••••">
+      <label for="li-email">Email</label><input id="li-email" type="email" autocomplete="email" placeholder="you@email.com">
+      <label for="li-pass">Password</label>
+      <div class="pw-field">
+        <input id="li-pass" type="password" autocomplete="current-password" placeholder="••••••••••">
+        <button type="button" class="pw-toggle" id="liPwToggle" aria-label="Show password" aria-pressed="false" onclick="togglePw()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
       <button class="btn full-btn" id="liBtn" onclick="doLogin()">Sign In →</button>
       <div class="err" id="liErr"></div>
       <div class="spinner" id="liSpin">Checking…</div>
@@ -371,6 +381,23 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbww5UOr4bjy3Bn1ZpitcVoQ
 /* ═══════════ STATE ═══════════ */
 let session = null;   // {email, password, name} for member
 let adminKey = null;  // string for admin
+const STORE_KEY = 'cpcAdvisorySession';
+
+/* Persist auth across refreshes (sessionStorage: survives reload, clears on tab close) */
+function saveAuth(){
+  try{
+    sessionStorage.setItem(STORE_KEY, JSON.stringify({session, adminKey}));
+  }catch(e){/* storage may be unavailable (private mode) — fail open */}
+}
+function clearAuth(){
+  try{ sessionStorage.removeItem(STORE_KEY); }catch(e){}
+}
+function togglePw(){
+  const inp=$('li-pass'), btn=$('liPwToggle'), shown=inp.type==='text';
+  inp.type = shown ? 'password' : 'text';
+  btn.setAttribute('aria-pressed', String(!shown));
+  btn.setAttribute('aria-label', shown ? 'Show password' : 'Hide password');
+}
 
 async function api(payload){
   const r = await fetch(API_URL, {method:'POST', body: JSON.stringify(payload)});
@@ -388,7 +415,7 @@ function setView(v){
   $('adminView').classList.toggle('active', v==='admin');
   window.scrollTo(0,0);
 }
-function logout(){session=null;adminKey=null;setView('public')}
+function logout(){session=null;adminKey=null;clearAuth();setView('public')}
 
 /* ═══════════ MEMBER ═══════════ */
 async function doLogin(){
@@ -399,6 +426,7 @@ async function doLogin(){
     const res = await api({action:'login', email, password});
     if(!res.ok) throw new Error(res.error||'Sign in failed');
     session = {email, password, name: res.name};
+    saveAuth();
     setView('member');
     $('whoami').textContent = res.name + ' · ' + email;
     loadMyLeads();
@@ -442,6 +470,7 @@ async function doAdminLogin(){
     const res = await api({action:'adminLogin', adminKey:key});
     if(!res.ok) throw new Error(res.error||'Invalid key');
     adminKey = key;
+    saveAuth();
     closeModal('adminModal'); setView('admin');
     loadMembers(); loadAllLeads(); loadActivity();
   }catch(e){$('akErr').textContent=e.message;show('akErr')}
@@ -460,13 +489,14 @@ async function loadMembers(){
     const res = await api({action:'listMembers', adminKey});
     const rows = (res.members||[]).map(m=>{
       const pill = m.status==='Active' ? '<span class="pill pill-active">Active</span>' : '<span class="pill pill-revoked">Revoked</span>';
+      const d = `data-email="${esc(m.email)}" data-name="${esc(m.name)}"`;
       const toggle = m.status==='Active'
-        ? `<button class="btn-ghost btn-sm btn-danger" onclick="setStatus('${esc(m.email)}','Revoked')">Revoke</button>`
-        : `<button class="btn-ghost btn-sm" onclick="setStatus('${esc(m.email)}','Active')">Restore</button>`;
+        ? `<button class="btn-ghost btn-sm btn-danger" data-act="status" data-status="Revoked" ${d}>Revoke</button>`
+        : `<button class="btn-ghost btn-sm" data-act="status" data-status="Active" ${d}>Restore</button>`;
       return `<tr><td style="color:var(--white)">${esc(m.name)}</td><td>${esc(m.email)}</td><td>${pill}</td><td>${esc(m.lastLogin)}</td>
-        <td style="white-space:nowrap"><button class="btn-ghost btn-sm" onclick="resetPw('${esc(m.email)}','${esc(m.name)}')">Reset PW</button>
+        <td style="white-space:nowrap"><button class="btn-ghost btn-sm" data-act="reset" ${d}>Reset PW</button>
         ${toggle}
-        <button class="btn-ghost btn-sm btn-danger" onclick="removeMember('${esc(m.email)}','${esc(m.name)}')">Remove</button></td></tr>`;
+        <button class="btn-ghost btn-sm btn-danger" data-act="remove" ${d}>Remove</button></td></tr>`;
     }).join('');
     $('membersBody').innerHTML = rows || '<tr><td colspan="5" class="empty">No members yet — add your first board member above.</td></tr>';
   }catch(e){$('membersBody').innerHTML='<tr><td colspan="5" class="empty">Could not load members.</td></tr>'}
@@ -537,9 +567,42 @@ async function loadActivity(){
 
 function toggleMobileNav(){document.getElementById('mobileNav').classList.toggle('open')}
 
-/* Enter key submits in modals */
+/* Member-table actions — delegated so member data never gets interpolated into inline handlers */
+$('membersBody').addEventListener('click', e=>{
+  const btn = e.target.closest('button[data-act]');
+  if(!btn) return;
+  const email = btn.getAttribute('data-email'), name = btn.getAttribute('data-name');
+  switch(btn.getAttribute('data-act')){
+    case 'reset':  resetPw(email, name); break;
+    case 'status': setStatus(email, btn.getAttribute('data-status')); break;
+    case 'remove': removeMember(email, name); break;
+  }
+});
+
+/* Enter key submits */
+$('li-email').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 $('li-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 $('ak-input').addEventListener('keydown',e=>{if(e.key==='Enter')doAdminLogin()});
+
+/* Restore session on load (validates against the server so revoked/changed creds don't linger) */
+(async function restoreAuth(){
+  let saved; try{ saved = JSON.parse(sessionStorage.getItem(STORE_KEY)||'null'); }catch(e){ return; }
+  if(!saved) return;
+  if(saved.adminKey){
+    try{
+      const res = await api({action:'adminLogin', adminKey:saved.adminKey});
+      if(res.ok){ adminKey = saved.adminKey; setView('admin'); loadMembers(); loadAllLeads(); loadActivity(); return; }
+    }catch(e){/* fall through */}
+  }
+  if(saved.session && saved.session.email){
+    try{
+      const s = saved.session;
+      const res = await api({action:'login', email:s.email, password:s.password});
+      if(res.ok){ session = {email:s.email, password:s.password, name:res.name}; setView('member'); $('whoami').textContent = res.name + ' · ' + s.email; loadMyLeads(); return; }
+    }catch(e){/* fall through */}
+  }
+  clearAuth();
+})();
 </script>
 </body>
 </html>
