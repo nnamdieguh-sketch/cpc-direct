@@ -133,6 +133,7 @@ textarea{resize:vertical;min-height:80px}
 .tbl-search{flex:1;min-width:200px;max-width:360px;background:var(--ink);border:1px solid var(--border2);border-radius:8px;color:var(--white);font-family:var(--body);font-size:0.86rem;padding:9px 13px}
 .tbl-search::placeholder{color:var(--dim)}
 .tbl-count{font-size:0.74rem;color:var(--dim);font-weight:500;white-space:nowrap;letter-spacing:0.02em}
+.status-sel{width:auto;min-width:130px;padding:6px 8px;font-size:0.78rem;background:var(--ink);border:1px solid var(--border2);border-radius:6px;color:var(--white)}
 
 /* PASSWORD REVEAL */
 .pw-reveal{background:rgba(224,155,26,0.07);border:1px dashed rgba(224,155,26,0.4);border-radius:10px;padding:18px;margin-top:18px;text-align:center}
@@ -268,7 +269,7 @@ textarea{resize:vertical;min-height:80px}
       <div><label>Phone</label><input id="l-phone" placeholder="+234 ..."></div>
       <div><label>Email</label><input id="l-email" placeholder="contact@company.com"></div>
       <div><label>Estimated value</label><input id="l-value" placeholder="e.g. ₦5M / $10k / Unknown"></div>
-      <div><label>Relevant to</label>
+      <div><label>Relevant to (which app/service)</label>
         <select id="l-product">
           <option value="">— Select —</option>
           <option>Taxplify</option><option>Legaltice</option><option>Native Platter</option>
@@ -276,10 +277,18 @@ textarea{resize:vertical;min-height:80px}
           <option>General / Other</option>
         </select>
       </div>
-      <div></div>
+      <div><label>Priority</label>
+        <select id="l-priority"><option>Medium</option><option>High</option><option>Low</option></select>
+      </div>
+      <div><label>Already spoken to them?</label>
+        <select id="l-spoken"><option value="">— Select —</option><option>Yes</option><option>No</option></select>
+      </div>
+      <div><label>Your relationship to the lead</label><input id="l-relationship" placeholder="e.g. Former colleague, family friend"></div>
     </div>
+    <label>Suggested strategy to make contact</label>
+    <textarea id="l-strategy" placeholder="How should the team approach them? Best time/channel, who to mention, any sensitivities…"></textarea>
     <label>Notes / context</label>
-    <textarea id="l-notes" placeholder="How do you know them? What's the opportunity? Any timing considerations?"></textarea>
+    <textarea id="l-notes" placeholder="What's the opportunity? Estimated timing? Anything else useful?"></textarea>
     <button class="btn full-btn" id="leadBtn" onclick="sendLead()">Submit Lead</button>
     <div class="err" id="leadErr"></div>
     <div class="ok-msg" id="leadOk">✓ Lead submitted — thank you. The team has it.</div>
@@ -287,10 +296,10 @@ textarea{resize:vertical;min-height:80px}
 
   <div class="card">
     <h3>My Submissions</h3>
-    <div class="c-sub">Your 25 most recent leads.</div>
+    <div class="c-sub">Track each lead through the pipeline. Change the status or add a progress note anytime.</div>
     <div class="table-scroll">
-      <table class="ledger"><thead><tr><th>Date</th><th>Lead</th><th>Sector</th><th>Relevant to</th></tr></thead>
-      <tbody id="myLeadsBody"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table>
+      <table class="ledger"><thead><tr><th>Date</th><th>Lead</th><th>App</th><th>Priority</th><th>Status</th><th>Last update</th><th></th></tr></thead>
+      <tbody id="myLeadsBody"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody></table>
     </div>
   </div>
 
@@ -304,6 +313,18 @@ textarea{resize:vertical;min-height:80px}
     <button class="btn full-btn" id="cpBtn" onclick="changeMyPassword()">Update Password</button>
     <div class="err" id="cpErr"></div>
     <div class="ok-msg" id="cpOk">✓ Password updated. Use your new password from now on.</div>
+  </div>
+
+  <div class="card">
+    <h3>Leave the Advisory Board</h3>
+    <div class="c-sub">Resign your seat. We’ll email a formal resignation letter to the founder and your access will end. Enter your password to confirm it’s really you.</div>
+    <div class="grid2">
+      <div><label for="rs-pass">Confirm your password</label><input id="rs-pass" type="password" autocomplete="current-password" placeholder="••••••••••"></div>
+      <div></div>
+    </div>
+    <button class="btn-ghost btn-danger full-btn" id="rsBtn" onclick="resignMembership()">Resign from the Board</button>
+    <div class="err" id="rsErr"></div>
+    <div class="ok-msg" id="rsOk">✓ Your resignation has been recorded and emailed to the founder. Thank you for your service.</div>
   </div>
 </div>
 
@@ -376,8 +397,8 @@ textarea{resize:vertical;min-height:80px}
         <span class="tbl-count" id="leadsCount"></span>
       </div>
       <div class="table-scroll tall">
-        <table class="ledger"><thead><tr><th>Date</th><th>By</th><th>Lead</th><th>Sector</th><th>Contact</th><th>Value</th><th>For</th><th>Notes</th></tr></thead>
-        <tbody id="allLeadsBody"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody></table>
+        <table class="ledger"><thead><tr><th>Date</th><th>By</th><th>Lead</th><th>App</th><th>Pri.</th><th>Contact</th><th>Value</th><th>Status</th><th>Last update</th><th></th></tr></thead>
+        <tbody id="allLeadsBody"><tr><td colspan="10" class="empty">Loading…</td></tr></tbody></table>
       </div>
     </div>
   </div>
@@ -425,7 +446,7 @@ let session = null;   // {email, password, name} for member
 let adminKey = null;  // string for admin
 const STORE_KEY = 'cpcAdvisorySession';
 const ROW_CAP = 250;  // max rows rendered per admin table; search narrows beyond this
-let membersData = [], allLeadsData = [], activityData = [];
+let membersData = [], allLeadsData = [], activityData = [], myLeadsData = [];
 
 /* Build the "12 total" / "3 of 40 match" label shown beside each admin search box */
 function countLabel(matched, total, q){
@@ -504,7 +525,9 @@ async function sendLead(){
   const lead = {leadName:$('l-name').value.trim(), sector:$('l-sector').value.trim(),
     contact:$('l-contact').value.trim(), phone:$('l-phone').value.trim(),
     email:$('l-email').value.trim(), value:$('l-value').value.trim(),
-    product:$('l-product').value, notes:$('l-notes').value.trim()};
+    product:$('l-product').value, priority:$('l-priority').value,
+    spoken:$('l-spoken').value, relationship:$('l-relationship').value.trim(),
+    strategy:$('l-strategy').value.trim(), notes:$('l-notes').value.trim()};
   if(!lead.leadName){$('leadErr').textContent='Lead / company name is required';show('leadErr');$('l-name').focus();return}
   if(lead.email && !isEmail(lead.email)){$('leadErr').textContent='That contact email doesn’t look valid — check it or leave it blank';show('leadErr');$('l-email').focus();return}
   if(lead.phone && lead.phone.replace(/[^0-9]/g,'').length < 7){$('leadErr').textContent='That phone number looks too short — check it or leave it blank';show('leadErr');$('l-phone').focus();return}
@@ -513,19 +536,45 @@ async function sendLead(){
     const res = await api({action:'submitLead', email:session.email, password:session.password, lead});
     if(!res.ok) throw new Error(res.error||'Submission failed');
     show('leadOk');
-    ['l-name','l-sector','l-contact','l-phone','l-email','l-value','l-notes'].forEach(i=>$(i).value='');
-    $('l-product').value='';
+    ['l-name','l-sector','l-contact','l-phone','l-email','l-value','l-relationship','l-strategy','l-notes'].forEach(i=>$(i).value='');
+    $('l-product').value=''; $('l-priority').value='Medium'; $('l-spoken').value='';
     loadMyLeads();
   }catch(e){$('leadErr').textContent=e.message;show('leadErr')}
   $('leadBtn').disabled=false; $('leadBtn').textContent='Submit Lead';
 }
 
+/* Lead pipeline shared by member + admin views */
+const LEAD_STAGES = ['New','Contacted','Proposal Sent','Presentation Sent/Made','In Discussion','Negotiating','Won','Lost'];
+function statusSelect(leadId, current){
+  const opts = LEAD_STAGES.map(s=>`<option${s===current?' selected':''}>${esc(s)}</option>`).join('');
+  return `<select class="status-sel" data-lead="${esc(leadId)}">${opts}</select>`;
+}
+function lastUpdateCell(l){
+  const log = (l.progress||'').split('\n')[0] || '—';
+  return `<span style="font-size:0.8rem">${esc(log)}</span>`;
+}
+function leadActions(leadId){
+  return `<button class="btn-ghost btn-sm" data-lead="${esc(leadId)}" data-act="note">+ Note</button>
+    <button class="btn-ghost btn-sm" data-lead="${esc(leadId)}" data-act="history">History</button>`;
+}
+
 async function loadMyLeads(){
   try{
     const res = await api({action:'myLeads', email:session.email, password:session.password});
-    const rows = (res.leads||[]).map(l=>`<tr><td>${esc(l.date)}</td><td style="color:var(--white)">${esc(l.leadName)}</td><td>${esc(l.sector)}</td><td>${esc(l.product)}</td></tr>`).join('');
-    $('myLeadsBody').innerHTML = rows || '<tr><td colspan="4" class="empty">No submissions yet — your first lead will appear here.</td></tr>';
-  }catch(e){$('myLeadsBody').innerHTML='<tr><td colspan="4" class="empty">Could not load submissions.</td></tr>'}
+    myLeadsData = res.leads||[];
+    renderMyLeads();
+  }catch(e){myLeadsData=[];$('myLeadsBody').innerHTML='<tr><td colspan="7" class="empty">Could not load submissions.</td></tr>'}
+}
+function renderMyLeads(){
+  const rows = myLeadsData.map(l=>`<tr>
+    <td>${esc(l.date)}</td>
+    <td style="color:var(--white)">${esc(l.leadName)}</td>
+    <td>${esc(l.product)}</td>
+    <td>${esc(l.priority)}</td>
+    <td>${statusSelect(l.leadId, l.status)}</td>
+    <td>${lastUpdateCell(l)}</td>
+    <td style="white-space:nowrap">${leadActions(l.leadId)}</td></tr>`).join('');
+  $('myLeadsBody').innerHTML = rows || '<tr><td colspan="7" class="empty">No submissions yet — your first lead will appear here.</td></tr>';
 }
 
 async function changeMyPassword(){
@@ -543,6 +592,45 @@ async function changeMyPassword(){
     show('cpOk');
   }catch(e){$('cpErr').textContent=e.message;show('cpErr')}
   $('cpBtn').disabled=false; $('cpBtn').textContent='Update Password';
+}
+
+async function resignMembership(){
+  hide('rsErr'); hide('rsOk');
+  const pass=$('rs-pass').value;
+  if(!pass){$('rsErr').textContent='Enter your password to confirm';show('rsErr');return}
+  if(!confirm('Resign from the CPC Direct Advisory Board? Your access ends and a resignation letter is emailed to the founder. This cannot be undone from here.')) return;
+  $('rsBtn').disabled=true; $('rsBtn').textContent='Submitting…';
+  try{
+    const res = await api({action:'resign', email:session.email, password:pass, origin: location.origin + location.pathname});
+    if(!res.ok) throw new Error(res.error||'Could not process your resignation');
+    $('rs-pass').value=''; show('rsOk');
+    setTimeout(logout, 3000);   // let them read the confirmation, then sign out
+  }catch(e){$('rsErr').textContent=e.message;show('rsErr')}
+  $('rsBtn').disabled=false; $('rsBtn').textContent='Resign from the Board';
+}
+
+/* Update a lead's status / add a progress note — works for member (own leads) and admin (all) */
+function leadAuth(){ return adminKey ? {adminKey} : {email:session.email, password:session.password}; }
+async function setLeadStatus(leadId, status){
+  try{
+    const res = await api(Object.assign({action:'updateLead', leadId, status}, leadAuth()));
+    if(!res.ok) throw new Error(res.error||'Update failed');
+    adminKey ? loadAllLeads() : loadMyLeads();
+  }catch(e){ alert(e.message); adminKey ? loadAllLeads() : loadMyLeads(); }
+}
+async function addLeadNote(leadId){
+  const note = prompt('Add a progress note (what was done / next step):', '');
+  if(note===null || !note.trim()) return;
+  try{
+    const res = await api(Object.assign({action:'updateLead', leadId, note:note.trim()}, leadAuth()));
+    if(!res.ok) throw new Error(res.error||'Could not add note');
+    adminKey ? loadAllLeads() : loadMyLeads();
+  }catch(e){ alert(e.message); }
+}
+function showLeadHistory(leadId){
+  const list = adminKey ? allLeadsData : myLeadsData;
+  const l = list.find(x=>String(x.leadId)===String(leadId));
+  alert(l && l.progress ? l.progress : 'No progress notes yet for this lead.');
 }
 
 /* ═══════════ ADMIN ═══════════ */
@@ -666,14 +754,24 @@ async function loadAllLeads(){
     const res = await api({action:'allLeads', adminKey});
     allLeadsData = res.leads||[];
     renderAllLeads();
-  }catch(e){allLeadsData=[];$('allLeadsBody').innerHTML='<tr><td colspan="8" class="empty">Could not load leads.</td></tr>';$('leadsCount').textContent=''}
+  }catch(e){allLeadsData=[];$('allLeadsBody').innerHTML='<tr><td colspan="10" class="empty">Could not load leads.</td></tr>';$('leadsCount').textContent=''}
 }
 function renderAllLeads(){
   const q = ($('leadsSearch').value||'').toLowerCase().trim();
-  const list = q ? allLeadsData.filter(l=>[l.by,l.leadName,l.sector,l.contact,l.phone,l.email,l.value,l.product,l.notes].some(v=>String(v||'').toLowerCase().includes(q))) : allLeadsData;
-  const rows = list.slice(0,ROW_CAP).map(l=>`<tr><td>${esc(l.date)}</td><td>${esc(l.by)}</td><td style="color:var(--white)">${esc(l.leadName)}</td><td>${esc(l.sector)}</td><td>${esc(l.contact)}<br>${esc(l.phone)}<br>${esc(l.email)}</td><td>${esc(l.value)}</td><td>${esc(l.product)}</td><td style="max-width:220px">${esc(l.notes)}</td></tr>`).join('');
+  const list = q ? allLeadsData.filter(l=>[l.by,l.leadName,l.sector,l.contact,l.phone,l.email,l.value,l.product,l.priority,l.status,l.notes,l.strategy,l.relationship].some(v=>String(v||'').toLowerCase().includes(q))) : allLeadsData;
+  const rows = list.slice(0,ROW_CAP).map(l=>`<tr>
+    <td>${esc(l.date)}</td>
+    <td>${esc(l.by)}</td>
+    <td style="color:var(--white)">${esc(l.leadName)}${l.spoken?`<br><span style="font-size:0.72rem;color:var(--muted)">Spoken: ${esc(l.spoken)}</span>`:''}</td>
+    <td>${esc(l.product)}</td>
+    <td>${esc(l.priority)}</td>
+    <td>${esc(l.contact)}<br>${esc(l.phone)}<br>${esc(l.email)}</td>
+    <td>${esc(l.value)}</td>
+    <td>${statusSelect(l.leadId, l.status)}</td>
+    <td style="max-width:200px">${lastUpdateCell(l)}</td>
+    <td style="white-space:nowrap">${leadActions(l.leadId)}</td></tr>`).join('');
   const empty = q ? 'No leads match your search.' : 'No leads submitted yet.';
-  $('allLeadsBody').innerHTML = rows || `<tr><td colspan="8" class="empty">${empty}</td></tr>`;
+  $('allLeadsBody').innerHTML = rows || `<tr><td colspan="10" class="empty">${empty}</td></tr>`;
   $('leadsCount').textContent = countLabel(list.length, allLeadsData.length, q);
 }
 
@@ -705,6 +803,22 @@ $('membersBody').addEventListener('click', e=>{
     case 'status': setStatus(email, btn.getAttribute('data-status')); break;
     case 'remove': removeMember(email, name); break;
   }
+});
+
+/* Lead tables — status change + note/history buttons (shared by member & admin tables) */
+['myLeadsBody','allLeadsBody'].forEach(id=>{
+  const body=$(id);
+  body.addEventListener('change', e=>{
+    const sel=e.target.closest('select.status-sel');
+    if(sel) setLeadStatus(sel.getAttribute('data-lead'), sel.value);
+  });
+  body.addEventListener('click', e=>{
+    const btn=e.target.closest('button[data-act]');
+    if(!btn) return;
+    const leadId=btn.getAttribute('data-lead');
+    if(btn.getAttribute('data-act')==='note') addLeadNote(leadId);
+    if(btn.getAttribute('data-act')==='history') showLeadHistory(leadId);
+  });
 });
 
 /* Enter key submits */
