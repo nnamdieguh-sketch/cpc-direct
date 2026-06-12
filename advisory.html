@@ -293,6 +293,18 @@ textarea{resize:vertical;min-height:80px}
       <tbody id="myLeadsBody"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table>
     </div>
   </div>
+
+  <div class="card">
+    <h3>Change My Password</h3>
+    <div class="c-sub">Optional — set a password only you know, or keep the one you were given.</div>
+    <div class="grid2">
+      <div><label for="cp-current">Current password</label><input id="cp-current" type="password" autocomplete="current-password" placeholder="••••••••••"></div>
+      <div><label for="cp-new">New password</label><input id="cp-new" type="password" autocomplete="new-password" placeholder="At least 6 characters"></div>
+    </div>
+    <button class="btn full-btn" id="cpBtn" onclick="changeMyPassword()">Update Password</button>
+    <div class="err" id="cpErr"></div>
+    <div class="ok-msg" id="cpOk">✓ Password updated. Use your new password from now on.</div>
+  </div>
 </div>
 
 <!-- ════════ SUPER ADMIN ════════ -->
@@ -314,7 +326,7 @@ textarea{resize:vertical;min-height:80px}
   <div class="atab active" id="atab-members">
     <div class="card">
       <h3>Add Board Member</h3>
-      <div class="c-sub">A password is generated once — copy it and send to the member on WhatsApp.</div>
+      <div class="c-sub">An email invite with their sign-in details is sent to the member automatically. The password is also shown once below as a backup.</div>
       <div class="grid2">
         <div><label>Full name *</label><input id="am-name" placeholder="e.g. Chief Ada Okafor"></div>
         <div><label>Email *</label><input id="am-email" placeholder="member@email.com"></div>
@@ -323,7 +335,7 @@ textarea{resize:vertical;min-height:80px}
       <div class="err" id="addErr"></div>
       <div class="pw-reveal" id="addReveal" style="display:none">
         <div class="pw" id="addPw"></div>
-        <p>Shown once only. Copy now and send to the member via WhatsApp.</p>
+        <p>Emailed to the member. Shown here once as a backup — copy it if you’d rather send via WhatsApp.</p>
       </div>
     </div>
     <div class="card">
@@ -339,8 +351,20 @@ textarea{resize:vertical;min-height:80px}
       <div class="pw-reveal" id="resetReveal" style="display:none">
         <div style="font-size:0.78rem;color:var(--muted);margin-bottom:6px" id="resetWho"></div>
         <div class="pw" id="resetPw"></div>
-        <p>New password — shown once. Send to the member via WhatsApp.</p>
+        <p>New password — emailed to the member, and shown here once as a backup.</p>
       </div>
+    </div>
+
+    <div class="card">
+      <h3>Change Admin Password</h3>
+      <div class="c-sub">Updates the master key you use to sign in here. Takes effect immediately — there’s no way to recover it, so store it somewhere safe.</div>
+      <div class="grid2">
+        <div><label for="ak-new">New admin password</label><input id="ak-new" type="password" autocomplete="new-password" placeholder="At least 6 characters"></div>
+        <div><label for="ak-new2">Confirm new password</label><input id="ak-new2" type="password" autocomplete="new-password" placeholder="Re-type it"></div>
+      </div>
+      <button class="btn full-btn" id="cakBtn" onclick="changeAdminKey()">Update Admin Password</button>
+      <div class="err" id="cakErr"></div>
+      <div class="ok-msg" id="cakOk">✓ Admin password updated. Use the new one next time you sign in.</div>
     </div>
   </div>
 
@@ -504,6 +528,23 @@ async function loadMyLeads(){
   }catch(e){$('myLeadsBody').innerHTML='<tr><td colspan="4" class="empty">Could not load submissions.</td></tr>'}
 }
 
+async function changeMyPassword(){
+  hide('cpErr'); hide('cpOk');
+  const current=$('cp-current').value, next=$('cp-new').value;
+  if(!current||!next){$('cpErr').textContent='Enter your current and new password';show('cpErr');return}
+  if(next.length<6){$('cpErr').textContent='New password must be at least 6 characters';show('cpErr');return}
+  if(next===current){$('cpErr').textContent='New password must be different from your current one';show('cpErr');return}
+  $('cpBtn').disabled=true; $('cpBtn').textContent='Updating…';
+  try{
+    const res = await api({action:'changePassword', email:session.email, password:current, newPassword:next});
+    if(!res.ok) throw new Error(res.error||'Could not update password');
+    session.password = next; saveAuth();          // keep the live session in sync
+    $('cp-current').value=''; $('cp-new').value='';
+    show('cpOk');
+  }catch(e){$('cpErr').textContent=e.message;show('cpErr')}
+  $('cpBtn').disabled=false; $('cpBtn').textContent='Update Password';
+}
+
 /* ═══════════ ADMIN ═══════════ */
 async function doAdminLogin(){
   const key=$('ak-input').value.trim();
@@ -560,7 +601,7 @@ async function addMember(){
   if(!isEmail(email)){$('addErr').textContent='Enter a valid email address';show('addErr');$('am-email').focus();return}
   $('addBtn').disabled=true;
   try{
-    const res = await api({action:'addMember', adminKey, name, email});
+    const res = await api({action:'addMember', adminKey, name, email, origin: location.origin + location.pathname});
     if(!res.ok) throw new Error(res.error||'Could not add member');
     $('addPw').textContent = res.password;
     show('addReveal');
@@ -574,12 +615,29 @@ async function resetPw(email, name){
   if(!confirm('Generate a new password for ' + name + '? Their old password stops working immediately.')) return;
   hide('resetReveal');
   try{
-    const res = await api({action:'resetPassword', adminKey, email});
+    const res = await api({action:'resetPassword', adminKey, email, origin: location.origin + location.pathname});
     if(!res.ok) throw new Error(res.error||'Reset failed');
     $('resetWho').textContent = name + ' · ' + email;
     $('resetPw').textContent = res.password;
     show('resetReveal');
   }catch(e){alert(e.message)}
+}
+
+async function changeAdminKey(){
+  hide('cakErr'); hide('cakOk');
+  const next=$('ak-new').value, conf=$('ak-new2').value;
+  if(!next){$('cakErr').textContent='Enter a new admin password';show('cakErr');return}
+  if(next.length<6){$('cakErr').textContent='New admin password must be at least 6 characters';show('cakErr');return}
+  if(next!==conf){$('cakErr').textContent='The two passwords don’t match';show('cakErr');return}
+  $('cakBtn').disabled=true; $('cakBtn').textContent='Updating…';
+  try{
+    const res = await api({action:'changeAdminKey', adminKey, newKey:next});
+    if(!res.ok) throw new Error(res.error||'Could not update admin password');
+    adminKey = next; saveAuth();                   // keep this session signed in with the new key
+    $('ak-new').value=''; $('ak-new2').value='';
+    show('cakOk');
+  }catch(e){$('cakErr').textContent=e.message;show('cakErr')}
+  $('cakBtn').disabled=false; $('cakBtn').textContent='Update Admin Password';
 }
 
 async function setStatus(email, status){
