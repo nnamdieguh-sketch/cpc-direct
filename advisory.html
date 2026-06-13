@@ -61,7 +61,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 5
 .members{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
 .member{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px 22px;text-align:center;transition:border-color .2s,transform .2s}
 .member:hover{border-color:rgba(224,155,26,0.35);transform:translateY(-3px)}
-.avatar{width:88px;height:88px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(140deg,var(--ink2),var(--card));border:2px solid rgba(224,155,26,0.4);display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:800;font-size:1.5rem;color:var(--gold);object-fit:cover}
+.avatar{position:relative;width:88px;height:88px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(140deg,var(--ink2),var(--card));border:2px solid rgba(224,155,26,0.4);display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:800;font-size:1.5rem;color:var(--gold);object-fit:cover;overflow:hidden}
 img.avatar{padding:0}
 .mem-name{font-family:var(--head);font-weight:700;font-size:0.98rem;margin-bottom:4px}
 .mem-title{color:var(--muted);font-size:0.8rem;font-weight:300;margin-bottom:8px;line-height:1.45}
@@ -1225,8 +1225,8 @@ async function renderBoard(){
     const ini  = initialsOf(m.name);
     const hasPhoto = /^data:/.test(m.photoUrl||'');   // only render real stored images
     const ava  = hasPhoto
-      ? `<div class="avatar" style="background-image:url('${m.photoUrl}');background-size:cover;background-position:center"></div>`
-      : `<div class="avatar">${esc(ini)}</div>`;
+      ? `<div class="avatar has" style="background-image:url('${m.photoUrl}');background-size:cover;background-position:center"></div>`
+      : `<div class="avatar has">${esc(ini)}</div>`;
     const bio  = m.bio ? `<div class="mem-title">${esc(m.bio)}</div>` : '';
     return `<div class="member">${ava}<div class="mem-name">${name}</div>${bio}</div>`;
   }).join('');
