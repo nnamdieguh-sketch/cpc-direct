@@ -123,6 +123,27 @@ textarea{resize:vertical;min-height:80px}
 .pill-revoked{background:rgba(224,85,85,0.1);color:var(--red);border:1px solid rgba(224,85,85,0.25)}
 .pill-notice{background:rgba(224,155,26,0.12);color:var(--gold);border:1px solid rgba(224,155,26,0.3)}
 .accept-card{border:1px solid rgba(224,155,26,0.35);background:linear-gradient(180deg,rgba(224,155,26,0.06),transparent)}
+.chat-log{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.18);border:1px solid var(--line);border-radius:10px}
+.bubble{max-width:82%;padding:8px 12px;border-radius:12px;font-size:0.88rem;line-height:1.45;white-space:pre-wrap;word-wrap:break-word}
+.bubble .meta{display:block;font-size:0.68rem;opacity:0.6;margin-top:4px}
+.bubble-me{align-self:flex-end;background:rgba(224,155,26,0.16);border:1px solid rgba(224,155,26,0.3);color:var(--white);border-bottom-right-radius:3px}
+.bubble-them{align-self:flex-start;background:rgba(255,255,255,0.06);border:1px solid var(--line);border-bottom-left-radius:3px}
+.profile-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:12px}
+.avatar{width:84px;height:84px;border-radius:50%;flex-shrink:0;background:rgba(255,255,255,0.06) center/cover no-repeat;border:1px solid var(--line);position:relative}
+.avatar.has::after{content:none}
+.avatar:not(.has)::after{content:'No photo';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.62rem;color:var(--muted);text-align:center}
+.check{display:flex;align-items:center;gap:8px;font-size:0.88rem;color:var(--white);cursor:pointer;margin:10px 0}
+.check input{width:auto;margin:0}
+.msg-wrap{display:flex;gap:14px}
+.thread-list{width:240px;flex-shrink:0;max-height:480px;overflow-y:auto;border:1px solid var(--line);border-radius:10px}
+.thread-item{padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.thread-item:hover{background:rgba(255,255,255,0.04)}
+.thread-item.active{background:rgba(224,155,26,0.12)}
+.thread-item .tn{color:var(--white);font-size:0.86rem;font-weight:600}
+.thread-item .tp{color:var(--muted);font-size:0.74rem;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thread-view{flex:1;min-width:0}
+.thread-head{color:var(--white);font-weight:600;margin-bottom:10px}
+@media(max-width:640px){.msg-wrap{flex-direction:column}.thread-list{width:100%;max-height:200px}}
 .tabbar{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--border);flex-wrap:wrap}
 .tabbar button{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--head);font-size:0.76rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:11px 16px;cursor:pointer}
 .tabbar button.active{color:var(--gold);border-bottom-color:var(--gold)}
@@ -313,6 +334,34 @@ textarea{resize:vertical;min-height:80px}
   </div>
 
   <div class="card">
+    <h3>Ask the Founder</h3>
+    <div class="c-sub">A private line to Nnamdi. Only you and the founder can see this conversation — no other advisor can.</div>
+    <div class="chat-log" id="chatLog"><div class="empty">Loading…</div></div>
+    <textarea id="chat-msg" placeholder="Type your question or message…"></textarea>
+    <button class="btn full-btn" id="chatBtn" onclick="sendChat()">Send to Founder</button>
+    <div class="err" id="chatErr"></div>
+  </div>
+
+  <div class="card">
+    <h3>My Public Profile</h3>
+    <div class="c-sub">Add your photo and a short bio for the public <a href="advisory-board.html" target="_blank" rel="noopener">Our Advisory Board</a> page. You appear there only if you switch on the toggle below. Your leads, messages, and activity are always private.</div>
+    <div class="profile-row">
+      <div class="avatar" id="pf-avatar"></div>
+      <div style="flex:1">
+        <label for="pf-photo">Photo</label>
+        <input type="file" id="pf-photo" accept="image/*" onchange="previewPhoto()">
+        <div class="c-sub" style="margin-top:4px">A clear headshot — automatically resized before upload.</div>
+      </div>
+    </div>
+    <label for="pf-bio">Short bio</label>
+    <textarea id="pf-bio" maxlength="600" placeholder="A few lines about your background and expertise (max 600 characters)."></textarea>
+    <label class="check"><input type="checkbox" id="pf-public"> Show me on the public Advisory Board page</label>
+    <button class="btn full-btn" id="pfBtn" onclick="saveProfile()">Save Profile</button>
+    <div class="err" id="pfErr"></div>
+    <div class="ok-msg" id="pfOk">✓ Profile saved.</div>
+  </div>
+
+  <div class="card">
     <h3>Change My Password</h3>
     <div class="c-sub">Optional — set a password only you know, or keep the one you were given.</div>
     <div class="grid2">
@@ -350,6 +399,7 @@ textarea{resize:vertical;min-height:80px}
   <div class="tabbar">
     <button class="active" id="at-members" onclick="adminTab('members')">Members</button>
     <button id="at-leads" onclick="adminTab('leads')">All Leads</button>
+    <button id="at-messages" onclick="adminTab('messages')">Messages</button>
     <button id="at-activity" onclick="adminTab('activity')">Activity</button>
   </div>
 
@@ -408,6 +458,26 @@ textarea{resize:vertical;min-height:80px}
       <div class="table-scroll tall">
         <table class="ledger"><thead><tr><th>Date</th><th>By</th><th>Lead</th><th>App</th><th>Pri.</th><th>Contact</th><th>Value</th><th>Status</th><th>Last update</th><th></th></tr></thead>
         <tbody id="allLeadsBody"><tr><td colspan="10" class="empty">Loading…</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="atab" id="atab-messages">
+    <div class="card">
+      <h3>Advisor Messages</h3>
+      <div class="c-sub">Private questions from advisors. Click a conversation to read and reply.</div>
+      <div class="msg-wrap">
+        <div class="thread-list" id="threadList"><div class="empty">Loading…</div></div>
+        <div class="thread-view">
+          <div class="empty" id="threadEmpty">Select a conversation on the left.</div>
+          <div id="threadPane" style="display:none">
+            <div class="thread-head" id="threadWho"></div>
+            <div class="chat-log" id="adminChatLog"></div>
+            <textarea id="reply-msg" placeholder="Type your reply to the advisor…"></textarea>
+            <button class="btn full-btn" id="replyBtn" onclick="sendAdminReply()">Send Reply</button>
+            <div class="err" id="replyErr"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -525,7 +595,7 @@ async function doLogin(){
     setView('member');
     $('whoami').textContent = res.name + ' · ' + email;
     $('acceptCard').style.display = res.accepted ? 'none' : 'block';
-    loadMyLeads();
+    loadMyLeads(); loadChat(); loadProfile();
   }catch(e){$('liErr').textContent=e.message;show('liErr')}
   hide('liSpin'); $('liBtn').disabled=false;
 }
@@ -539,6 +609,122 @@ async function acceptAppointment(){
     if(!res.ok) throw new Error(res.error||'Could not record your acceptance');
     $('acceptCard').style.display='none';
   }catch(e){$('acceptErr').textContent=e.message;show('acceptErr');$('acceptBtn').disabled=false;$('acceptBtn').textContent='✓ I Accept My Appointment'}
+}
+
+/* ── Ask the Founder (private chat) ── */
+function renderChat(el, msgs, meSender, themLabel){
+  meSender = meSender || 'Advisor';
+  themLabel = themLabel || 'Nnamdi (Founder)';
+  if(!msgs||!msgs.length){ el.innerHTML='<div class="empty">No messages yet. Say hello or ask a question.</div>'; return; }
+  el.innerHTML = msgs.map(m=>{
+    const mine = m.sender===meSender;
+    const cls = mine ? 'bubble-me' : 'bubble-them';
+    const who = mine ? 'You' : themLabel;
+    return `<div class="bubble ${cls}">${esc(m.message)}<span class="meta">${who} · ${esc(m.date)}</span></div>`;
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+async function loadChat(){
+  try{
+    const r = await api({action:'getMessages', email:session.email, password:session.password});
+    if(r.ok) renderChat($('chatLog'), r.messages);
+  }catch(e){ $('chatLog').innerHTML='<div class="empty">Could not load messages.</div>'; }
+}
+async function sendChat(){
+  const msg = $('chat-msg').value.trim(); hide('chatErr');
+  if(!msg){ $('chatErr').textContent='Type a message first'; show('chatErr'); return; }
+  $('chatBtn').disabled=true; $('chatBtn').textContent='Sending…';
+  try{
+    const r = await api({action:'postMessage', email:session.email, password:session.password,
+      message:msg, origin: location.origin + location.pathname});
+    if(!r.ok) throw new Error(r.error||'Could not send');
+    $('chat-msg').value=''; await loadChat();
+  }catch(e){ $('chatErr').textContent=e.message; show('chatErr'); }
+  $('chatBtn').disabled=false; $('chatBtn').textContent='Send to Founder';
+}
+
+/* ── My Public Profile ── */
+let pendingPhoto = '';
+function previewPhoto(){
+  const f = $('pf-photo').files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const max=600; let w=img.width, h=img.height;
+      if(w>h && w>max){ h=Math.round(h*max/w); w=max; } else if(h>max){ w=Math.round(w*max/h); h=max; }
+      const c=document.createElement('canvas'); c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      pendingPhoto = c.toDataURL('image/jpeg', 0.85);
+      $('pf-avatar').style.backgroundImage = `url(${pendingPhoto})`;
+      $('pf-avatar').classList.add('has');
+    };
+    img.src = e.target.result;
+  };
+  rd.readAsDataURL(f);
+}
+async function loadProfile(){
+  try{
+    const r = await api({action:'getProfile', email:session.email, password:session.password});
+    if(!r.ok) return;
+    $('pf-bio').value = r.bio||'';
+    $('pf-public').checked = !!r.public;
+    if(r.photoUrl){ $('pf-avatar').style.backgroundImage=`url(${r.photoUrl})`; $('pf-avatar').classList.add('has'); }
+  }catch(e){}
+}
+async function saveProfile(){
+  hide('pfErr'); hide('pfOk');
+  $('pfBtn').disabled=true; $('pfBtn').textContent='Saving…';
+  try{
+    const r = await api({action:'saveProfile', email:session.email, password:session.password,
+      bio: $('pf-bio').value.trim(), public: $('pf-public').checked, photoData: pendingPhoto });
+    if(!r.ok) throw new Error(r.error||'Could not save profile');
+    pendingPhoto='';
+    if(r.photoUrl){ $('pf-avatar').style.backgroundImage=`url(${r.photoUrl})`; $('pf-avatar').classList.add('has'); }
+    show('pfOk');
+  }catch(e){ $('pfErr').textContent=e.message; show('pfErr'); }
+  $('pfBtn').disabled=false; $('pfBtn').textContent='Save Profile';
+}
+
+/* ── Admin: advisor messages ── */
+let currentThread = '';
+async function loadThreads(){
+  try{
+    const r = await api({action:'adminThreads', adminKey});
+    const list = (r.threads||[]);
+    if(!list.length){ $('threadList').innerHTML='<div class="empty">No messages yet.</div>'; return; }
+    $('threadList').innerHTML = list.map(t=>
+      `<div class="thread-item${t.email===currentThread?' active':''}" data-email="${esc(t.email)}" data-name="${esc(t.name)}" onclick="openThread(this)">
+        <div class="tn">${esc(t.name||t.email)}</div>
+        <div class="tp">${t.lastSender==='Founder'?'You: ':''}${esc(t.lastMessage)}</div>
+      </div>`).join('');
+  }catch(e){ $('threadList').innerHTML='<div class="empty">Could not load.</div>'; }
+}
+async function openThread(el){
+  currentThread = el.getAttribute('data-email');
+  const name = el.getAttribute('data-name');
+  loadThreads();
+  hide('threadEmpty'); $('threadPane').style.display='block';
+  $('threadWho').textContent = (name||currentThread)+' · '+currentThread;
+  $('adminChatLog').innerHTML='<div class="empty">Loading…</div>';
+  try{
+    const r = await api({action:'adminThread', adminKey, email:currentThread});
+    if(r.ok) renderChat($('adminChatLog'), r.messages, 'Founder', name||currentThread);
+  }catch(e){ $('adminChatLog').innerHTML='<div class="empty">Could not load.</div>'; }
+}
+async function sendAdminReply(){
+  const msg = $('reply-msg').value.trim(); hide('replyErr');
+  if(!msg){ $('replyErr').textContent='Type a reply first'; show('replyErr'); return; }
+  $('replyBtn').disabled=true; $('replyBtn').textContent='Sending…';
+  try{
+    const r = await api({action:'adminReply', adminKey, email:currentThread, message:msg,
+      origin: location.origin + location.pathname});
+    if(!r.ok) throw new Error(r.error||'Could not send');
+    $('reply-msg').value='';
+    const el=document.querySelector(`.thread-item[data-email="${currentThread}"]`);
+    if(el) openThread(el);
+  }catch(e){ $('replyErr').textContent=e.message; show('replyErr'); }
+  $('replyBtn').disabled=false; $('replyBtn').textContent='Send Reply';
 }
 
 async function sendLead(){
@@ -672,10 +858,11 @@ async function doAdminLogin(){
 }
 
 function adminTab(t){
-  ['members','leads','activity'].forEach(x=>{
+  ['members','leads','messages','activity'].forEach(x=>{
     $('atab-'+x).classList.toggle('active', x===t);
     $('at-'+x).classList.toggle('active', x===t);
   });
+  if(t==='messages') loadThreads();
 }
 
 async function loadMembers(){
@@ -870,7 +1057,7 @@ $('ak-input').addEventListener('keydown',e=>{if(e.key==='Enter')doAdminLogin()})
     try{
       const s = saved.session;
       const res = await api({action:'login', email:s.email, password:s.password});
-      if(res.ok){ session = {email:s.email, password:s.password, name:res.name}; setView('member'); $('whoami').textContent = res.name + ' · ' + s.email; $('acceptCard').style.display = res.accepted ? 'none' : 'block'; loadMyLeads(); return; }
+      if(res.ok){ session = {email:s.email, password:s.password, name:res.name}; setView('member'); $('whoami').textContent = res.name + ' · ' + s.email; $('acceptCard').style.display = res.accepted ? 'none' : 'block'; loadMyLeads(); loadChat(); loadProfile(); return; }
     }catch(e){/* fall through */}
   }
   clearAuth();

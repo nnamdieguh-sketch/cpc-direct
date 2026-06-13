@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Advisory Board — CPC Direct</title>
+<meta name="description" content="The senior operators, connectors, and experienced hands who advise CPC Direct Ventures.">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#080C1A;--ink2:#0E1428;--card:#181E35;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--gold:#E09B1A;--gold-lt:#F5C050;--teal:#00C4A0;--white:#EFF1FA;--muted:rgba(239,241,250,0.48);--head:'Syne',sans-serif;--body:'Outfit',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--white);font-family:var(--body);line-height:1.6}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 6vw;background:rgba(8,12,26,0.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.logo{font-family:var(--head);font-weight:800;font-size:1.2rem;color:#fff;cursor:pointer}
+.logo-dot{color:var(--gold)}
+.nav-links a{color:var(--muted);font-size:0.9rem;margin-left:22px;transition:color .2s}
+.nav-links a:hover{color:#fff}
+.hero{text-align:center;padding:90px 6vw 50px;max-width:820px;margin:0 auto}
+.eyebrow{font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:16px}
+.hero h1{font-family:var(--head);font-size:clamp(2rem,5vw,3.2rem);font-weight:800;line-height:1.1;margin-bottom:18px}
+.hero h1 span{color:var(--gold)}
+.hero p{color:var(--muted);font-size:1.05rem;max-width:640px;margin:0 auto}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 6vw 100px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
+.member{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;text-align:center;transition:transform .2s,border-color .2s}
+.member:hover{transform:translateY(-4px);border-color:rgba(224,155,26,0.4)}
+.ava{width:110px;height:110px;border-radius:50%;margin:0 auto 18px;background:var(--ink2) center/cover no-repeat;border:2px solid rgba(224,155,26,0.4);position:relative;overflow:hidden}
+.ava-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:700;font-size:2rem;color:var(--gold);background:linear-gradient(135deg,#1a2138,#0E1428)}
+.member h3{font-family:var(--head);font-size:1.15rem;font-weight:700;margin-bottom:10px}
+.member .bio{color:var(--muted);font-size:0.92rem;text-align:left}
+.state{text-align:center;color:var(--muted);padding:70px 20px;font-size:1rem}
+.cta{text-align:center;margin-top:70px;padding:46px 24px;background:linear-gradient(180deg,rgba(224,155,26,0.07),transparent);border:1px solid rgba(224,155,26,0.25);border-radius:18px}
+.cta h2{font-family:var(--head);font-size:1.5rem;font-weight:800;margin-bottom:10px}
+.cta p{color:var(--muted);max-width:520px;margin:0 auto 22px}
+.btn{display:inline-block;background:var(--gold);color:#0a0a0a;font-weight:600;padding:13px 30px;border-radius:10px;font-size:0.95rem;transition:background .2s}
+.btn:hover{background:var(--gold-lt)}
+footer{border-top:1px solid var(--border);padding:30px 6vw;text-align:center;color:var(--muted);font-size:0.82rem}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html"><span class="logo">CPC<span class="logo-dot">.</span>Direct</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="advisory.html">Member Portal</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow">CPC Direct Ventures</div>
+  <h1>Our <span>Advisory Board</span></h1>
+  <p>A circle of senior operators, connectors, and experienced hands whose market intelligence, introductions, and candid counsel help shape CPC Direct and the ventures we build.</p>
+</header>
+
+<div class="wrap">
+  <div class="grid" id="board"></div>
+  <div class="state" id="state">Loading the board…</div>
+
+  <div class="cta">
+    <h2>Membership is by invitation</h2>
+    <p>Our Advisory Board is a small, hand-picked group. If you're an existing advisor, sign in to your portal to submit leads and reach the founder directly.</p>
+    <a class="btn" href="advisory.html">Advisor Sign-In</a>
+  </div>
+</div>
+
+<footer>CPC Direct Ventures Ltd · cpc-direct.com · questions@cpc-direct.com</footer>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbww5UOr4bjy3Bn1ZpitcVoQ_ZuafW-Nyoq5UHob1RnMniMKU9Sadiwrn8JpeCTlMttRCQ/exec';
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML}
+function initials(name){return String(name||'').trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase()||'·'}
+
+(async function loadBoard(){
+  const state=document.getElementById('state'), board=document.getElementById('board');
+  try{
+    const r = await fetch(API_URL, {method:'POST', body: JSON.stringify({action:'publicBoard'})});
+    const data = await r.json();
+    const members = (data && data.members) || [];
+    if(!members.length){ state.textContent='Our advisory board will be announced here shortly.'; return; }
+    state.style.display='none';
+    board.innerHTML = members.map(m=>{
+      const photo = m.photoUrl
+        ? `<div class="ava" style="background-image:url('${esc(m.photoUrl)}')"></div>`
+        : `<div class="ava"><div class="ava-fallback">${esc(initials(m.name))}</div></div>`;
+      const bio = m.bio ? `<p class="bio">${esc(m.bio)}</p>` : '';
+      return `<div class="member">${photo}<h3>${esc(m.name)}</h3>${bio}</div>`;
+    }).join('');
+  }catch(e){
+    state.textContent='Could not load the board right now. Please try again later.';
+  }
+})();
+</script>
+</body>
+</html>
