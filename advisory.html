@@ -137,6 +137,8 @@ textarea{resize:vertical;min-height:80px}
 .bp-name{font-family:var(--head);font-weight:700;font-size:1.05rem;color:var(--white);margin-bottom:8px}
 .bp-bio{color:var(--muted);font-size:0.86rem;text-align:left;white-space:pre-wrap;word-wrap:break-word}
 .bio-tools{display:flex;justify-content:space-between;align-items:center;margin:-2px 0 6px;gap:10px}
+.bio-actions{display:flex;gap:8px;align-items:center}
+.bio-undo{cursor:pointer;font-size:0.74rem;color:var(--muted);text-decoration:underline}
 .bio-count{font-size:0.74rem;color:var(--muted)}
 .chat-log{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.18);border:1px solid var(--line);border-radius:10px}
 .bubble{max-width:82%;padding:8px 12px;border-radius:12px;font-size:0.88rem;line-height:1.45;white-space:pre-wrap;word-wrap:break-word}
@@ -377,7 +379,11 @@ textarea{resize:vertical;min-height:80px}
     <textarea id="pf-bio" maxlength="600" spellcheck="true" oninput="onBioInput()" placeholder="A few lines about your background and expertise (max 600 characters)."></textarea>
     <div class="bio-tools">
       <span class="bio-count" id="pf-bio-count">0 / 600</span>
-      <button type="button" class="btn-ghost btn-sm" id="bioTidyBtn" onclick="tidyBio()">✨ Tidy up</button>
+      <span class="bio-actions">
+        <a class="bio-undo" id="bioUndo" onclick="undoPolish()" style="display:none">↶ Undo</a>
+        <button type="button" class="btn-ghost btn-sm" id="bioTidyBtn" onclick="tidyBio()">✨ Tidy up</button>
+        <button type="button" class="btn-ghost btn-sm" id="bioPolishBtn" onclick="polishBioAI()">✦ AI Polish</button>
+      </span>
     </div>
 
     <div class="pf-preview-label">Preview — exactly how you'll appear on the public board</div>
@@ -744,6 +750,29 @@ function tidyBio(){
   }
   if(t && !/[.!?]$/.test(t)) t += '.';// end with punctuation
   $('pf-bio').value = t.slice(0,600);
+  onBioInput();
+}
+let bioBeforePolish = null;
+async function polishBioAI(){
+  const draft = $('pf-bio').value.trim();
+  if(!draft){ alert('Write a few words first, then tap AI Polish.'); return; }
+  const btn = $('bioPolishBtn'); const label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Polishing…';
+  try{
+    const r = await api({action:'polishBio', email:session.email, password:session.password, bio:draft});
+    if(!r.ok) throw new Error(r.error||'Could not polish the bio');
+    bioBeforePolish = $('pf-bio').value;
+    $('pf-bio').value = r.bio;
+    onBioInput();
+    $('bioUndo').style.display = 'inline';
+  }catch(e){ alert(e.message); }
+  btn.disabled = false; btn.textContent = label;
+}
+function undoPolish(){
+  if(bioBeforePolish == null) return;
+  $('pf-bio').value = bioBeforePolish;
+  bioBeforePolish = null;
+  $('bioUndo').style.display = 'none';
   onBioInput();
 }
 function previewPhoto(){
