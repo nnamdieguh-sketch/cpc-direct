@@ -708,7 +708,7 @@ function renderProfilePreview(){
   $('bpBio').textContent = bio || 'Your short bio will appear here.';
   const img = pendingPhoto || currentPhotoUrl;
   const ava = $('bpAva');
-  if(img){ ava.style.backgroundImage=`url(${img})`; ava.textContent=''; }
+  if(img){ ava.style.backgroundImage=`url("${img}")`; ava.textContent=''; }
   else { ava.style.backgroundImage='none'; ava.textContent = initialsOf(name); }
 }
 function onBioInput(){
@@ -757,7 +757,7 @@ function previewPhoto(){
       const c=document.createElement('canvas'); c.width=w; c.height=h;
       c.getContext('2d').drawImage(img,0,0,w,h);
       pendingPhoto = c.toDataURL('image/jpeg', 0.75);
-      $('pf-avatar').style.backgroundImage = `url(${pendingPhoto})`;
+      $('pf-avatar').style.backgroundImage = `url("${pendingPhoto}")`;
       $('pf-avatar').classList.add('has');
       renderProfilePreview();
     };
@@ -771,8 +771,8 @@ async function loadProfile(){
     if(!r.ok) return;
     $('pf-bio').value = r.bio||'';
     $('pf-public').checked = !!r.public;
-    currentPhotoUrl = r.photoUrl||'';
-    if(r.photoUrl){ $('pf-avatar').style.backgroundImage=`url(${r.photoUrl})`; $('pf-avatar').classList.add('has'); }
+    currentPhotoUrl = /^data:/.test(r.photoUrl||'') ? r.photoUrl : '';  // ignore old broken Drive links
+    if(currentPhotoUrl){ $('pf-avatar').style.backgroundImage=`url("${currentPhotoUrl}")`; $('pf-avatar').classList.add('has'); }
     onBioInput();
   }catch(e){}
 }
@@ -784,7 +784,8 @@ async function saveProfile(){
       bio: $('pf-bio').value.trim(), public: $('pf-public').checked, photoData: pendingPhoto });
     if(!r.ok) throw new Error(r.error||'Could not save profile');
     pendingPhoto='';
-    if(r.photoUrl){ currentPhotoUrl=r.photoUrl; $('pf-avatar').style.backgroundImage=`url(${r.photoUrl})`; $('pf-avatar').classList.add('has'); }
+    if(/^data:/.test(r.photoUrl||'')){ currentPhotoUrl=r.photoUrl; $('pf-avatar').style.backgroundImage=`url("${r.photoUrl}")`; $('pf-avatar').classList.add('has'); }
+    if(r.warn) alert(r.warn);
     renderProfilePreview();
     show('pfOk');
   }catch(e){ $('pfErr').textContent=e.message; show('pfErr'); }
@@ -1176,8 +1177,9 @@ async function renderBoard(){
   grid.innerHTML = r.members.map(m=>{
     const name = esc(m.name||'');
     const ini  = initialsOf(m.name);
-    const ava  = m.photoUrl
-      ? `<div class="avatar" style="background-image:url(${esc(m.photoUrl)});background-size:cover;background-position:center"></div>`
+    const hasPhoto = /^data:/.test(m.photoUrl||'');   // only render real stored images
+    const ava  = hasPhoto
+      ? `<div class="avatar" style="background-image:url('${m.photoUrl}');background-size:cover;background-position:center"></div>`
       : `<div class="avatar">${esc(ini)}</div>`;
     const bio  = m.bio ? `<div class="mem-title">${esc(m.bio)}</div>` : '';
     return `<div class="member">${ava}<div class="mem-name">${name}</div>${bio}</div>`;
