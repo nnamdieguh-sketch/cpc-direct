@@ -640,7 +640,26 @@ function setView(v){
   $('adminView').classList.toggle('active', v==='admin');
   window.scrollTo(0,0);
 }
-function logout(){session=null;adminKey=null;clearAuth();setView('public')}
+/* Auto sign-out after inactivity, so an unattended screen doesn't stay open */
+let idleTimer = null;
+const IDLE_MS = 15 * 60 * 1000; // 15 minutes
+function clearIdle(){ if(idleTimer){ clearTimeout(idleTimer); idleTimer = null; } }
+function resetIdle(){
+  clearIdle();
+  if(!session && !adminKey) return;
+  idleTimer = setTimeout(function(){
+    if(session || adminKey){ logout(); alert('You were signed out after 15 minutes of inactivity, for security.'); }
+  }, IDLE_MS);
+}
+['click','keydown','mousemove','touchstart','scroll'].forEach(function(ev){
+  document.addEventListener(ev, resetIdle, { passive:true });
+});
+function logout(){
+  session = null; adminKey = null; clearAuth(); clearIdle();
+  if($('li-pass'))  $('li-pass').value  = '';
+  if($('li-email')) $('li-email').value = '';
+  setView('public');
+}
 
 /* ═══════════ MEMBER ═══════════ */
 async function doLogin(){
@@ -652,6 +671,8 @@ async function doLogin(){
     if(!res.ok) throw new Error(res.error||'Sign in failed');
     session = {email, password, name: res.name};
     saveAuth();
+    $('li-pass').value = ''; $('li-email').value = '';   // don't leave credentials on screen
+    resetIdle();
     setView('member');
     $('whoami').textContent = res.name + ' · ' + email;
     $('acceptCard').style.display = res.accepted ? 'none' : 'block';
@@ -999,6 +1020,8 @@ async function doAdminLogin(){
     if(!res.ok) throw new Error(res.error||'Invalid key');
     adminKey = key;
     saveAuth();
+    $('ak-input').value = '';   // don't leave the admin key on screen
+    resetIdle();
     closeModal('adminModal'); setView('admin');
     loadMembers(); loadAllLeads(); loadActivity();
   }catch(e){$('akErr').textContent=e.message;show('akErr')}
@@ -1239,14 +1262,14 @@ renderBoard();
   if(saved.adminKey){
     try{
       const res = await api({action:'adminLogin', adminKey:saved.adminKey});
-      if(res.ok){ adminKey = saved.adminKey; setView('admin'); loadMembers(); loadAllLeads(); loadActivity(); return; }
+      if(res.ok){ adminKey = saved.adminKey; resetIdle(); setView('admin'); loadMembers(); loadAllLeads(); loadActivity(); return; }
     }catch(e){/* fall through */}
   }
   if(saved.session && saved.session.email){
     try{
       const s = saved.session;
       const res = await api({action:'login', email:s.email, password:s.password});
-      if(res.ok){ session = {email:s.email, password:s.password, name:res.name}; setView('member'); $('whoami').textContent = res.name + ' · ' + s.email; $('acceptCard').style.display = res.accepted ? 'none' : 'block'; loadMyLeads(); loadChat(); loadProfile(); return; }
+      if(res.ok){ session = {email:s.email, password:s.password, name:res.name}; resetIdle(); setView('member'); $('whoami').textContent = res.name + ' · ' + s.email; $('acceptCard').style.display = res.accepted ? 'none' : 'block'; loadMyLeads(); loadChat(); loadProfile(); return; }
     }catch(e){/* fall through */}
   }
   clearAuth();
