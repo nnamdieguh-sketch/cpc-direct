@@ -82,6 +82,7 @@ img.avatar{padding:0}
 .btn-sm{font-size:0.68rem;padding:7px 14px}
 .btn-danger{border-color:rgba(224,85,85,0.4);color:var(--red)}
 .btn-danger:hover{border-color:var(--red);color:var(--red)}
+.row-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
 footer{padding:28px 52px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:0.76rem;color:var(--dim);flex-wrap:wrap;gap:12px}
 footer button{background:none;border:none;color:var(--dim);font-size:0.76rem;cursor:pointer;transition:color .2s;padding:0}
@@ -1058,9 +1059,7 @@ function renderMembers(){
       ? `<br><span style="font-size:0.72rem;color:var(--teal)">Accepted ${esc(m.acceptedOn)}</span>`
       : `<br><span style="font-size:0.72rem;color:var(--muted)">Acceptance pending</span>`;
     return `<tr><td style="color:var(--white)">${esc(m.name)}</td><td>${esc(m.email)}</td><td>${pill}${accept}</td><td>${esc(m.lastLogin)}</td>
-      <td style="white-space:nowrap"><button class="btn-ghost btn-sm" data-act="reset" ${d}>Reset PW</button>
-      ${toggle}
-      <button class="btn-ghost btn-sm btn-danger" data-act="remove" ${d}>Remove</button></td></tr>`;
+      <td><div class="row-actions"><button class="btn-ghost btn-sm" data-act="reset" ${d}>Reset PW</button>${toggle}<button class="btn-ghost btn-sm btn-danger" data-act="remove" ${d}>Remove</button></div></td></tr>`;
   }).join('');
   const empty = q ? 'No members match your search.' : 'No members yet — add your first board member above.';
   $('membersBody').innerHTML = rows || `<tr><td colspan="5" class="empty">${empty}</td></tr>`;
