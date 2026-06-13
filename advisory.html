@@ -1015,8 +1015,14 @@ function renderMembers(){
   $('membersCount').textContent = countLabel(list.length, membersData.length, q);
 }
 
+async function memberExists_(email){
+  try{
+    const r = await api({action:'listMembers', adminKey});
+    return (r.members||[]).some(m=>String(m.email).toLowerCase().trim()===email.toLowerCase().trim());
+  }catch(_){ return false; }
+}
 async function addMember(){
-  hide('addErr'); hide('addReveal');
+  hide('addErr'); hide('addReveal'); $('addErr').style.color='';
   const name=$('am-name').value.trim(), email=$('am-email').value.trim();
   if(!name||!email){$('addErr').textContent='Name and email are required';show('addErr');return}
   if(!isEmail(email)){$('addErr').textContent='Enter a valid email address';show('addErr');$('am-email').focus();return}
@@ -1028,7 +1034,18 @@ async function addMember(){
     show('addReveal');
     $('am-name').value=''; $('am-email').value='';
     loadMembers();
-  }catch(e){$('addErr').textContent=e.message;show('addErr')}
+  }catch(e){
+    // Apps Script sometimes drops the reply even though the action succeeded — verify before alarming.
+    if(await memberExists_(email)){
+      $('am-name').value=''; $('am-email').value='';
+      $('addErr').style.color='var(--teal)';
+      $('addErr').textContent='✓ '+name+' was added and emailed their sign-in details. The one-time password backup couldn’t be shown because the connection dropped — they have it by email, or click “Reset PW” below to reveal a fresh one.';
+      show('addErr');
+      loadMembers();
+    } else {
+      $('addErr').textContent=e.message; show('addErr');
+    }
+  }
   $('addBtn').disabled=false;
 }
 
