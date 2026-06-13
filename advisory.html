@@ -122,6 +122,7 @@ textarea{resize:vertical;min-height:80px}
 .pill-active{background:rgba(0,196,160,0.1);color:var(--teal);border:1px solid rgba(0,196,160,0.25)}
 .pill-revoked{background:rgba(224,85,85,0.1);color:var(--red);border:1px solid rgba(224,85,85,0.25)}
 .pill-notice{background:rgba(224,155,26,0.12);color:var(--gold);border:1px solid rgba(224,155,26,0.3)}
+.accept-card{border:1px solid rgba(224,155,26,0.35);background:linear-gradient(180deg,rgba(224,155,26,0.06),transparent)}
 .tabbar{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--border);flex-wrap:wrap}
 .tabbar button{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:var(--head);font-size:0.76rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:11px 16px;cursor:pointer}
 .tabbar button.active{color:var(--gold);border-bottom-color:var(--gold)}
@@ -258,6 +259,13 @@ textarea{resize:vertical;min-height:80px}
       <div class="p-who" id="whoami"></div>
     </div>
     <button class="btn-ghost" onclick="logout()">Sign out</button>
+  </div>
+
+  <div class="card accept-card" id="acceptCard" style="display:none">
+    <h3>Accept Your Appointment</h3>
+    <div class="c-sub">Welcome. Please confirm your appointment to the CPC Direct Advisory Board. This records your acceptance of the Memorandum of Understanding (MOU) you were sent, and notifies the founder.</div>
+    <button class="btn full-btn" id="acceptBtn" onclick="acceptAppointment()">✓ I Accept My Appointment</button>
+    <div class="err" id="acceptErr"></div>
   </div>
 
   <div class="card">
@@ -516,9 +524,21 @@ async function doLogin(){
     saveAuth();
     setView('member');
     $('whoami').textContent = res.name + ' · ' + email;
+    $('acceptCard').style.display = res.accepted ? 'none' : 'block';
     loadMyLeads();
   }catch(e){$('liErr').textContent=e.message;show('liErr')}
   hide('liSpin'); $('liBtn').disabled=false;
+}
+
+async function acceptAppointment(){
+  hide('acceptErr');
+  $('acceptBtn').disabled=true; $('acceptBtn').textContent='Recording…';
+  try{
+    const res = await api({action:'acceptAppointment', email:session.email, password:session.password,
+      origin: location.origin + location.pathname});
+    if(!res.ok) throw new Error(res.error||'Could not record your acceptance');
+    $('acceptCard').style.display='none';
+  }catch(e){$('acceptErr').textContent=e.message;show('acceptErr');$('acceptBtn').disabled=false;$('acceptBtn').textContent='✓ I Accept My Appointment'}
 }
 
 async function sendLead(){
@@ -676,7 +696,10 @@ function renderMembers(){
     const toggle = m.status==='Active'
       ? `<button class="btn-ghost btn-sm btn-danger" data-act="status" data-status="Notice" ${d}>Give notice</button>`
       : `<button class="btn-ghost btn-sm" data-act="status" data-status="Active" ${d}>Restore</button>`;
-    return `<tr><td style="color:var(--white)">${esc(m.name)}</td><td>${esc(m.email)}</td><td>${pill}</td><td>${esc(m.lastLogin)}</td>
+    const accept = m.acceptedOn
+      ? `<br><span style="font-size:0.72rem;color:var(--teal)">Accepted ${esc(m.acceptedOn)}</span>`
+      : `<br><span style="font-size:0.72rem;color:var(--muted)">Acceptance pending</span>`;
+    return `<tr><td style="color:var(--white)">${esc(m.name)}</td><td>${esc(m.email)}</td><td>${pill}${accept}</td><td>${esc(m.lastLogin)}</td>
       <td style="white-space:nowrap"><button class="btn-ghost btn-sm" data-act="reset" ${d}>Reset PW</button>
       ${toggle}
       <button class="btn-ghost btn-sm btn-danger" data-act="remove" ${d}>Remove</button></td></tr>`;
@@ -847,7 +870,7 @@ $('ak-input').addEventListener('keydown',e=>{if(e.key==='Enter')doAdminLogin()})
     try{
       const s = saved.session;
       const res = await api({action:'login', email:s.email, password:s.password});
-      if(res.ok){ session = {email:s.email, password:s.password, name:res.name}; setView('member'); $('whoami').textContent = res.name + ' · ' + s.email; loadMyLeads(); return; }
+      if(res.ok){ session = {email:s.email, password:s.password, name:res.name}; setView('member'); $('whoami').textContent = res.name + ' · ' + s.email; $('acceptCard').style.display = res.accepted ? 'none' : 'block'; loadMyLeads(); return; }
     }catch(e){/* fall through */}
   }
   clearAuth();
