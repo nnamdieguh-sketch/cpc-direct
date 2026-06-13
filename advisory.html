@@ -66,6 +66,7 @@ img.avatar{padding:0}
 .mem-name{font-family:var(--head);font-weight:700;font-size:0.98rem;margin-bottom:4px}
 .mem-title{color:var(--muted);font-size:0.8rem;font-weight:300;margin-bottom:8px;line-height:1.45}
 .mem-loc{display:inline-block;font-size:0.68rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);background:rgba(224,155,26,0.07);border:1px solid rgba(224,155,26,0.2);border-radius:100px;padding:4px 12px}
+.board-empty{grid-column:1/-1;text-align:center;color:var(--muted);font-size:0.9rem;padding:48px 12px;border:1px dashed var(--border);border-radius:14px}
 @media(max-width:1000px){.members{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.members{grid-template-columns:1fr}.members-wrap{padding-left:24px;padding-right:24px}}
 
@@ -242,7 +243,7 @@ textarea{resize:vertical;min-height:80px}
   <!-- BOARD MEMBERS — replace initials/names/titles, or swap the .avatar div for <img class="avatar" src="photo.jpg"> when photos are ready -->
   <div class="members-wrap">
     <div class="mem-label">The Board</div>
-    <div class="members">
+    <div class="members" id="boardLive">
 
       <div class="member">
         <div class="avatar">MN</div>
@@ -731,6 +732,16 @@ function tidyBio(){
        .trim();
   t = t.replace(/(^|[.!?]\s+)([a-z])/g, (m,p,ch)=>p+ch.toUpperCase()); // capitalise sentence starts
   t = t.replace(/\bi\b/g,'I');        // lone "i" -> "I"
+  // fix a handful of very common business-writing typos (case-insensitive, word-boundary safe)
+  const fixes = {buiness:'business',busines:'business',experiance:'experience',recieve:'receive',
+    seperate:'separate',managment:'management',developement:'development',enviroment:'environment',
+    accomodate:'accommodate',occured:'occurred',definately:'definitely',profesional:'professional',
+    commerical:'commercial',oppurtunity:'opportunity',acheive:'achieve',succesful:'successful'};
+  for(const wrong in fixes){
+    t = t.replace(new RegExp('\\b'+wrong+'\\b','gi'), m=>{
+      const r=fixes[wrong]; return m[0]===m[0].toUpperCase() ? r[0].toUpperCase()+r.slice(1) : r;
+    });
+  }
   if(t && !/[.!?]$/.test(t)) t += '.';// end with punctuation
   $('pf-bio').value = t.slice(0,600);
   onBioInput();
@@ -741,11 +752,11 @@ function previewPhoto(){
   rd.onload = e => {
     const img = new Image();
     img.onload = () => {
-      const max=600; let w=img.width, h=img.height;
+      const max=320; let w=img.width, h=img.height;   // small enough to store in a Sheet cell
       if(w>h && w>max){ h=Math.round(h*max/w); w=max; } else if(h>max){ w=Math.round(w*max/h); h=max; }
       const c=document.createElement('canvas'); c.width=w; c.height=h;
       c.getContext('2d').drawImage(img,0,0,w,h);
-      pendingPhoto = c.toDataURL('image/jpeg', 0.85);
+      pendingPhoto = c.toDataURL('image/jpeg', 0.75);
       $('pf-avatar').style.backgroundImage = `url(${pendingPhoto})`;
       $('pf-avatar').classList.add('has');
       renderProfilePreview();
@@ -1151,6 +1162,29 @@ $('li-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
 $('ak-input').addEventListener('keydown',e=>{if(e.key==='Enter')doAdminLogin()});
 
 /* Restore session on load (validates against the server so revoked/changed creds don't linger) */
+/* ── Public board: replace the placeholder cards with live members ── */
+async function renderBoard(){
+  let r;
+  try{ r = await api({action:'publicBoard'}); }
+  catch(e){ return; }                       // network error → keep placeholder cards
+  if(!r || !r.ok || !Array.isArray(r.members)) return; // old backend → keep placeholders
+  const grid = $('boardLive');
+  if(!r.members.length){
+    grid.innerHTML = '<div class="board-empty">Our advisory board will be announced here shortly.</div>';
+    return;
+  }
+  grid.innerHTML = r.members.map(m=>{
+    const name = esc(m.name||'');
+    const ini  = initialsOf(m.name);
+    const ava  = m.photoUrl
+      ? `<div class="avatar" style="background-image:url(${esc(m.photoUrl)});background-size:cover;background-position:center"></div>`
+      : `<div class="avatar">${esc(ini)}</div>`;
+    const bio  = m.bio ? `<div class="mem-title">${esc(m.bio)}</div>` : '';
+    return `<div class="member">${ava}<div class="mem-name">${name}</div>${bio}</div>`;
+  }).join('');
+}
+renderBoard();
+
 (async function restoreAuth(){
   let saved; try{ saved = JSON.parse(sessionStorage.getItem(STORE_KEY)||'null'); }catch(e){ return; }
   if(!saved) return;
