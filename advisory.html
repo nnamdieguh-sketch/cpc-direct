@@ -135,6 +135,8 @@ textarea{resize:vertical;min-height:80px}
 .bp-ava{width:90px;height:90px;border-radius:50%;margin:0 auto 14px;background:var(--ink) center/cover no-repeat;border:2px solid rgba(224,155,26,0.4);display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:700;font-size:1.6rem;color:var(--gold)}
 .bp-name{font-family:var(--head);font-weight:700;font-size:1.05rem;color:var(--white);margin-bottom:8px}
 .bp-bio{color:var(--muted);font-size:0.86rem;text-align:left;white-space:pre-wrap;word-wrap:break-word}
+.bio-tools{display:flex;justify-content:space-between;align-items:center;margin:-2px 0 6px;gap:10px}
+.bio-count{font-size:0.74rem;color:var(--muted)}
 .chat-log{max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.18);border:1px solid var(--line);border-radius:10px}
 .bubble{max-width:82%;padding:8px 12px;border-radius:12px;font-size:0.88rem;line-height:1.45;white-space:pre-wrap;word-wrap:break-word}
 .bubble .meta{display:block;font-size:0.68rem;opacity:0.6;margin-top:4px}
@@ -371,7 +373,11 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
     <label for="pf-bio">Short bio</label>
-    <textarea id="pf-bio" maxlength="600" oninput="renderProfilePreview()" placeholder="A few lines about your background and expertise (max 600 characters)."></textarea>
+    <textarea id="pf-bio" maxlength="600" spellcheck="true" oninput="onBioInput()" placeholder="A few lines about your background and expertise (max 600 characters)."></textarea>
+    <div class="bio-tools">
+      <span class="bio-count" id="pf-bio-count">0 / 600</span>
+      <button type="button" class="btn-ghost btn-sm" id="bioTidyBtn" onclick="tidyBio()">✨ Tidy up</button>
+    </div>
 
     <div class="pf-preview-label">Preview — exactly how you'll appear on the public board</div>
     <div class="board-preview" id="pfPreview">
@@ -704,6 +710,31 @@ function renderProfilePreview(){
   if(img){ ava.style.backgroundImage=`url(${img})`; ava.textContent=''; }
   else { ava.style.backgroundImage='none'; ava.textContent = initialsOf(name); }
 }
+function onBioInput(){
+  const n = $('pf-bio').value.length;
+  const c = $('pf-bio-count');
+  let note = '';
+  if(n===0) note=' · aim for 200–400';
+  else if(n<120) note=' · a bit short — aim for 200–400';
+  else if(n>=200 && n<=480) note=' · good length';
+  c.textContent = n + ' / 600' + note;
+  c.style.color = n>600 ? 'var(--red)' : 'var(--muted)';
+  renderProfilePreview();
+}
+function tidyBio(){
+  let t = $('pf-bio').value;
+  t = t.replace(/[ \t]+/g,' ')        // collapse runs of spaces
+       .replace(/ *\n */g,'\n')       // trim around line breaks
+       .replace(/\n{3,}/g,'\n\n')     // at most one blank line
+       .replace(/\s+([,.;:!?])/g,'$1')// no space before punctuation
+       .replace(/([,.;:!?])(?=[^\s.)\]])/g,'$1 ') // ensure space after punctuation
+       .trim();
+  t = t.replace(/(^|[.!?]\s+)([a-z])/g, (m,p,ch)=>p+ch.toUpperCase()); // capitalise sentence starts
+  t = t.replace(/\bi\b/g,'I');        // lone "i" -> "I"
+  if(t && !/[.!?]$/.test(t)) t += '.';// end with punctuation
+  $('pf-bio').value = t.slice(0,600);
+  onBioInput();
+}
 function previewPhoto(){
   const f = $('pf-photo').files[0]; if(!f) return;
   const rd = new FileReader();
@@ -731,7 +762,7 @@ async function loadProfile(){
     $('pf-public').checked = !!r.public;
     currentPhotoUrl = r.photoUrl||'';
     if(r.photoUrl){ $('pf-avatar').style.backgroundImage=`url(${r.photoUrl})`; $('pf-avatar').classList.add('has'); }
-    renderProfilePreview();
+    onBioInput();
   }catch(e){}
 }
 async function saveProfile(){
