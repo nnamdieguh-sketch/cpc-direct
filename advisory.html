@@ -656,11 +656,30 @@ function resetIdle(){
   document.addEventListener(ev, resetIdle, { passive:true });
 });
 function logout(){
-  session = null; adminKey = null; clearAuth(); clearIdle();
+  session = null; adminKey = null; clearAuth(); clearIdle(); stopMcReporting();
   if($('li-pass'))  $('li-pass').value  = '';
   if($('li-email')) $('li-email').value = '';
   setView('public');
 }
+
+/* Mission Control: publish this app's metrics to the shared hub (additive, server-side,
+   fail-silent, never blocks the UI). The Vercel function /api/mc-report verifies the
+   admin key against this app's own backend, pulls the totals, and writes to the
+   mission-control Firestore. We only ping it here. */
+let mcTimer = null;
+async function mcReport(){
+  try{
+    if(!adminKey) return;
+    await fetch('/api/mc-report', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ adminKey }), keepalive:true });
+  }catch(e){ /* silent */ }
+}
+function startMcReporting(){
+  mcReport();
+  if(mcTimer) clearInterval(mcTimer);
+  mcTimer = setInterval(mcReport, 10 * 60 * 1000); // ~10 minutes
+}
+function stopMcReporting(){ if(mcTimer){ clearInterval(mcTimer); mcTimer = null; } }
 
 /* ═══════════ MEMBER ═══════════ */
 async function doLogin(){
@@ -1024,7 +1043,7 @@ async function doAdminLogin(){
     $('ak-input').value = '';   // don't leave the admin key on screen
     resetIdle();
     closeModal('adminModal'); setView('admin');
-    loadMembers(); loadAllLeads(); loadActivity();
+    loadMembers(); loadAllLeads(); loadActivity(); startMcReporting();
   }catch(e){$('akErr').textContent=e.message;show('akErr')}
   hide('akSpin'); $('akBtn').disabled=false;
 }
@@ -1261,7 +1280,7 @@ renderBoard();
   if(saved.adminKey){
     try{
       const res = await api({action:'adminLogin', adminKey:saved.adminKey});
-      if(res.ok){ adminKey = saved.adminKey; resetIdle(); setView('admin'); loadMembers(); loadAllLeads(); loadActivity(); return; }
+      if(res.ok){ adminKey = saved.adminKey; resetIdle(); setView('admin'); loadMembers(); loadAllLeads(); loadActivity(); startMcReporting(); return; }
     }catch(e){/* fall through */}
   }
   if(saved.session && saved.session.email){
