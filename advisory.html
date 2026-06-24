@@ -49,6 +49,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 5
 .login-card{background:linear-gradient(150deg,var(--ink2),var(--card));border:1px solid rgba(224,155,26,0.3);border-radius:16px;padding:30px;position:relative;z-index:2;box-shadow:0 24px 60px rgba(0,0,0,0.35)}
 .lc-badge{display:inline-flex;align-items:center;gap:7px;font-family:var(--head);font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);background:rgba(224,155,26,0.08);border:1px solid rgba(224,155,26,0.25);border-radius:100px;padding:6px 14px;margin-bottom:18px}
 .lc-help{font-size:0.76rem;color:var(--dim);margin-top:16px;text-align:center}
+.role-badge{display:inline-block;margin:6px 0 2px;font-size:0.66rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);background:rgba(224,155,26,0.08);border:1px solid rgba(224,155,26,0.28);border-radius:100px;padding:4px 12px}
 .pw-field{position:relative}
 .pw-field input{padding-right:46px}
 .pw-toggle{position:absolute;top:50%;right:6px;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;border-radius:6px}
@@ -438,7 +439,14 @@ textarea{resize:vertical;min-height:80px}
     <h3>Leave the Advisory Board</h3>
     <div class="c-sub">Resign your seat on 30 days’ notice. We’ll email a cordial resignation letter to the founder; your access continues for 30 days, then ends. Enter your password to confirm it’s really you.</div>
     <div class="grid2">
-      <div><label for="rs-pass">Confirm your password</label><input id="rs-pass" type="password" autocomplete="current-password" placeholder="••••••••••"></div>
+      <div><label for="rs-pass">Confirm your password</label>
+        <div class="pw-field">
+          <input id="rs-pass" type="password" autocomplete="current-password" placeholder="••••••••••">
+          <button type="button" class="pw-toggle" aria-label="Show password" aria-pressed="false" onclick="togglePwField('rs-pass',this)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
       <div></div>
     </div>
     <button class="btn-ghost btn-danger full-btn" id="rsBtn" onclick="resignMembership()">Resign from the Board</button>
@@ -452,6 +460,7 @@ textarea{resize:vertical;min-height:80px}
   <div class="p-head">
     <div>
       <h2>Super <span>Admin</span></h2>
+      <span class="role-badge" id="roleBadge">🛡 Super Admin · full access</span>
       <div class="p-who">Advisory Board administration</div>
       <div class="p-who" id="mcStatus" style="margin-top:4px;font-size:0.72rem"></div>
     </div>
@@ -501,8 +510,22 @@ textarea{resize:vertical;min-height:80px}
       <h3>Change Admin Password</h3>
       <div class="c-sub">Updates the master key you use to sign in here. Takes effect immediately — there’s no way to recover it, so store it somewhere safe.</div>
       <div class="grid2">
-        <div><label for="ak-new">New admin password</label><input id="ak-new" type="password" autocomplete="new-password" placeholder="At least 6 characters"></div>
-        <div><label for="ak-new2">Confirm new password</label><input id="ak-new2" type="password" autocomplete="new-password" placeholder="Re-type it"></div>
+        <div><label for="ak-new">New admin password</label>
+          <div class="pw-field">
+            <input id="ak-new" type="password" autocomplete="new-password" placeholder="At least 6 characters">
+            <button type="button" class="pw-toggle" aria-label="Show password" aria-pressed="false" onclick="togglePwField('ak-new',this)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div><label for="ak-new2">Confirm new password</label>
+          <div class="pw-field">
+            <input id="ak-new2" type="password" autocomplete="new-password" placeholder="Re-type it">
+            <button type="button" class="pw-toggle" aria-label="Show password" aria-pressed="false" onclick="togglePwField('ak-new2',this)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
       <button class="btn full-btn" id="cakBtn" onclick="changeAdminKey()">Update Admin Password</button>
       <div class="err" id="cakErr"></div>
@@ -571,10 +594,17 @@ textarea{resize:vertical;min-height:80px}
     <button class="modal-x" onclick="closeModal('adminModal')">×</button>
     <div class="m-title">Super Admin</div>
     <div class="m-sub">Enter the administrator master key.</div>
-    <label>Admin key</label><input id="ak-input" type="password" placeholder="Master key">
+    <label>Admin key</label>
+    <div class="pw-field">
+      <input id="ak-input" type="password" placeholder="Master key">
+      <button type="button" class="pw-toggle" aria-label="Show password" aria-pressed="false" onclick="togglePwField('ak-input',this)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
     <button class="btn full-btn" id="akBtn" onclick="doAdminLogin()">Enter Admin</button>
     <div class="err" id="akErr"></div>
     <div class="spinner" id="akSpin">Checking…</div>
+    <div class="lc-help">Forgot the master key? It can be reset from the Apps Script project (Script Properties → <code>ADMIN_KEY</code>), or by an existing admin under Settings → Change admin password.</div>
   </div>
 </div>
 
