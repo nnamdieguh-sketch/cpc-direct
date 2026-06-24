@@ -598,10 +598,18 @@ textarea{resize:vertical;min-height:80px}
   <div class="atab" id="atab-ideasforge">
     <div class="card">
       <h3>IdeasForge</h3>
-      <div class="c-sub">Venture pipeline from the IdeasForge workspace. Open the full board, or see the summary numbers once the IdeasForge data source is connected.</div>
+      <div class="c-sub">Ideas submitted to the IdeasForge intake — pipeline summary and the latest submissions.</div>
       <div class="leads-stats" id="ideasStats"></div>
-      <a class="btn full-btn" id="ideasOpenBtn" href="#" target="_blank" rel="noopener" style="display:none">Open IdeasForge →</a>
-      <div class="c-sub" id="ideasNote" style="margin-top:12px">The IdeasForge link isn’t configured yet. Set <code>IDEASFORGE_URL</code> in the project settings to enable the launch button and summary.</div>
+      <div class="tbl-toolbar">
+        <input type="search" class="tbl-search" id="ideasSearch" placeholder="Search idea, person, stage, country…" oninput="renderIdeas()" aria-label="Search ideas">
+        <span class="tbl-count" id="ideasCount"></span>
+      </div>
+      <div class="table-scroll tall">
+        <table class="ledger"><thead><tr><th>Date</th><th>Submitted by</th><th>Idea</th><th>Stage</th><th>Country</th><th>Support needed</th></tr></thead>
+        <tbody id="ideasBody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody></table>
+      </div>
+      <a class="btn full-btn" id="ideasOpenBtn" href="#" target="_blank" rel="noopener" style="display:none;margin-top:14px">Open IdeasForge →</a>
+      <div class="c-sub" id="ideasNote" style="margin-top:12px"></div>
     </div>
   </div>
 </div>
@@ -823,14 +831,56 @@ function enterTeamView(){
 }
 
 function setupIdeasForge(){
-  const open=$('ideasOpenBtn'), note=$('ideasNote');
-  if(ideasForgeUrl){
-    if(open){ open.href=ideasForgeUrl; open.style.display=''; }
-    if(note) note.textContent='Opens the IdeasForge workspace in a new tab.';
-  }else{
-    if(open) open.style.display='none';
-    if(note) note.textContent='The IdeasForge link isn’t configured yet — set IDEASFORGE_URL in the project settings to enable it.';
+  const open=$('ideasOpenBtn');
+  if(open){ if(ideasForgeUrl){ open.href=ideasForgeUrl; open.style.display=''; } else { open.style.display='none'; } }
+}
+
+/* IdeasForge intake — pulled from the workbook's IdeasForge tab via the
+   `ideasForge` Apps Script action (super uses the key; team via the proxy). */
+let ideasData = [];
+function ideaField(i, keys){ for(const k of keys){ if(i[k]!=null && i[k]!=='') return i[k]; } return ''; }
+async function loadIdeasForge(){
+  try{
+    const res = await adminApi({action:'ideasForge'});
+    if(!res || !res.ok){
+      ideasData=[]; renderIdeas();
+      $('ideasNote').textContent = (res && res.notConfigured)
+        ? 'Team data source isn’t connected yet.'
+        : 'IdeasForge isn’t connected yet — add the “ideasForge” action to the Apps Script to show live numbers here.';
+      return;
+    }
+    ideasData = res.ideas || res.rows || [];
+    $('ideasNote').textContent='';
+    renderIdeas();
+  }catch(e){ ideasData=[]; renderIdeas(); $('ideasNote').textContent='Could not load IdeasForge submissions.'; }
+}
+function renderIdeas(){
+  const data = ideasData||[];
+  const stage = i => ideaField(i,['stage','currentStage','Current Stage']);
+  const el=$('ideasStats');
+  if(el){
+    const byStage={};
+    data.forEach(i=>{ const s=stage(i)||'Unspecified'; byStage[s]=(byStage[s]||0)+1; });
+    const top = Object.keys(byStage).sort((a,b)=>byStage[b]-byStage[a]).slice(0,4);
+    const cells=[['Total ideas', data.length]].concat(top.map(s=>[s, byStage[s]]));
+    el.innerHTML = data.length ? cells.map(c=>`<div class="lead-stat"><div class="n">${c[1]}</div><div class="l">${esc(String(c[0]))}</div></div>`).join('') : '';
   }
+  const q=($('ideasSearch').value||'').toLowerCase().trim();
+  const match = i => [ideaField(i,['name','fullName','Full Name']),ideaField(i,['idea','ideaName','Idea Name']),stage(i),ideaField(i,['country','Country']),ideaField(i,['support','supportNeeded','Support Needed']),ideaField(i,['email','Email'])].some(v=>String(v||'').toLowerCase().includes(q));
+  const list = q ? data.filter(match) : data;
+  const rows = list.slice(0,ROW_CAP).map(i=>{
+    const problem = ideaField(i,['problem','problemSolved','Problem It Solves']);
+    return `<tr>
+      <td>${esc(ideaField(i,['date','timestamp','Date']))}</td>
+      <td style="color:var(--white)">${esc(ideaField(i,['name','fullName','Full Name']))}${ideaField(i,['email','Email'])?`<br><span style="font-size:0.72rem;color:var(--muted)">${esc(ideaField(i,['email','Email']))}</span>`:''}</td>
+      <td style="color:var(--white)">${esc(ideaField(i,['idea','ideaName','Idea Name']))}${problem?`<br><span style="font-size:0.72rem;color:var(--muted)">${esc(problem)}</span>`:''}</td>
+      <td>${esc(stage(i))}</td>
+      <td>${esc(ideaField(i,['country','Country']))}</td>
+      <td>${esc(ideaField(i,['support','supportNeeded','Support Needed']))}</td></tr>`;
+  }).join('');
+  const empty = q ? 'No ideas match your search.' : 'No ideas submitted yet.';
+  $('ideasBody').innerHTML = rows || `<tr><td colspan="6" class="empty">${empty}</td></tr>`;
+  $('ideasCount').textContent = countLabel(list.length, data.length, q);
 }
 
 /* Mission Control: publish this app's metrics to the shared hub (additive, server-side,
@@ -1242,6 +1292,7 @@ function adminTab(t){
     $('at-'+x).classList.toggle('active', x===t);
   });
   if(t==='messages') loadThreads();
+  if(t==='ideasforge') loadIdeasForge();
 }
 
 async function loadMembers(){
