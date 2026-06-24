@@ -50,6 +50,16 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:20px 5
 .lc-badge{display:inline-flex;align-items:center;gap:7px;font-family:var(--head);font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);background:rgba(224,155,26,0.08);border:1px solid rgba(224,155,26,0.25);border-radius:100px;padding:6px 14px;margin-bottom:18px}
 .lc-help{font-size:0.76rem;color:var(--dim);margin-top:16px;text-align:center}
 .role-badge{display:inline-block;margin:6px 0 2px;font-size:0.66rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);background:rgba(224,155,26,0.08);border:1px solid rgba(224,155,26,0.28);border-radius:100px;padding:4px 12px}
+.role-badge.limited{color:var(--teal);background:rgba(45,184,168,0.08);border-color:rgba(45,184,168,0.30)}
+body.team-mode .needs-super{display:none!important}
+.team-hide{display:none!important}
+.leads-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.lead-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;min-width:92px}
+.lead-stat .n{font-family:var(--head);font-size:1.35rem;font-weight:800;color:var(--gold);line-height:1}
+.lead-stat .l{font-size:0.64rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);margin-top:5px}
+.lc-team{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:0.8rem;color:var(--muted)}
+.lc-team a{color:var(--gold);font-weight:700;cursor:pointer;text-decoration:none}
+.lc-team a:hover{text-decoration:underline}
 .pw-field{position:relative}
 .pw-field input{padding-right:46px}
 .pw-toggle{position:absolute;top:50%;right:6px;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;border-radius:6px}
@@ -241,6 +251,7 @@ textarea{resize:vertical;min-height:80px}
       <div class="err" id="liErr"></div>
       <div class="spinner" id="liSpin">Checking…</div>
       <div class="lc-help">Forgot your password? Message the administrator on WhatsApp for a reset.</div>
+      <div class="lc-team">Invited to the team via Mission Control? <a onclick="openTeamModal()">Team Access →</a></div>
     </div>
   </div>
 
@@ -472,10 +483,11 @@ textarea{resize:vertical;min-height:80px}
     <button id="at-leads" onclick="adminTab('leads')">All Leads</button>
     <button id="at-messages" onclick="adminTab('messages')">Messages</button>
     <button id="at-activity" onclick="adminTab('activity')">Activity</button>
+    <button id="at-ideasforge" onclick="adminTab('ideasforge')">IdeasForge</button>
   </div>
 
   <div class="atab active" id="atab-members">
-    <div class="card">
+    <div class="card needs-super">
       <h3>Add Board Member</h3>
       <div class="c-sub">An email invite with their sign-in details is sent to the member automatically. The password is also shown once below as a backup.</div>
       <div class="grid2">
@@ -506,7 +518,7 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
 
-    <div class="card">
+    <div class="card needs-super">
       <h3>Change Admin Password</h3>
       <div class="c-sub">Updates the master key you use to sign in here. Takes effect immediately — there’s no way to recover it, so store it somewhere safe.</div>
       <div class="grid2">
@@ -536,6 +548,7 @@ textarea{resize:vertical;min-height:80px}
   <div class="atab" id="atab-leads">
     <div class="card">
       <h3>All Board Leads</h3>
+      <div class="leads-stats" id="leadsStats"></div>
       <div class="tbl-toolbar">
         <input type="search" class="tbl-search" id="leadsSearch" placeholder="Search lead, sector, member, contact…" oninput="renderAllLeads()" aria-label="Search leads">
         <span class="tbl-count" id="leadsCount"></span>
@@ -581,6 +594,24 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
   </div>
+
+  <div class="atab" id="atab-ideasforge">
+    <div class="card">
+      <h3>IdeasForge</h3>
+      <div class="c-sub">Ideas submitted to the IdeasForge intake — pipeline summary and the latest submissions.</div>
+      <div class="leads-stats" id="ideasStats"></div>
+      <div class="tbl-toolbar">
+        <input type="search" class="tbl-search" id="ideasSearch" placeholder="Search idea, person, stage, country…" oninput="renderIdeas()" aria-label="Search ideas">
+        <span class="tbl-count" id="ideasCount"></span>
+      </div>
+      <div class="table-scroll tall">
+        <table class="ledger"><thead><tr><th>Date</th><th>Submitted by</th><th>Idea</th><th>Stage</th><th>Country</th><th>Support needed</th></tr></thead>
+        <tbody id="ideasBody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody></table>
+      </div>
+      <a class="btn full-btn" id="ideasOpenBtn" href="#" target="_blank" rel="noopener" style="display:none;margin-top:14px">Open IdeasForge →</a>
+      <div class="c-sub" id="ideasNote" style="margin-top:12px"></div>
+    </div>
+  </div>
 </div>
 
 <footer>
@@ -608,6 +639,27 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 
+<!-- TEAM ACCESS MODAL -->
+<div class="modal" id="teamModal">
+  <div class="modal-box">
+    <button class="modal-x" onclick="closeModal('teamModal')">×</button>
+    <div class="m-title">Team Access</div>
+    <div class="m-sub">For team members invited through Mission Control. Sign in with your email and the access code you were given to open your view.</div>
+    <label for="tm-email">Email</label><input id="tm-email" type="email" autocomplete="email" placeholder="you@email.com">
+    <label for="tm-code">Access code</label>
+    <div class="pw-field">
+      <input id="tm-code" type="password" autocomplete="off" placeholder="Your team access code">
+      <button type="button" class="pw-toggle" aria-label="Show code" aria-pressed="false" onclick="togglePwField('tm-code',this)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <button class="btn full-btn" id="tmBtn" onclick="doTeamLogin()">Enter →</button>
+    <div class="err" id="tmErr"></div>
+    <div class="spinner" id="tmSpin">Checking…</div>
+    <div class="lc-help">Don’t have a code? Ask the administrator — access is granted from Mission Control.</div>
+  </div>
+</div>
+
 <script>
 /* ═══════════ CONFIG ═══════════ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbww5UOr4bjy3Bn1ZpitcVoQ_ZuafW-Nyoq5UHob1RnMniMKU9Sadiwrn8JpeCTlMttRCQ/exec';
@@ -615,6 +667,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbww5UOr4bjy3Bn1ZpitcVoQ
 /* ═══════════ STATE ═══════════ */
 let session = null;   // {email, password, name} for member
 let adminKey = null;  // string for admin
+let teamSession = null;  // {token, role, name, email} for Mission-Control team members (limited view)
+let ideasForgeUrl = '';  // populated from the team proxy / config
 const STORE_KEY = 'cpcAdvisorySession';
 const ROW_CAP = 250;  // max rows rendered per admin table; search narrows beyond this
 let membersData = [], allLeadsData = [], activityData = [], myLeadsData = [];
@@ -630,7 +684,7 @@ function countLabel(matched, total, q){
 /* Persist auth across refreshes (sessionStorage: survives reload, clears on tab close) */
 function saveAuth(){
   try{
-    sessionStorage.setItem(STORE_KEY, JSON.stringify({session, adminKey}));
+    sessionStorage.setItem(STORE_KEY, JSON.stringify({session, adminKey, teamSession}));
   }catch(e){/* storage may be unavailable (private mode) — fail open */}
 }
 function clearAuth(){
@@ -687,10 +741,146 @@ function resetIdle(){
   document.addEventListener(ev, resetIdle, { passive:true });
 });
 function logout(){
-  session = null; adminKey = null; clearAuth(); clearIdle(); stopMcReporting();
+  session = null; adminKey = null; teamSession = null; clearAuth(); clearIdle(); stopMcReporting();
+  document.body.classList.remove('team-mode','role-operations','role-marketing');
   if($('li-pass'))  $('li-pass').value  = '';
   if($('li-email')) $('li-email').value = '';
   setView('public');
+}
+
+/* ═══════════ TEAM ACCESS (Mission-Control-invited, limited role view) ═══════════
+   Team members never get the master key. Their reads/writes go through the
+   /api/team proxy, which holds the key and enforces what each role may do. */
+function openTeamModal(){ openModal('teamModal'); setTimeout(()=>{ const e=$('tm-email'); if(e) e.focus(); }, 50); }
+
+async function teamApi(payload){
+  const r = await fetch('/api/team', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+  let out=null; try{ out = await r.json(); }catch(_){ out=null; }
+  return out || { ok:false, error:'The team service returned an unexpected response.' };
+}
+
+/* Single data path for admin tables: super uses the key directly (unchanged);
+   team routes the SAME Apps Script action through the role-gated proxy. */
+async function adminApi(payload){
+  if(teamSession){
+    const out = await teamApi({ action:'fetch', token: teamSession.token, payload });
+    if(out && out.reauth){ teamLogout('Your team session expired — please sign in again.'); }
+    return out || { ok:false };
+  }
+  return api(Object.assign({}, payload, { adminKey }));
+}
+
+async function doTeamLogin(){
+  const email=$('tm-email').value.trim(), code=$('tm-code').value;
+  hide('tmErr'); if(!email||!code){$('tmErr').textContent='Enter your email and access code';show('tmErr');return}
+  show('tmSpin'); $('tmBtn').disabled=true;
+  try{
+    const res = await teamApi({ action:'login', email, code });
+    if(!res.ok) throw new Error(res.error||'Email or access code not recognised.');
+    teamSession = { token:res.token, role:res.role, name:res.name||'', email, ideasForgeUrl:res.ideasForgeUrl||'' };
+    ideasForgeUrl = teamSession.ideasForgeUrl;
+    saveAuth();
+    $('tm-code').value=''; $('tm-email').value='';
+    closeModal('teamModal');
+    resetIdle();
+    enterTeamView();
+  }catch(e){ $('tmErr').textContent=e.message; show('tmErr'); }
+  hide('tmSpin'); $('tmBtn').disabled=false;
+}
+
+function teamLogout(msg){
+  teamSession=null; ideasForgeUrl='';
+  document.body.classList.remove('team-mode','role-operations','role-marketing');
+  clearAuth(); clearIdle(); setView('public');
+  if(msg){ openTeamModal(); $('tmErr').textContent=msg; show('tmErr'); }
+}
+
+/* Render the admin shell in limited mode for the signed-in team role. */
+function enterTeamView(){
+  const role = teamSession.role;
+  document.body.classList.add('team-mode');
+  document.body.classList.toggle('role-operations', role==='operations');
+  document.body.classList.toggle('role-marketing', role==='marketing');
+
+  // Hide the super-admin sign-out vs team: reuse the same button (logout clears team too).
+  // Role badge.
+  const badge = $('roleBadge');
+  if(badge){
+    badge.classList.add('limited');
+    badge.textContent = (role==='operations' ? '👥 Operations' : '📣 Marketing') + ' · limited view';
+  }
+  const who = document.querySelector('#adminView .p-who');
+  if(who) who.textContent = (teamSession.name? teamSession.name+' · ' : '') + 'Team access';
+
+  // Which tabs this role may see.
+  const allowedTabs = role==='operations'
+    ? ['members','leads','messages','activity','ideasforge']
+    : ['leads','activity','ideasforge'];
+  ['members','leads','messages','activity','ideasforge'].forEach(t=>{
+    const btn=$('at-'+t); if(btn) btn.classList.toggle('team-hide', !allowedTabs.includes(t));
+  });
+
+  setView('admin');
+  setupIdeasForge();
+  adminTab(allowedTabs[0]);
+
+  // Load the data this role is allowed to see.
+  if(allowedTabs.includes('members')) loadMembers();
+  loadAllLeads();
+  loadActivity();
+}
+
+function setupIdeasForge(){
+  const open=$('ideasOpenBtn');
+  if(open){ if(ideasForgeUrl){ open.href=ideasForgeUrl; open.style.display=''; } else { open.style.display='none'; } }
+}
+
+/* IdeasForge intake — pulled from the workbook's IdeasForge tab via the
+   `ideasForge` Apps Script action (super uses the key; team via the proxy). */
+let ideasData = [];
+function ideaField(i, keys){ for(const k of keys){ if(i[k]!=null && i[k]!=='') return i[k]; } return ''; }
+async function loadIdeasForge(){
+  try{
+    const res = await adminApi({action:'ideasForge'});
+    if(!res || !res.ok){
+      ideasData=[]; renderIdeas();
+      $('ideasNote').textContent = (res && res.notConfigured)
+        ? 'Team data source isn’t connected yet.'
+        : 'IdeasForge isn’t connected yet — add the “ideasForge” action to the Apps Script to show live numbers here.';
+      return;
+    }
+    ideasData = res.ideas || res.rows || [];
+    $('ideasNote').textContent='';
+    renderIdeas();
+  }catch(e){ ideasData=[]; renderIdeas(); $('ideasNote').textContent='Could not load IdeasForge submissions.'; }
+}
+function renderIdeas(){
+  const data = ideasData||[];
+  const stage = i => ideaField(i,['stage','currentStage','Current Stage']);
+  const el=$('ideasStats');
+  if(el){
+    const byStage={};
+    data.forEach(i=>{ const s=stage(i)||'Unspecified'; byStage[s]=(byStage[s]||0)+1; });
+    const top = Object.keys(byStage).sort((a,b)=>byStage[b]-byStage[a]).slice(0,4);
+    const cells=[['Total ideas', data.length]].concat(top.map(s=>[s, byStage[s]]));
+    el.innerHTML = data.length ? cells.map(c=>`<div class="lead-stat"><div class="n">${c[1]}</div><div class="l">${esc(String(c[0]))}</div></div>`).join('') : '';
+  }
+  const q=($('ideasSearch').value||'').toLowerCase().trim();
+  const match = i => [ideaField(i,['name','fullName','Full Name']),ideaField(i,['idea','ideaName','Idea Name']),stage(i),ideaField(i,['country','Country']),ideaField(i,['support','supportNeeded','Support Needed']),ideaField(i,['email','Email'])].some(v=>String(v||'').toLowerCase().includes(q));
+  const list = q ? data.filter(match) : data;
+  const rows = list.slice(0,ROW_CAP).map(i=>{
+    const problem = ideaField(i,['problem','problemSolved','Problem It Solves']);
+    return `<tr>
+      <td>${esc(ideaField(i,['date','timestamp','Date']))}</td>
+      <td style="color:var(--white)">${esc(ideaField(i,['name','fullName','Full Name']))}${ideaField(i,['email','Email'])?`<br><span style="font-size:0.72rem;color:var(--muted)">${esc(ideaField(i,['email','Email']))}</span>`:''}</td>
+      <td style="color:var(--white)">${esc(ideaField(i,['idea','ideaName','Idea Name']))}${problem?`<br><span style="font-size:0.72rem;color:var(--muted)">${esc(problem)}</span>`:''}</td>
+      <td>${esc(stage(i))}</td>
+      <td>${esc(ideaField(i,['country','Country']))}</td>
+      <td>${esc(ideaField(i,['support','supportNeeded','Support Needed']))}</td></tr>`;
+  }).join('');
+  const empty = q ? 'No ideas match your search.' : 'No ideas submitted yet.';
+  $('ideasBody').innerHTML = rows || `<tr><td colspan="6" class="empty">${empty}</td></tr>`;
+  $('ideasCount').textContent = countLabel(list.length, data.length, q);
 }
 
 /* Mission Control: publish this app's metrics to the shared hub (additive, server-side,
@@ -903,7 +1093,7 @@ async function saveProfile(){
 let currentThread = '';
 async function loadThreads(){
   try{
-    const r = await api({action:'adminThreads', adminKey});
+    const r = await adminApi({action:'adminThreads'});
     const list = (r.threads||[]);
     if(!list.length){ $('threadList').innerHTML='<div class="empty">No messages yet.</div>'; return; }
     $('threadList').innerHTML = list.map(t=>
@@ -921,7 +1111,7 @@ async function openThread(el){
   $('threadWho').textContent = (name||currentThread)+' · '+currentThread;
   $('adminChatLog').innerHTML='<div class="empty">Loading…</div>';
   try{
-    const r = await api({action:'adminThread', adminKey, email:currentThread});
+    const r = await adminApi({action:'adminThread', email:currentThread});
     if(r.ok) renderChat($('adminChatLog'), r.messages, 'Founder', name||currentThread);
   }catch(e){ $('adminChatLog').innerHTML='<div class="empty">Could not load.</div>'; }
 }
@@ -930,7 +1120,7 @@ async function sendAdminReply(){
   if(!msg){ $('replyErr').textContent='Type a reply first'; show('replyErr'); return; }
   $('replyBtn').disabled=true; $('replyBtn').textContent='Sending…';
   try{
-    const r = await api({action:'adminReply', adminKey, email:currentThread, message:msg,
+    const r = await adminApi({action:'adminReply', email:currentThread, message:msg,
       origin: location.origin + location.pathname});
     if(!r.ok) throw new Error(r.error||'Could not send');
     $('reply-msg').value='';
@@ -1043,26 +1233,33 @@ async function resignMembership(){
   $('rsBtn').disabled=false; $('rsBtn').textContent='Resign from the Board';
 }
 
-/* Update a lead's status / add a progress note — works for member (own leads) and admin (all) */
+/* Update a lead's status / add a progress note — works for member (own leads),
+   admin (all), and team operations (all, via the role-gated proxy). */
 function leadAuth(){ return adminKey ? {adminKey} : {email:session.email, password:session.password}; }
+function leadsAreAdminScope(){ return !!(adminKey || teamSession); }   // viewing the all-leads table
+async function leadUpdate(fields){
+  if(teamSession) return adminApi(Object.assign({action:'updateLead'}, fields));
+  return api(Object.assign({action:'updateLead'}, fields, leadAuth()));
+}
+function reloadLeadsAfterEdit(){ leadsAreAdminScope() ? loadAllLeads() : loadMyLeads(); }
 async function setLeadStatus(leadId, status){
   try{
-    const res = await api(Object.assign({action:'updateLead', leadId, status}, leadAuth()));
+    const res = await leadUpdate({leadId, status});
     if(!res.ok) throw new Error(res.error||'Update failed');
-    adminKey ? loadAllLeads() : loadMyLeads();
-  }catch(e){ alert(e.message); adminKey ? loadAllLeads() : loadMyLeads(); }
+    reloadLeadsAfterEdit();
+  }catch(e){ alert(e.message); reloadLeadsAfterEdit(); }
 }
 async function addLeadNote(leadId){
   const note = prompt('Add a progress note (what was done / next step):', '');
   if(note===null || !note.trim()) return;
   try{
-    const res = await api(Object.assign({action:'updateLead', leadId, note:note.trim()}, leadAuth()));
+    const res = await leadUpdate({leadId, note:note.trim()});
     if(!res.ok) throw new Error(res.error||'Could not add note');
-    adminKey ? loadAllLeads() : loadMyLeads();
+    reloadLeadsAfterEdit();
   }catch(e){ alert(e.message); }
 }
 function showLeadHistory(leadId){
-  const list = adminKey ? allLeadsData : myLeadsData;
+  const list = leadsAreAdminScope() ? allLeadsData : myLeadsData;
   const l = list.find(x=>String(x.leadId)===String(leadId));
   alert(l && l.progress ? l.progress : 'No progress notes yet for this lead.');
 }
@@ -1075,10 +1272,14 @@ async function doAdminLogin(){
   try{
     const res = await api({action:'adminLogin', adminKey:key});
     if(!res.ok) throw new Error(res.error||'Invalid key');
-    adminKey = key;
+    adminKey = key; teamSession = null;
     saveAuth();
     $('ak-input').value = '';   // don't leave the admin key on screen
     resetIdle();
+    // full super view: clear any team-mode styling and restore tabs/badge
+    document.body.classList.remove('team-mode','role-operations','role-marketing');
+    ['members','leads','messages','activity','ideasforge'].forEach(t=>{ const b=$('at-'+t); if(b) b.classList.remove('team-hide'); });
+    const badge=$('roleBadge'); if(badge){ badge.classList.remove('limited'); badge.textContent='🛡 Super Admin · full access'; }
     closeModal('adminModal'); setView('admin');
     loadMembers(); loadAllLeads(); loadActivity(); startMcReporting();
   }catch(e){$('akErr').textContent=e.message;show('akErr')}
@@ -1086,16 +1287,17 @@ async function doAdminLogin(){
 }
 
 function adminTab(t){
-  ['members','leads','messages','activity'].forEach(x=>{
+  ['members','leads','messages','activity','ideasforge'].forEach(x=>{
     $('atab-'+x).classList.toggle('active', x===t);
     $('at-'+x).classList.toggle('active', x===t);
   });
   if(t==='messages') loadThreads();
+  if(t==='ideasforge') loadIdeasForge();
 }
 
 async function loadMembers(){
   try{
-    const res = await api({action:'listMembers', adminKey});
+    const res = await adminApi({action:'listMembers'});
     membersData = res.members||[];
     renderMembers();
   }catch(e){membersData=[];$('membersBody').innerHTML='<tr><td colspan="5" class="empty">Could not load members.</td></tr>';$('membersCount').textContent=''}
@@ -1114,8 +1316,12 @@ function renderMembers(){
     const accept = m.acceptedOn
       ? `<br><span style="font-size:0.72rem;color:var(--teal)">Accepted ${esc(m.acceptedOn)}</span>`
       : `<br><span style="font-size:0.72rem;color:var(--muted)">Acceptance pending</span>`;
+    // Accept/revoke & resets are super-admin only; operations sees the roster read-only.
+    const actions = teamSession
+      ? `<span style="font-size:0.72rem;color:var(--muted)">View only</span>`
+      : `<div class="row-actions"><button class="btn-ghost btn-sm" data-act="reset" ${d}>Reset PW</button>${toggle}<button class="btn-ghost btn-sm btn-danger" data-act="remove" ${d}>Remove</button></div>`;
     return `<tr><td style="color:var(--white)">${esc(m.name)}</td><td>${esc(m.email)}</td><td>${pill}${accept}</td><td>${esc(m.lastLogin)}</td>
-      <td><div class="row-actions"><button class="btn-ghost btn-sm" data-act="reset" ${d}>Reset PW</button>${toggle}<button class="btn-ghost btn-sm btn-danger" data-act="remove" ${d}>Remove</button></div></td></tr>`;
+      <td>${actions}</td></tr>`;
   }).join('');
   const empty = q ? 'No members match your search.' : 'No members yet — add your first board member above.';
   $('membersBody').innerHTML = rows || `<tr><td colspan="5" class="empty">${empty}</td></tr>`;
@@ -1211,12 +1417,32 @@ async function removeMember(email, name){
 
 async function loadAllLeads(){
   try{
-    const res = await api({action:'allLeads', adminKey});
+    const res = await adminApi({action:'allLeads'});
     allLeadsData = res.leads||[];
     renderAllLeads();
   }catch(e){allLeadsData=[];$('allLeadsBody').innerHTML='<tr><td colspan="10" class="empty">Could not load leads.</td></tr>';$('leadsCount').textContent=''}
 }
+function renderLeadsStats(){
+  const el = $('leadsStats'); if(!el) return;
+  const data = allLeadsData || [];
+  const norm = s => String(s||'').toLowerCase();
+  const won  = data.filter(l=>/won|closed|signed|deal/.test(norm(l.status))).length;
+  const lost = data.filter(l=>/lost|dead|declin/.test(norm(l.status))).length;
+  const open = data.length - won - lost;
+  const cells = [
+    ['Total leads', data.length],
+    ['Open', open],
+    ['Won', won],
+    ['Lost', lost],
+  ];
+  el.innerHTML = data.length
+    ? cells.map(c=>`<div class="lead-stat"><div class="n">${c[1]}</div><div class="l">${c[0]}</div></div>`).join('')
+    : '';
+}
 function renderAllLeads(){
+  renderLeadsStats();
+  // Marketing sees leads read-only; super & operations can edit status / add notes.
+  const canEdit = !teamSession || teamSession.role==='operations';
   const q = ($('leadsSearch').value||'').toLowerCase().trim();
   const list = q ? allLeadsData.filter(l=>[l.by,l.leadName,l.sector,l.contact,l.phone,l.email,l.value,l.product,l.priority,l.status,l.notes,l.strategy,l.relationship].some(v=>String(v||'').toLowerCase().includes(q))) : allLeadsData;
   const rows = list.slice(0,ROW_CAP).map(l=>`<tr>
@@ -1227,9 +1453,9 @@ function renderAllLeads(){
     <td>${esc(l.priority)}</td>
     <td>${esc(l.contact)}<br>${esc(l.phone)}<br>${esc(l.email)}</td>
     <td>${esc(l.value)}</td>
-    <td>${statusSelect(l.leadId, l.status)}</td>
+    <td>${canEdit ? statusSelect(l.leadId, l.status) : esc(l.status)}</td>
     <td style="max-width:200px">${lastUpdateCell(l)}</td>
-    <td style="white-space:nowrap">${leadActions(l.leadId)}</td></tr>`).join('');
+    <td style="white-space:nowrap">${canEdit ? leadActions(l.leadId) : ''}</td></tr>`).join('');
   const empty = q ? 'No leads match your search.' : 'No leads submitted yet.';
   $('allLeadsBody').innerHTML = rows || `<tr><td colspan="10" class="empty">${empty}</td></tr>`;
   $('leadsCount').textContent = countLabel(list.length, allLeadsData.length, q);
@@ -1237,7 +1463,7 @@ function renderAllLeads(){
 
 async function loadActivity(){
   try{
-    const res = await api({action:'activity', adminKey});
+    const res = await adminApi({action:'activity'});
     activityData = res.events||[];
     renderActivity();
   }catch(e){activityData=[];$('activityBody').innerHTML='<tr><td colspan="4" class="empty">Could not load activity.</td></tr>';$('activityCount').textContent=''}
@@ -1312,8 +1538,13 @@ async function renderBoard(){
 renderBoard();
 
 (async function restoreAuth(){
-  let saved; try{ saved = JSON.parse(sessionStorage.getItem(STORE_KEY)||'null'); }catch(e){ return; }
-  if(!saved) return;
+  const wantTeam = /[?&]team=1(?:&|$)/.test(location.search);
+  let saved; try{ saved = JSON.parse(sessionStorage.getItem(STORE_KEY)||'null'); }catch(e){ saved=null; }
+  if(saved && saved.teamSession && saved.teamSession.token){
+    teamSession = saved.teamSession; ideasForgeUrl = saved.teamSession.ideasForgeUrl||'';
+    resetIdle(); enterTeamView(); return;   // expired token -> first fetch triggers re-login
+  }
+  if(!saved){ if(wantTeam) openTeamModal(); return; }
   if(saved.adminKey){
     try{
       const res = await api({action:'adminLogin', adminKey:saved.adminKey});
@@ -1328,6 +1559,7 @@ renderBoard();
     }catch(e){/* fall through */}
   }
   clearAuth();
+  if(wantTeam) openTeamModal();
 })();
 </script>
 </body>
