@@ -453,6 +453,7 @@ textarea{resize:vertical;min-height:80px}
     <div>
       <h2>Super <span>Admin</span></h2>
       <div class="p-who">Advisory Board administration</div>
+      <div class="p-who" id="mcStatus" style="margin-top:4px;font-size:0.72rem"></div>
     </div>
     <button class="btn-ghost" onclick="logout()">Sign out</button>
   </div>
@@ -670,9 +671,15 @@ let mcTimer = null;
 async function mcReport(){
   try{
     if(!adminKey) return;
-    await fetch('/api/mc-report', { method:'POST', headers:{'Content-Type':'application/json'},
+    const r = await fetch('/api/mc-report', { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ adminKey }), keepalive:true });
-  }catch(e){ /* silent */ }
+    let out = null; try{ out = await r.json(); }catch(_){}
+    const el = $('mcStatus');
+    if(el){
+      if(out && out.ok){ el.textContent = `Mission Control: ✓ synced ${out.synced} fields`; el.style.color = 'var(--teal)'; }
+      else { el.textContent = 'Mission Control: — not synced'; el.style.color = 'var(--muted)'; }
+    }
+  }catch(e){ /* silent — never block the UI */ }
 }
 function startMcReporting(){
   mcReport();
