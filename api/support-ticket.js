@@ -24,7 +24,7 @@ function setCors(req, res) {
   const allow = (process.env.SUPPORT_ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
   const ok = allow.includes(origin)
     || /^https:\/\/([a-z0-9-]+\.)?(cpc-direct\.com|vercel\.app)$/i.test(origin)
-    || /^https:\/\/([a-z0-9-]+\.)?(taxpilotnigeria\.com|accessemergingmarkets\.com|legaltice\.com|nyumba-kitchen\.com)$/i.test(origin);
+    || /^https:\/\/([a-z0-9-]+\.)?(taxpilotnigeria\.com|accessemergingmarkets\.com|legaltice\.com|nyumba-kitchen\.com|didicommune\.com)$/i.test(origin);
   if (ok && origin) res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
