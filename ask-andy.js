@@ -13,6 +13,7 @@
 
   var script = document.currentScript || (function () { var s = document.getElementsByTagName('script'); return s[s.length - 1]; })();
   var APP = (script && script.getAttribute('data-app')) || document.title || 'CPC Direct';
+  var BRAND = (script && script.getAttribute('data-brand')) || APP; // the name the customer sees; defaults to the app
   var API = ((script && script.getAttribute('data-api')) || '').replace(/\/$/, ''); // '' = same origin
   var STORE = 'askAndyChat';
 
@@ -70,7 +71,7 @@
       Need help?
     </button>
     <div class="andy-panel" role="dialog" aria-label="Ask Andy support">
-      <div class="andy-head"><div><b>Ask Andy</b><span>CPC Direct support</span></div><button class="andy-x" aria-label="Close">&times;</button></div>
+      <div class="andy-head"><div><b>Ask Andy</b><span>${esc(BRAND)} support</span></div><button class="andy-x" aria-label="Close">&times;</button></div>
       <div class="andy-log"></div>
       <div class="andy-foot">
         <textarea class="andy-in" rows="1" placeholder="Describe your problem…" aria-label="Message"></textarea>
@@ -98,7 +99,7 @@
 
   function render() {
     log.innerHTML = '';
-    if (!msgs.length) bubble('assistant', "Hi, I'm Andy — CPC Direct support. What's giving you trouble?");
+    if (!msgs.length) bubble('assistant', "Hi, I'm Andy — " + BRAND + " support. What's giving you trouble?");
     msgs.forEach(function (m) { bubble(m.role, typeof m.content === 'string' ? m.content : ''); });
   }
 
