@@ -9,8 +9,11 @@
 // GET  -> { configured } health check (never reveals the key).
 // OPTIONS -> CORS preflight (the widget is embedded cross-origin by sister apps).
 
+const KNOWLEDGE = require('./_knowledge.js');
 const MODEL = 'claude-haiku-4-5-20251001';
 const MAX_TOKENS = 320;
+
+function slug(s) { return String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
 
 // The cacheable prefix. Identical across every app + user, so the ~10x prompt-
 // cache discount applies. Per-request context (app/screen) goes AFTER this block
@@ -20,6 +23,7 @@ const PERSONA = `You are Andy, a friendly customer-support concierge for the CPC
 Your job is to help people who are stuck or have a problem: signing in, accounts, passwords, payments and billing, "how do I do X", errors, and "who do I contact". Keep replies warm, plain and short — usually two or three sentences. No bullet lists, no headings.
 
 Rules:
+- You may be given a KNOWLEDGE section about this specific app. Use it to answer questions about the app — what it is, its products, how things work, pricing, where to find things. If the answer is NOT in the knowledge, do not guess: say you're not certain and offer "Talk to a human".
 - You help people use the apps and get unstuck. You do NOT give tax, legal, medical or financial advice. If someone wants tax help inside Taxplify, tell them to tap the chat icon in Taxplify to ask its tax assistant.
 - Never invent features, prices or steps you are not sure about. If you are unsure, or the issue is about a specific account, a payment or refund, security, or the person is frustrated or asks for a human, say you will pass it to the team and invite them to tap "Talk to a human" so a person can follow up.
 - You cannot see the user's account or change anything. Never claim you can reset a password, issue a refund, or edit their data — escalate those instead.
@@ -55,10 +59,10 @@ module.exports = async (req, res) => {
   const app = String(body.app || 'CPC Direct').slice(0, 60);
   const screen = String(body.screen || '').slice(0, 140);
 
-  const system = [
-    { type: 'text', text: PERSONA, cache_control: { type: 'ephemeral' } },
-    { type: 'text', text: `Current context — app: ${app}${screen ? `; screen: ${screen}` : ''}.` },
-  ];
+  const pack = KNOWLEDGE[slug(app)] || '';
+  const system = [{ type: 'text', text: PERSONA, cache_control: { type: 'ephemeral' } }];
+  if (pack) system.push({ type: 'text', text: `KNOWLEDGE about ${app} (answer from this; if it isn't here, don't guess — offer Talk to a human):\n\n${pack}`, cache_control: { type: 'ephemeral' } });
+  system.push({ type: 'text', text: `Current context — app: ${app}${screen ? `; screen: ${screen}` : ''}.` });
 
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
