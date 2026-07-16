@@ -14,7 +14,9 @@
   var script = document.currentScript || (function () { var s = document.getElementsByTagName('script'); return s[s.length - 1]; })();
   var APP = (script && script.getAttribute('data-app')) || document.title || 'CPC Direct';
   var BRAND = (script && script.getAttribute('data-brand')) || APP; // the name the customer sees; defaults to the app
-  var API = ((script && script.getAttribute('data-api')) || '').replace(/\/$/, ''); // '' = same origin
+  // Backend host: data-api if given, else the origin ask-andy.js was served from
+  // (the CPC host) — so it works when embedded on any other app's domain.
+  var API = ((script && script.getAttribute('data-api')) || (function () { try { return new URL(script.src).origin; } catch (e) { return ''; } })()).replace(/\/$/, '');
   var STORE = 'askAndyChat';
 
   var msgs = [];
