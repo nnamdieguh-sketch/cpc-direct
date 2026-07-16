@@ -16,7 +16,15 @@
   var BRAND = (script && script.getAttribute('data-brand')) || APP; // the name the customer sees; defaults to the app
   // Backend host: data-api if given, else the origin ask-andy.js was served from
   // (the CPC host) — so it works when embedded on any other app's domain.
-  var API = ((script && script.getAttribute('data-api')) || (function () { try { return new URL(script.src).origin; } catch (e) { return ''; } })()).replace(/\/$/, '');
+  var API = ((script && script.getAttribute('data-api')) || (function () {
+    try {
+      var o = new URL(script.src).origin;
+      // cpc-direct.com (apex) 307-redirects to www; call the canonical host so
+      // cross-origin POSTs don't hit a redirect (browsers drop CORS across one).
+      if (o === 'https://cpc-direct.com') o = 'https://www.cpc-direct.com';
+      return o;
+    } catch (e) { return ''; }
+  })()).replace(/\/$/, '');
   var STORE = 'askAndyChat';
 
   var msgs = [];
