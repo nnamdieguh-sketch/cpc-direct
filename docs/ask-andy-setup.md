@@ -14,7 +14,7 @@ pattern (Claude via a server proxy, prompt-cached persona) — no new services.
 
 ## Embed on any app
 ```html
-<script src="https://cpc-direct.com/ask-andy.js" data-app="AEM"></script>
+<script src="https://www.cpc-direct.com/ask-andy.js" data-app="AEM"></script>
 ```
 - `data-app` — the app id. Tags the ticket, tells Andy which app he's supporting, and (by default) is the name the customer sees.
 - `data-brand` — optional; the name shown to the customer if it differs from `data-app`. e.g. `data-app="AEM" data-brand="Access Emerging Markets"` → the widget header reads "Access Emerging Markets support". Omit it and the header just uses `data-app` (so `data-app="AEM"` shows "AEM support").
