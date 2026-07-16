@@ -148,8 +148,8 @@
     var transcript = msgs.map(function (m) { return (m.role === 'user' ? 'User: ' : 'Andy: ') + m.content; }).join('\n');
     var f = document.createElement('div'); f.className = 'andy-form';
     f.innerHTML = `
-      <label>Your name</label><input class="af-name" placeholder="Full name">
-      <label>Email or phone to reach you</label><input class="af-contact" placeholder="you@email.com / +234…">
+      <label>Your name *</label><input class="af-name" placeholder="Full name">
+      <label>Email or phone to reach you *</label><input class="af-contact" placeholder="you@email.com / +234…">
       <label>What do you need help with?</label><textarea class="af-msg" rows="3" placeholder="Describe the problem"></textarea>
       <div class="row"><button class="cancel af-cancel">Cancel</button><button class="af-send">Send to the team</button></div>`;
     panel.appendChild(f);
@@ -158,6 +158,7 @@
       var name = f.querySelector('.af-name').value.trim();
       var contact = f.querySelector('.af-contact').value.trim();
       var message = f.querySelector('.af-msg').value.trim();
+      if (!name) { f.querySelector('.af-name').focus(); return; }
       if (!contact || (!message && !transcript)) { f.querySelector('.af-contact').focus(); return; }
       var btn = f.querySelector('.af-send'); btn.disabled = true; btn.textContent = 'Sending…';
       fetch(API + '/api/support-ticket', {
