@@ -34,7 +34,10 @@ function setCors(req, res) {
 module.exports = async (req, res) => {
   setCors(req, res);
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
-  if (req.method === 'GET') { res.status(200).json({ configured: !!courier().password }); return; }
+  if (req.method === 'GET') {
+    res.status(200).json({ configured: !!courier().password || !!(process.env.RESEND_API_KEY && process.env.SUPPORT_NOTIFY_EMAIL), mc: !!courier().password, email: !!(process.env.RESEND_API_KEY && process.env.SUPPORT_NOTIFY_EMAIL) });
+    return;
+  }
   if (req.method !== 'POST') { res.status(405).json({ ok: false }); return; }
 
   let body = req.body;
@@ -50,30 +53,60 @@ module.exports = async (req, res) => {
   };
   if (!t.message && !t.transcript) { res.status(400).json({ ok: false, error: 'Nothing to send.' }); return; }
 
-  const { email, password } = courier();
-  if (!password) { res.status(200).json({ ok: false, notConfigured: true, error: 'Ticket inbox isn’t configured yet.' }); return; }
+  const { email: courierEmail, password } = courier();
+  const rk = process.env.RESEND_API_KEY;
+  const notify = (process.env.SUPPORT_NOTIFY_EMAIL || '').split(',').map((s) => s.trim()).filter(Boolean);
 
-  try {
-    const signin = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${MC.apiKey}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, returnSecureToken: true }),
-    });
-    const auth = await signin.json();
-    if (!auth || !auth.idToken) { res.status(200).json({ ok: false, error: 'Could not reach the ticket inbox.' }); return; }
-
-    const id = crypto.randomUUID();
-    const docName = `projects/${MC.projectId}/databases/(default)/documents/support_tickets/${id}`;
-    const fields = {
-      app: { stringValue: t.app }, name: { stringValue: t.name }, contact: { stringValue: t.contact },
-      message: { stringValue: t.message }, transcript: { stringValue: t.transcript }, screen: { stringValue: t.screen },
-      status: { stringValue: 'open' }, source: { stringValue: 'ask-andy' },
-    };
-    const commit = await fetch(`https://firestore.googleapis.com/v1/projects/${MC.projectId}/databases/(default)/documents:commit`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${auth.idToken}` },
-      body: JSON.stringify({ writes: [{ update: { name: docName, fields }, updateTransforms: [{ fieldPath: 'createdAt', setToServerValue: 'REQUEST_TIME' }] }] }),
-    });
-    res.status(200).json({ ok: commit.ok, id: commit.ok ? id : null });
-  } catch (e) {
-    res.status(200).json({ ok: false, error: 'Could not send the ticket.' });
+  // 1) Record the ticket in Mission Control's support_tickets (best-effort).
+  let mcOk = false, ticketId = null;
+  if (password) {
+    try {
+      const signin = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${MC.apiKey}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: courierEmail, password, returnSecureToken: true }),
+      });
+      const auth = await signin.json();
+      if (auth && auth.idToken) {
+        const id = crypto.randomUUID();
+        const docName = `projects/${MC.projectId}/databases/(default)/documents/support_tickets/${id}`;
+        const fields = {
+          app: { stringValue: t.app }, name: { stringValue: t.name }, contact: { stringValue: t.contact },
+          message: { stringValue: t.message }, transcript: { stringValue: t.transcript }, screen: { stringValue: t.screen },
+          status: { stringValue: 'open' }, source: { stringValue: 'ask-andy' },
+        };
+        const commit = await fetch(`https://firestore.googleapis.com/v1/projects/${MC.projectId}/databases/(default)/documents:commit`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${auth.idToken}` },
+          body: JSON.stringify({ writes: [{ update: { name: docName, fields }, updateTransforms: [{ fieldPath: 'createdAt', setToServerValue: 'REQUEST_TIME' }] }] }),
+        });
+        mcOk = !!commit.ok; if (mcOk) ticketId = id;
+      }
+    } catch (_) {}
   }
+
+  // 2) Email the team (best-effort, via Resend). Needs RESEND_API_KEY + SUPPORT_NOTIFY_EMAIL.
+  let mailOk = false;
+  if (rk && notify.length) {
+    try {
+      const payload = {
+        from: process.env.SUPPORT_FROM_EMAIL || 'Ask Andy <onboarding@resend.dev>',
+        to: notify,
+        subject: `New support ticket — ${t.app}${t.name ? ' — ' + t.name : ''}`,
+        text: `A customer asked for a human via Ask Andy.\n\n`
+          + `App: ${t.app}\nName: ${t.name || '—'}\nReach them at: ${t.contact || '—'}\nScreen: ${t.screen || '—'}\n\n`
+          + `Message:\n${t.message || '—'}\n\nConversation:\n${t.transcript || '—'}`,
+      };
+      if (t.contact && /@/.test(t.contact)) payload.reply_to = t.contact;
+      const r = await fetch('https://api.resend.com/emails', {
+        method: 'POST', headers: { Authorization: `Bearer ${rk}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      mailOk = r.ok;
+    } catch (_) {}
+  }
+
+  if (!password && !(rk && notify.length)) {
+    res.status(200).json({ ok: false, notConfigured: true, error: 'Ticket inbox isn’t configured yet.' });
+    return;
+  }
+  res.status(200).json({ ok: mcOk || mailOk, id: ticketId, mc: mcOk, email: mailOk });
 };

@@ -53,6 +53,11 @@
   .andy-form .row{display:flex;gap:8px}
   .andy-form button{background:#0B1F3A;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;min-height:48px}
   .andy-form .cancel{background:none;color:#5a6472;border:1px solid #d3d7de}
+  .andy-done{flex:1;padding:36px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
+  .andy-done-ic{width:48px;height:48px;border-radius:50%;background:#0B1F3A;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center}
+  .andy-done-h{font-size:16px;font-weight:700;color:#16202e}
+  .andy-done-p{font-size:13px;color:#5a6472;line-height:1.5;max-width:260px}
+  .andy-done-btn{margin-top:6px;background:none;border:1px solid #c9ccd2;color:#0B1F3A;font-size:13px;font-weight:600;padding:9px 16px;border-radius:20px;cursor:pointer;min-height:40px}
   @media (prefers-color-scheme: dark){
     .andy-panel{background:#141a22;color:#e8eaee;border-color:#2a313b}
     .andy-log,.andy-form{background:#0f141b}
@@ -60,6 +65,7 @@
     .andy-b.sys{background:#1b222c;color:#9aa4b2}
     .andy-in,.andy-form input,.andy-form textarea{background:#1b222c;border-color:#2a313b;color:#e8eaee}
     .andy-foot{background:#141a22;border-color:#2a313b}
+    .andy-done-h{color:#e8eaee}.andy-done-p{color:#9aa4b2}
   }`;
 
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
@@ -84,6 +90,8 @@
   var log = root.querySelector('.andy-log');
   var input = root.querySelector('.andy-in');
   var sendBtn = root.querySelector('.andy-send');
+  var foot = root.querySelector('.andy-foot');
+  var ended = false;
 
   function scroll() { log.scrollTop = log.scrollHeight; }
   function bubble(role, text) {
@@ -146,17 +154,35 @@
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ app: APP, name: name, contact: contact, message: message, transcript: transcript, screen: screenName() })
       }).then(function (r) { return r.json(); }).then(function (res) {
-        f.remove();
-        bubble('system', res && res.ok
-          ? 'Thanks — the team has your request and will reach you at ' + contact + '.'
-          : 'Saved. If you don’t hear back, email support and mention ' + APP + '.');
-      }).catch(function () { f.remove(); bubble('system', 'Could not send just now — please email support.'); });
+        endThanks(contact, !!(res && res.ok));
+      }).catch(function () { endThanks(contact, false); });
     };
+  }
+
+  // After an escalation, collapse to a clean confirmation — no thread, no input.
+  function endThanks(contact, ok) {
+    ended = true; msgs = []; save();
+    var f = panel.querySelector('.andy-form'); if (f) f.remove();
+    if (foot) foot.style.display = 'none';
+    log.innerHTML = '';
+    var d = document.createElement('div'); d.className = 'andy-done';
+    d.innerHTML = '<div class="andy-done-ic">✓</div><div class="andy-done-h">Thanks — we’ve got it</div>'
+      + '<div class="andy-done-p">' + (ok
+        ? ('Our team has your request' + (contact ? ' and will reach you at ' + esc(contact) : '') + '.')
+        : ('Saved. If you don’t hear back, please email support and mention ' + esc(APP) + '.')) + '</div>';
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'andy-done-btn'; b.textContent = 'Start a new chat';
+    b.onclick = resetChat; d.appendChild(b);
+    log.appendChild(d);
+  }
+  function resetChat() {
+    ended = false; msgs = []; save();
+    if (foot) foot.style.display = '';
+    render(); setTimeout(function () { input.focus(); }, 40);
   }
 
   function toggle(open) {
     panel.classList.toggle('open', open);
-    if (open) { render(); setTimeout(function () { input.focus(); }, 60); }
+    if (open) { if (ended) resetChat(); else render(); setTimeout(function () { input.focus(); }, 60); }
   }
   root.querySelector('.andy-launch').onclick = function () { toggle(!panel.classList.contains('open')); };
   root.querySelector('.andy-x').onclick = function () { toggle(false); };
