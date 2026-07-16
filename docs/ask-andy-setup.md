@@ -28,7 +28,8 @@ The widget auto-passes the app name + current screen so users never re-explain w
 | Var | Purpose | Required |
 |-----|---------|----------|
 | `ANTHROPIC_API_KEY` | Andy's Claude access (server-side only). | **Yes** |
-| `MC_REPORTER_PW` | Courier password — already set for the MC reporter; also writes tickets. | for escalation |
+| `MC_REPORTER_PW` | Courier password — already set for the MC reporter; also writes tickets to the Mission Control Queries tab. | for the ticket inbox |
+| `RESEND_API_KEY` + `SUPPORT_NOTIFY_EMAIL` | Emails you the moment a customer escalates. `SUPPORT_NOTIFY_EMAIL` is where alerts go (comma-separated for several). Optionally `SUPPORT_FROM_EMAIL` (a verified Resend sender; defaults to `onboarding@resend.dev`). | for email alerts |
 | `SUPPORT_ALLOWED_ORIGINS` | Extra comma-separated origins allowed to embed the widget. `*.cpc-direct.com`, `*.vercel.app`, and the known app domains are already allowed. | optional |
 
 ## Mission Control side (one-time)
