@@ -18,7 +18,7 @@ pattern (Claude via a server proxy, prompt-cached persona) — no new services.
 ```
 - `data-app` — the app id. Tags the ticket, tells Andy which app he's supporting, and (by default) is the name the customer sees.
 - `data-brand` — optional; the name shown to the customer if it differs from `data-app`. e.g. `data-app="AEM" data-brand="Access Emerging Markets"` → the widget header reads "Access Emerging Markets support". Omit it and the header just uses `data-app` (so `data-app="AEM"` shows "AEM support").
-- `data-api` — optional; the CPC host serving the endpoints (defaults to same origin, i.e. `https://cpc-direct.com`). On another domain the default already resolves correctly, so you normally don't need it.
+- `data-api` — optional; the CPC host serving the endpoints. Defaults to the origin `ask-andy.js` was loaded from (`https://cpc-direct.com`), so cross-domain embeds call the right backend automatically — you normally don't need to set it.
 
 **White-label:** each app wears its own name. The shared engine (Andy's brain + the ticket inbox) stays invisible to customers — Andy presents himself as the app in `data-app`/`data-brand` and never volunteers the parent company unless asked. Tickets from every app still land in the one Mission Control inbox, tagged by `app`.
 
