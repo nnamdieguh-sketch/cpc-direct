@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CPC Direct — Your Idea. Our Execution. Your Growth.</title>
+<link rel="icon" type="image/png" href="/logo-mark.png">
+<meta property="og:image" content="https://www.cpc-direct.com/logo.png">
+<meta property="og:title" content="CPC Direct — Your Idea. Our Execution. Your Growth.">
+<meta name="twitter:card" content="summary_large_image">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#080C1A;--ink2:#0E1428;--card:#181E35;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--gold:#E09B1A;--gold-lt:#F5C050;--teal:#00C4A0;--sky:#4D9EF5;--white:#EFF1FA;--muted:rgba(239,241,250,0.48);--dim:rgba(239,241,250,0.25);--head:'Syne',sans-serif;--body:'Outfit',sans-serif}
@@ -13,7 +17,8 @@ body{background:var(--ink);color:var(--white);font-family:var(--body);overflow-x
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px 52px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,12,26,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
-.logo{font-family:var(--head);font-weight:800;font-size:1.1rem;letter-spacing:-0.02em;color:var(--white);cursor:pointer}
+.logo{font-family:var(--head);font-weight:800;font-size:1.1rem;letter-spacing:-0.02em;color:var(--white);cursor:pointer;display:inline-flex;align-items:center;gap:9px}
+.logo-mark{height:1.7em;width:auto;display:block}
 .logo-dot{color:var(--gold)}
 .nav-pills{display:flex;gap:4px}
 .nav-pills a{font-size:0.8rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:6px 14px;border-radius:100px;transition:all .2s}
@@ -435,7 +440,7 @@ footer{padding:32px 52px;border-top:1px solid var(--border);display:flex;align-i
 <body>
 
 <nav>
-  <span class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">CPC<span class="logo-dot">.</span>Direct</span>
+  <span class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img class="logo-mark" src="/logo-mark.png" alt="">CPC<span class="logo-dot">.</span>Direct</span>
   <div class="nav-pills">
     <a href="#products">Products</a>
     <a href="#ideaforge">IdeaForge</a>
@@ -864,7 +869,7 @@ footer{padding:32px 52px;border-top:1px solid var(--border);display:flex;align-i
 </section>
 
 <footer style="flex-direction:column;gap:16px;text-align:center">
-  <span class="logo" style="cursor:default;font-size:0.95rem">CPC<span class="logo-dot">.</span>Direct</span>
+  <span class="logo" style="cursor:default;font-size:0.95rem"><img class="logo-mark" src="/logo-mark.png" alt="">CPC<span class="logo-dot">.</span>Direct</span>
   <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
     <div style="font-size:0.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em;font-family:var(--head)">Product Terms &amp; Conditions</div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
@@ -918,7 +923,7 @@ footer{padding:32px 52px;border-top:1px solid var(--border);display:flex;align-i
 <div class="ifp-overlay" id="ifp-overlay" onclick="closePanel()"></div>
 <div class="ifp" id="ifp">
   <div class="ifp-hdr">
-    <span class="logo" style="cursor:default">CPC<span class="logo-dot">.</span>Direct — IdeaForge</span>
+    <span class="logo" style="cursor:default"><img class="logo-mark" src="/logo-mark.png" alt="">CPC<span class="logo-dot">.</span>Direct — IdeaForge</span>
     <button class="ifp-close" onclick="closePanel()">← Back</button>
   </div>
   <div class="ifp-body">
