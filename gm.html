@@ -388,7 +388,7 @@ body.preview .card{border-color:var(--border2)}
           <div class="rec-note">Aim for <b>60–90 seconds</b>, and once you've covered that, feel free to <b>talk about anything else you like</b>. 😊 There's no script and no wrong answer — we just want to hear you in your own voice, so relax and be yourself.</div>
           <div class="dial" id="dial">🎙️</div>
           <div class="timer" id="timer">0:00</div>
-          <div class="rec-hint" id="recHint">Up to 2 minutes · required · your mic stays on this page only</div>
+          <div class="rec-hint" id="recHint">Up to 100 seconds · required · your mic stays on this page only</div>
           <div class="rec-btns">
             <button class="btn btn-g btn-sm" type="button" id="recBtn" onclick="toggleRec()">Start recording</button>
             <button class="btn btn-o btn-sm" type="button" id="reRecBtn" onclick="resetRec()" style="display:none">Re-record</button>
@@ -488,7 +488,7 @@ body.preview .card{border-color:var(--border2)}
 
 <script>
 var STEP=0, MAXVISITED=0;
-var mediaRec=null, chunks=[], audioBlob=null, audioB64='', stream=null, tInt=null, seconds=0, MAXSEC=120;
+var mediaRec=null, chunks=[], audioBlob=null, audioB64='', stream=null, tInt=null, seconds=0, MAXSEC=100;
 
 function showStep(n){
   document.querySelectorAll('.step').forEach(function(s){ s.classList.toggle('on', +s.dataset.step===n); });
@@ -659,7 +659,15 @@ function onStop(){
   var st=document.getElementById('recStatus'); st.className='rec-status ok'; st.textContent='Got it ('+fmt(seconds)+'). Play it back — or re-record if you want another take.';
   // to base64 for upload
   var fr=new FileReader();
-  fr.onloadend=function(){ audioB64=String(fr.result||'').split(',')[1]||''; };
+  fr.onloadend=function(){
+    audioB64=String(fr.result||'').split(',')[1]||'';
+    if(audioB64.length>=3400000){
+      audioB64='';
+      var s2=document.getElementById('recStatus');
+      s2.className='rec-status err';
+      s2.textContent='That take is too large to send. Please record again and keep it under about 90 seconds.';
+    }
+  };
   fr.readAsDataURL(audioBlob);
 }
 function resetRec(){

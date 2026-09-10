@@ -197,7 +197,8 @@ module.exports = async (req, res) => {
   }
 
   const attachments = [];
-  if (body.audio && typeof body.audio === 'string' && body.audio.length < 4000000) {
+  const audioTooBig = !!(body.audio && typeof body.audio === 'string' && body.audio.length >= 3400000);
+  if (body.audio && typeof body.audio === 'string' && !audioTooBig) {
     const safe = (app.name.replace(/[^a-z0-9]+/gi, '-') || 'candidate').toLowerCase();
     attachments.push({ filename: 'voice-pitch-' + safe + '.webm', content: body.audio });
   }
@@ -211,7 +212,9 @@ module.exports = async (req, res) => {
     + `— HOW IT WAS COMPLETED —\nTime on the form: ${app.minutes === null ? 'unknown' : app.minutes + ' minutes'}\nPasted rather than typed: ${app.pastedList || 'none detected'}\n\n`
     + (attachments.length
         ? `A voice pitch is attached to this email.\nThey were asked to say their full name and today's date, then: ${app.voicePrompt || '(prompt not recorded)'}`
-        : `No voice pitch was recorded.`);
+        : (audioTooBig
+            ? `THEY DID RECORD A VOICE PITCH, but the file was too large to attach. Ask them for it directly — do not read this as a skipped recording.`
+            : `No voice pitch was recorded.`));
 
   // Send as careers@cpc-direct.com. That only works once cpc-direct.com is a
   // verified domain in Resend — until then Resend rejects it, so fall back to
