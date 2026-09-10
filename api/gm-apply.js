@@ -41,10 +41,14 @@ async function review(app) {
   const content = `Candidate: ${app.name || '—'} (${app.gender || '—'}, age ${app.age || '—'}, ${app.location || '—'})
 Contact: ${app.contact || '—'} · Links: ${app.links || '—'}
 
-A LITTLE ABOUT THEM (context only, do not score):
+A LITTLE ABOUT THEM (context only, do not score — use to shape the live questions):
 Draws them to the role: ${app.x1 || '—'}
-Getting up to speed on the unfamiliar: ${app.x2 || '—'}
+This past year (study/work, formal or not) + what they like/dislike: ${app.x_recent || '—'}
+Excites them beyond money: ${app.x_excite || '—'}
+Looking forward to: ${app.x_forward || '—'}
 Proud of (not on a CV): ${app.x3 || '—'}
+Latest Nigerian news that caught their eye: ${app.x_news || '—'}
+Their take on it (if it touches our space): ${app.x_news_take || '—'}
 
 WRITTEN TASK (score this):
 Q1 — What CPC Direct does + the biggest opportunity to grow it:
@@ -109,8 +113,12 @@ module.exports = async (req, res) => {
     contact: String(body.contact || '').slice(0, 160),
     links: String(body.links || '').slice(0, 500),
     x1: String(body.x1 || '').slice(0, 3000),
-    x2: String(body.x2 || '').slice(0, 3000),
+    x_recent: String(body.x_recent || '').slice(0, 3000),
+    x_excite: String(body.x_excite || '').slice(0, 3000),
+    x_forward: String(body.x_forward || '').slice(0, 3000),
     x3: String(body.x3 || '').slice(0, 3000),
+    x_news: String(body.x_news || '').slice(0, 3000),
+    x_news_take: String(body.x_news_take || '').slice(0, 3000),
     q1: String(body.q1 || '').slice(0, 5000),
     q2: String(body.q2 || '').slice(0, 5000),
     q3: String(body.q3 || '').slice(0, 5000),
@@ -146,7 +154,7 @@ module.exports = async (req, res) => {
   const text = `NEW GENERAL MANAGER APPLICATION\n\n`
     + reviewBlock
     + `— CANDIDATE —\nName: ${app.name}\nGender: ${app.gender || '—'}\nAge: ${app.age || '—'}\nLocation: ${app.location || '—'}\nContact: ${app.contact}\nLinks: ${app.links || '—'}\n\n`
-    + `— A LITTLE ABOUT THEM —\nWhat draws them to the role:\n${app.x1 || '—'}\n\nGetting up to speed on the unfamiliar:\n${app.x2 || '—'}\n\nProud of (not on a CV):\n${app.x3 || '—'}\n\n`
+    + `— A LITTLE ABOUT THEM —\nWhat draws them to the role:\n${app.x1 || '—'}\n\nThis past year (study/work + likes/dislikes):\n${app.x_recent || '—'}\n\nExcites them beyond money:\n${app.x_excite || '—'}\n\nLooking forward to:\n${app.x_forward || '—'}\n\nProud of (not on a CV):\n${app.x3 || '—'}\n\nLatest Nigerian news that caught their eye:\n${app.x_news || '—'}\n\nTheir take on it:\n${app.x_news_take || '—'}\n\n`
     + `— WRITTEN TASK —\nQ1 (CPC Direct + opportunity):\n${app.q1}\n\nQ2 (first 90 days / path to profit):\n${app.q2}\n\nQ3 (figured-it-out / led-without-a-playbook):\n${app.q3 || '—'}\n\n`
     + (attachments.length ? `A voice pitch is attached to this email.` : `No voice pitch was recorded.`);
 
