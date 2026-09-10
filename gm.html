@@ -21,6 +21,10 @@ img{max-width:100%}
 .logo{font-family:var(--head);font-weight:800;font-size:1.05rem;letter-spacing:-0.02em;color:var(--white);text-decoration:none;display:inline-flex;align-items:center;gap:9px}
 .logo-mark{height:2em;width:auto;display:block}
 .logo-dot{color:var(--gold)}
+.logo:hover{opacity:0.82}
+.bar-back{font-size:0.76rem;color:var(--muted);text-decoration:none;border:1px solid var(--border2);border-radius:100px;padding:6px 14px;transition:all .2s;white-space:nowrap}
+.bar-back:hover{color:var(--white);background:rgba(255,255,255,0.06)}
+@media(max-width:600px){.bar-back{padding:6px 11px;font-size:0.72rem}}
 .bar-tag{font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)}
 
 /* Shell */
@@ -200,7 +204,7 @@ body.preview .card{border-color:var(--border2)}
 
 <div class="bar">
   <a class="logo" href="/"><img class="logo-mark" src="/logo-mark.png" alt=""><span>CPC<span class="logo-dot">.</span>Direct</span></a>
-  <span class="bar-tag">Careers · Confidential</span>
+  <a class="bar-back" href="/">← Back to cpc-direct.com</a>
 </div>
 
 <div class="hg"></div><div class="hg2"></div>
@@ -418,7 +422,7 @@ body.preview .card{border-color:var(--border2)}
 
   </form>
 
-  <div class="foot">CPC Direct · Abuja, Nigeria · This page is confidential and for invited candidates.<br>Your recording and answers are used only for this hiring process. <span class="tlink" onclick="openTerms(event)">Terms of this process</span></div>
+  <div class="foot">CPC Direct · Abuja, Nigeria · This page is confidential and for invited candidates.<br>Your recording and answers are used only for this hiring process. <span class="tlink" onclick="openTerms(event)">Terms of this process</span> &nbsp;·&nbsp; <a href="/">Back to cpc-direct.com</a></div>
 
 </div>
 
@@ -715,7 +719,7 @@ async function submitApp(){
   try{
     var r=await fetch('/api/gm-apply',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
     var d={}; try{ d=await r.json(); }catch(_){}
-    if(r.ok && d && d.ok){ showStep(7); return; }
+    if(r.ok && d && d.ok){ SUBMITTED=true; showStep(7); return; }
     if(d && d.notConfigured){ e.textContent='The applications inbox isn’t set up yet. Please try again shortly, or email careers@cpc-direct.com.'; }
     else{ e.textContent=(d && d.error) || 'Something went wrong sending your application. Please try again.'; }
   }catch(_){
@@ -734,6 +738,17 @@ function previewAll(){
   buildVoicePrompt(); showToday();                                     // show one example of the randomised prompt
   document.querySelectorAll('.step').forEach(function(s){ s.classList.add('on'); });
 }
+
+/* Nothing is saved yet, so warn before a click, a refresh or a closed tab
+   throws away a part-finished application. */
+var SUBMITTED=false;
+window.addEventListener('beforeunload', function(e){
+  if(SUBMITTED || PREVIEW) return;
+  var fields=['name','contact','q1','q2','q3','q4','q5','q6','q7','q8','x1','x_recent','x_excite','x_forward','x3','x_news'];
+  var hasWork = audioB64 || fields.some(function(id){ return v(id).length > 0; });
+  if(!hasWork) return;
+  e.preventDefault(); e.returnValue='';
+});
 
 if(PREVIEW) previewAll(); else showStep(0);
 </script>
