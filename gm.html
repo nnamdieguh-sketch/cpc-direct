@@ -187,6 +187,14 @@ body.preview .card{border-color:var(--border2)}
   .bar-tag{display:none}
 }
 </style>
+<!-- Microsoft Clarity — behaviour only; form content is masked below -->
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "yg6yjnr4ro");
+</script>
 </head>
 <body>
 
@@ -248,7 +256,7 @@ body.preview .card{border-color:var(--border2)}
     <div class="pstep" data-s="6"><div class="pnum">7</div></div>
   </div>
 
-  <form id="gmForm" onsubmit="return false">
+  <form id="gmForm" onsubmit="return false" data-clarity-mask="True">
 
     <!-- STEP 0 — Start & consent -->
     <div class="step on" data-step="0">
@@ -392,7 +400,7 @@ body.preview .card{border-color:var(--border2)}
       <div class="card">
         <h3>Review &amp; submit</h3>
         <p class="sub">One last look. When you're happy, send it in.</p>
-        <div id="reviewBox"></div>
+        <div id="reviewBox" data-clarity-mask="True"></div>
         <div class="err-msg" id="e6"></div>
         <div class="nav-row"><button class="btn btn-o" type="button" onclick="back(6)">← Back</button><span class="spacer"></span><button class="btn btn-g" type="button" id="submitBtn" onclick="submitApp()">Submit application</button></div>
       </div>
@@ -436,7 +444,7 @@ body.preview .card{border-color:var(--border2)}
       <li><strong>Optional:</strong> your age, location, and any links you choose to share.</li>
       <li><strong>Your answers</strong> to the written questions, including the conversational ones — all of which you may skip.</li>
       <li><strong>A voice recording</strong> you make in your browser. It is audio only; no video or image of you is captured, and your camera is never accessed.</li>
-      <li><strong>Basic technical information about how the form was completed</strong> — roughly how long you took, and whether text was pasted into a field. We use this only to help confirm the work is your own. We do not track you anywhere else, and we do not use cookies to follow you around the web.</li>
+      <li><strong>How this page is used.</strong> We use a session-analytics tool (Microsoft Clarity) that records page activity — clicks, scrolling, how long you spend on each step, and whether text was typed or pasted. It helps us improve the page and satisfy ourselves that an application was genuinely completed by the person applying. <strong>What you write is masked and is not captured in those recordings</strong> — we read your answers from the application you submit, not from a replay. It runs only on our own pages: we do not follow you to other websites, and we never sell or share this for advertising.</li>
     </ul>
     <p>The question you are asked to speak about is chosen for you at the recording step, and is drawn from what you have written. This is simply so we can be confident we are hearing from you.</p>
 
@@ -445,7 +453,7 @@ body.preview .card{border-color:var(--border2)}
     <p>Your voice recording is <strong>not scored automatically</strong> — it is listened to by our hiring team. No decision to reject you is made by automated means alone at the stages that follow: a person reviews anyone we consider taking forward.</p>
 
     <h4>4. Who sees your information</h4>
-    <p>Only people involved in hiring at CPC Direct. We do not sell your information, share it for marketing, publish it, or pass it to anyone outside the company for their own purposes. We use ordinary service providers to operate this process — website hosting, email delivery, and the automated review — and they process your information only on our instructions.</p>
+    <p>Only people involved in hiring at CPC Direct. We do not sell your information, share it for marketing, publish it, or pass it to anyone outside the company for their own purposes. We use ordinary service providers to operate this process — website hosting, email delivery, the automated review, and the page analytics described above — and they process your information only on our instructions.</p>
 
     <h4>5. How long we keep it</h4>
     <p>Up to <strong>12 months</strong> from the day you submit, so we can consider you for this and any similar role that opens in that time. After that it is deleted. You can ask us to delete it sooner at any point, and we will.</p>
