@@ -8,7 +8,8 @@
 // The verdict is computed here from the scored dimensions (deterministic), NOT
 // taken from the model's own say-so — so it always tracks the scores.
 //
-// POST { name, gender, age, location, contact, links, x1, x2, x3, q1, q2, q3, audio(base64) } -> { ok }
+// POST { name, gender, age, location, contact, links, x1/x_recent/x_excite/
+//        x_forward/x3/x_news/x_news_take, q1..q7, audio(base64) } -> { ok }
 // GET  -> { configured }
 //
 // Env: ANTHROPIC_API_KEY (review), RESEND_API_KEY + GM_NOTIFY_EMAIL
@@ -20,16 +21,18 @@ const MODEL = 'claude-opus-4-8'; // deep first-pass; hiring is low-volume, high-
 
 const RUBRIC = `You are the automated first-pass reviewer for the General Manager role at CPC Direct, a digital business-development company based in Abuja, Nigeria (it builds ventures and delivers digital services — automation, product build, advisory — including work with Access Emerging Markets). The GM must take the business from startup to profitable within 12 months, learn the apps and services deeply, build and lead a small team, and be the confident, articulate face of the company.
 
-Score the WRITTEN answers only. A separate voice recording lets the founder judge diction — do NOT comment on speech or accent. Score each dimension 1-10 and be STRICT and calibrated: 5 is an average applicant, 7 is clearly good, 9-10 is exceptional and rare. Do NOT inflate — a thin, vague or generic answer scores low (1-3). Weigh the three business questions (Q1-Q3) most; the lighter "about you" answers are context only.
-- Strategy: clarity and realism of the growth / first-90-days plan, and prioritisation.
-- Business: grasp of what a digital business-development company does and where the opportunity is.
+This is a CRITICAL hire and most applicants will not be a fit. Score the WRITTEN answers only. A separate voice recording lets the founder judge diction — do NOT comment on speech or accent. Score each dimension 1-10 and be STRICT and calibrated: 5 is an average applicant, 7 is clearly good, 9-10 is exceptional and rare. Do NOT inflate — a thin, vague or generic answer scores low (1-3). The "about you" answers are context only; score the task questions.
+- Strategy: clarity and realism of the growth / first-90-days plan, and prioritisation — including what they would deliberately NOT do. (Q2)
+- Business: grasp of what a digital business-development company does and where the opportunity is. (Q1)
+- Commercial: revenue instinct. On the break-even question, do they reason in MARGIN (only ~N200,000 of each N500,000 sale is real) or fixate on the top line? Are their improvement ideas concrete — raise price, cut delivery cost, recurring retainers — or vague ("more marketing")? Does the "tell a friend" answer actually persuade? (Q4, Q6)
+- Ownership: would they drive things with nobody watching? The month-four answer is the tell — do they act, prioritise and decide, or wait for the founder? Does the first-hire answer show they can build a team? (Q5, Q7)
 - Writing: clarity, structure and professionalism of their written English.
-- Drive: initiative, curiosity and evidence of figuring things out or leading without a playbook.
+- Drive: initiative, curiosity and evidence of figuring things out or leading without a playbook. (Q3)
 
 Then write two sharp, specific questions the founder should ask this person live.
 
 Reply in EXACTLY this plain-text format, nothing else, no markdown, no verdict line:
-SCORES: Strategy _/10 · Business _/10 · Writing _/10 · Drive _/10
+SCORES: Strategy _/10 · Business _/10 · Commercial _/10 · Ownership _/10 · Writing _/10 · Drive _/10
 NOTES: <2-3 candid sentences on the strongest and weakest parts>
 ASK LIVE:
 1) <question>
@@ -58,7 +61,19 @@ Q2 — First 90 days / path to profitable in 12 months:
 ${app.q2 || '—'}
 
 Q3 — A time they figured something out alone or led without a playbook:
-${app.q3 || '—'}`;
+${app.q3 || '—'}
+
+Q4 — Break-even (sells for N500,000, costs N300,000 to deliver, N200,000/month overhead — how many per month, and what would they change?):
+${app.q4 || '—'}
+
+Q5 — Month four, sales behind plan, founder unreachable for two weeks — what do they get on with?:
+${app.q5 || '—'}
+
+Q6 — Telling a friend in Abuja about something they love (persuasion in their own voice):
+${app.q6 || '—'}
+
+Q7 — Their first hire — what role, and how they would find and choose them:
+${app.q7 || '—'}`;
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -82,15 +97,22 @@ function scoreOf(txt, label) {
   const n = parseInt(m[1], 10);
   return isNaN(n) ? null : Math.max(0, Math.min(10, n));
 }
+// Critical hire: ADVANCE is deliberately hard to reach. Commercial ability is
+// gated separately — someone who cannot think about revenue cannot do this job,
+// however well they write.
 function grade(txt) {
   if (!txt) return null;
-  const s = { Strategy: scoreOf(txt, 'Strategy'), Business: scoreOf(txt, 'Business'), Writing: scoreOf(txt, 'Writing'), Drive: scoreOf(txt, 'Drive') };
+  const s = {
+    Strategy: scoreOf(txt, 'Strategy'), Business: scoreOf(txt, 'Business'),
+    Commercial: scoreOf(txt, 'Commercial'), Ownership: scoreOf(txt, 'Ownership'),
+    Writing: scoreOf(txt, 'Writing'), Drive: scoreOf(txt, 'Drive'),
+  };
   const vals = Object.keys(s).map((k) => s[k]).filter((v) => v !== null);
-  if (vals.length < 4) return null;
+  if (vals.length < 6) return null;
   const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
   const min = Math.min.apply(null, vals);
   let verdict = 'MAYBE';
-  if (avg >= 7 && min >= 6) verdict = 'ADVANCE';
+  if (avg >= 7 && min >= 6 && s.Commercial >= 7) verdict = 'ADVANCE';
   else if (avg < 4.5) verdict = 'PASS';
   return { scores: s, avg: avg.toFixed(1), min, verdict };
 }
@@ -122,6 +144,10 @@ module.exports = async (req, res) => {
     q1: String(body.q1 || '').slice(0, 5000),
     q2: String(body.q2 || '').slice(0, 5000),
     q3: String(body.q3 || '').slice(0, 5000),
+    q4: String(body.q4 || '').slice(0, 4000),
+    q5: String(body.q5 || '').slice(0, 4000),
+    q6: String(body.q6 || '').slice(0, 4000),
+    q7: String(body.q7 || '').slice(0, 4000),
   };
   if (!app.name || !app.contact || !app.q1 || !app.q2) { res.status(400).json({ ok: false, error: 'Missing required fields.' }); return; }
 
@@ -137,7 +163,7 @@ module.exports = async (req, res) => {
   if (g) {
     reviewBlock = `— AUTOMATED FIRST-PASS REVIEW —\n`
       + `Verdict: ${g.verdict}  (avg ${g.avg}/10, lowest ${g.min}/10)\n`
-      + `Scores: Strategy ${g.scores.Strategy}/10 · Business ${g.scores.Business}/10 · Writing ${g.scores.Writing}/10 · Drive ${g.scores.Drive}/10\n\n`
+      + `Scores: Strategy ${g.scores.Strategy}/10 · Business ${g.scores.Business}/10 · Commercial ${g.scores.Commercial}/10 · Ownership ${g.scores.Ownership}/10 · Writing ${g.scores.Writing}/10 · Drive ${g.scores.Drive}/10\n\n`
       + `${raw}\n\n`;
   } else if (raw) {
     reviewBlock = `— AUTOMATED FIRST-PASS REVIEW —\n${raw}\n\n(Verdict not computed — scores couldn't be read; judge the notes above.)\n\n`;
@@ -156,6 +182,7 @@ module.exports = async (req, res) => {
     + `— CANDIDATE —\nName: ${app.name}\nGender: ${app.gender || '—'}\nAge: ${app.age || '—'}\nLocation: ${app.location || '—'}\nContact: ${app.contact}\nLinks: ${app.links || '—'}\n\n`
     + `— A LITTLE ABOUT THEM —\nWhat draws them to the role:\n${app.x1 || '—'}\n\nThis past year (study/work + likes/dislikes):\n${app.x_recent || '—'}\n\nExcites them beyond money:\n${app.x_excite || '—'}\n\nLooking forward to:\n${app.x_forward || '—'}\n\nProud of (not on a CV):\n${app.x3 || '—'}\n\nLatest Nigerian news that caught their eye:\n${app.x_news || '—'}\n\nTheir take on it:\n${app.x_news_take || '—'}\n\n`
     + `— WRITTEN TASK —\nQ1 (CPC Direct + opportunity):\n${app.q1}\n\nQ2 (first 90 days / path to profit):\n${app.q2}\n\nQ3 (figured-it-out / led-without-a-playbook):\n${app.q3 || '—'}\n\n`
+    + `— RUNNING THE BUSINESS —\nBreak-even (1/month is the answer; look for margin thinking):\n${app.q4 || '—'}\n\nMonth four, founder unreachable:\n${app.q5 || '—'}\n\nTelling a friend about something they love:\n${app.q6 || '—'}\n\nTheir first hire:\n${app.q7 || '—'}\n\n`
     + (attachments.length ? `A voice pitch is attached to this email.` : `No voice pitch was recorded.`);
 
   // Send as careers@cpc-direct.com. That only works once cpc-direct.com is a
