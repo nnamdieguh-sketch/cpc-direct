@@ -135,6 +135,30 @@ audio{width:100%;margin-top:18px;filter:saturate(0.9)}
 
 .foot{text-align:center;color:var(--dim);font-size:0.78rem;margin-top:56px;line-height:1.7}
 .foot a{color:var(--muted)}
+.foot .tlink{color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.foot .tlink:hover{color:var(--teal)}
+
+/* Terms panel */
+.tv{position:fixed;inset:0;background:rgba(4,6,14,0.72);backdrop-filter:blur(3px);z-index:300;display:none}
+.tv.open{display:block}
+.tp{position:fixed;z-index:301;top:50%;left:50%;transform:translate(-50%,-50%);width:min(680px,calc(100% - 28px));max-height:86vh;background:var(--card);border:1px solid var(--border2);border-radius:16px;display:none;flex-direction:column;overflow:hidden}
+.tp.open{display:flex}
+.tp-hdr{padding:22px 26px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-shrink:0}
+.tp-hdr h3{font-family:var(--head);font-size:1.15rem;font-weight:800;line-height:1.3}
+.tp-hdr .when{display:block;font-family:var(--body);font-weight:400;font-size:0.76rem;color:var(--muted);margin-top:5px}
+.tp-x{background:none;border:none;color:var(--muted);font-size:1.7rem;line-height:1;cursor:pointer;padding:0 2px}
+.tp-x:hover{color:var(--white)}
+.tp-body{padding:24px 26px;overflow-y:auto}
+.tp-body h4{font-family:var(--head);font-size:0.95rem;font-weight:700;color:var(--gold);margin:24px 0 8px}
+.tp-body h4:first-child{margin-top:0}
+.tp-body p{font-size:0.9rem;line-height:1.75;color:rgba(239,241,250,0.78);margin-bottom:10px}
+.tp-body ul{margin:0 0 10px;padding-left:18px}
+.tp-body li{font-size:0.9rem;line-height:1.7;color:rgba(239,241,250,0.78);margin-bottom:7px}
+.tp-body strong{color:var(--white);font-weight:600}
+.tp-body a{color:var(--teal)}
+.tp-flag{background:rgba(0,196,160,0.06);border:1px solid rgba(0,196,160,0.22);border-radius:10px;padding:16px 18px;margin-bottom:4px}
+.tp-flag p{margin-bottom:0;color:rgba(239,241,250,0.88)}
+.tp-ftr{padding:16px 26px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;flex-shrink:0}
 
 @media(max-width:600px){
   .wrap{padding:32px 18px 72px}
@@ -197,7 +221,7 @@ audio{width:100%;margin-top:18px;filter:saturate(0.9)}
         <h3>Before you begin</h3>
         <p class="sub">Your application is reviewed automatically as a first step. Based on that review, we decide on next steps — which may also be automated or handled by a member of our team. Please read and agree to continue.</p>
         <label class="consent"><input type="checkbox" id="c1"><span>I consent to CPC Direct reviewing my written answers and voice recording for this hiring process. I understand the first step is reviewed automatically, and later steps may be automated or reviewed by a person.</span></label>
-        <label class="consent"><input type="checkbox" id="c2"><span>I confirm my answers are my own work and truthful, and I agree to the <a href="/" target="_blank" rel="noopener">terms of this process</a>. My information will be used only to assess my application and kept confidential.</span></label>
+        <label class="consent"><input type="checkbox" id="c2"><span>I confirm my answers are my own work and truthful, and I agree to the <a href="#terms" onclick="openTerms(event)">terms of this process</a>. My information will be used only to assess my application and kept confidential.</span></label>
         <div class="err-msg" id="e0"></div>
         <div class="nav-row"><span class="spacer"></span><button class="btn btn-g" type="button" onclick="next(0)">Start application →</button></div>
       </div>
@@ -317,8 +341,64 @@ audio{width:100%;margin-top:18px;filter:saturate(0.9)}
 
   </form>
 
-  <div class="foot">CPC Direct · Abuja, Nigeria · This page is confidential and for invited candidates.<br>Your recording and answers are used only for this hiring process.</div>
+  <div class="foot">CPC Direct · Abuja, Nigeria · This page is confidential and for invited candidates.<br>Your recording and answers are used only for this hiring process. <span class="tlink" onclick="openTerms(event)">Terms of this process</span></div>
 
+</div>
+
+<!-- TERMS PANEL -->
+<div class="tv" id="termsOverlay" onclick="closeTerms()"></div>
+<div class="tp" id="termsPanel" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+  <div class="tp-hdr">
+    <h3 id="termsTitle">Terms of this application process<span class="when">CPC Direct Ventures Ltd · Abuja, Nigeria · September 2026</span></h3>
+    <button class="tp-x" type="button" onclick="closeTerms()" aria-label="Close">×</button>
+  </div>
+  <div class="tp-body">
+
+    <div class="tp-flag">
+      <p><strong>We will never ask you for money.</strong> There is no application fee, no training fee, no deposit — at any stage, ever. If anyone claiming to represent CPC Direct asks you to pay for anything, it is not us. Please report it to <a href="mailto:careers@cpc-direct.com">careers@cpc-direct.com</a>.</p>
+    </div>
+
+    <h4>1. What this is</h4>
+    <p>This page is the first stage of hiring for the General Manager role at CPC Direct. Taking part is free and entirely voluntary, and you can stop at any point before you submit.</p>
+
+    <h4>2. What we collect</h4>
+    <ul>
+      <li><strong>Required:</strong> your name, gender, and one contact detail (email or phone).</li>
+      <li><strong>Optional:</strong> your age, location, and any links you choose to share.</li>
+      <li><strong>Your answers</strong> to the written questions, including the conversational ones — all of which you may skip.</li>
+      <li><strong>A voice recording</strong> you make in your browser. It is audio only; no video or image of you is captured, and your camera is never accessed.</li>
+    </ul>
+
+    <h4>3. How your application is reviewed</h4>
+    <p>The first step is <strong>reviewed automatically</strong>. An automated system reads your written answers and scores them to help us shortlist fairly and consistently. Based on that review we decide on next steps, which may also be automated or handled by a member of our team.</p>
+    <p>Your voice recording is <strong>not scored automatically</strong> — it is listened to by our hiring team. No decision to reject you is made by automated means alone at the stages that follow: a person reviews anyone we consider taking forward.</p>
+
+    <h4>4. Who sees your information</h4>
+    <p>Only people involved in hiring at CPC Direct. We do not sell your information, share it for marketing, publish it, or pass it to anyone outside the company for their own purposes. We use ordinary service providers to operate this process — website hosting, email delivery, and the automated review — and they process your information only on our instructions.</p>
+
+    <h4>5. How long we keep it</h4>
+    <p>Up to <strong>12 months</strong> from the day you submit, so we can consider you for this and any similar role that opens in that time. After that it is deleted. You can ask us to delete it sooner at any point, and we will.</p>
+
+    <h4>6. Your choices and your rights</h4>
+    <ul>
+      <li>Every question marked optional can be left blank, and it will not count against you.</li>
+      <li>You may withdraw your application, or your consent, at any time.</li>
+      <li>You may ask for a copy of what we hold about you, ask us to correct it, or ask us to delete it.</li>
+      <li>To do any of these, email <a href="mailto:careers@cpc-direct.com">careers@cpc-direct.com</a>.</li>
+    </ul>
+    <p>We handle your information in line with the Nigeria Data Protection Act 2023.</p>
+
+    <h4>7. Honesty</h4>
+    <p>Your answers and your recording should be your own work and truthful. If we find that material information was false or that someone else completed this for you, we will end consideration of your application.</p>
+
+    <h4>8. No offer of employment</h4>
+    <p>Submitting this form does not create a contract, an offer, or a guarantee of an interview or a role. We are not able to give individual feedback on every application, and we will only contact you if we are taking things further.</p>
+
+    <h4>9. Questions</h4>
+    <p>Anything at all about this process or your information — write to <a href="mailto:careers@cpc-direct.com">careers@cpc-direct.com</a> and a person will answer you.</p>
+
+  </div>
+  <div class="tp-ftr"><button class="btn btn-g btn-sm" type="button" onclick="closeTerms()">Got it</button></div>
 </div>
 
 <script>
@@ -368,6 +448,24 @@ function next(from){
   showStep(from+1);
 }
 function back(from){ showStep(from-1); }
+
+/* ---------- Terms panel ---------- */
+function openTerms(ev){
+  // the link sits inside a <label>, so stop the click from toggling the checkbox
+  if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+  document.getElementById('termsOverlay').classList.add('open');
+  document.getElementById('termsPanel').classList.add('open');
+  document.querySelector('#termsPanel .tp-body').scrollTop=0;
+  document.body.style.overflow='hidden';
+}
+function closeTerms(){
+  document.getElementById('termsOverlay').classList.remove('open');
+  document.getElementById('termsPanel').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape' && document.getElementById('termsPanel').classList.contains('open')) closeTerms();
+});
 
 /* If the Nigerian-news answer touches anything we work on, open a follow-up. */
 var NEWS_RE=/\b(tax|taxation|firs|revenue|vat|levy|customs|law|legal|court|justice|compliance|regulation|regulat|contract|policy|policies|food|restaurant|agric|farm|farming|cuisine|catering|hospitality|community|civic|govern|governance|election|estate|housing|lga|local government|business|businesses|startup|start-up|entrepreneur|sme|smes|digital|tech|technolog|fintech|software|platform|app|apps|ai|artificial intelligence|automation|invest|investor|funding|fund|grant|economy|econom|naira|inflation|market|markets|trade|export|import|infrastructure|power|electricity|energy|fuel|bank|banks|loan|credit|currency|forex|cbn|jobs|unemployment|diaspora)\b/i;
