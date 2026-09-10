@@ -93,6 +93,10 @@ textarea{resize:vertical;min-height:130px;line-height:1.6}
 .rec{background:rgba(255,255,255,0.02);border:1px solid var(--border2);border-radius:14px;padding:26px;text-align:center}
 .rec-prompt{background:rgba(0,196,160,0.05);border:1px solid rgba(0,196,160,0.18);border-radius:10px;padding:16px 18px;font-size:0.9rem;color:rgba(239,241,250,0.85);line-height:1.65;margin-bottom:22px;text-align:left}
 .rec-prompt b{color:var(--teal)}
+.rec-prompt.rp-live{background:rgba(224,155,26,0.07);border-color:rgba(224,155,26,0.28)}
+.rp-step{display:inline-block;font-family:var(--head);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-right:8px}
+.rec-prompt.rp-live .rp-step{color:var(--gold-lt)}
+.rec-note{font-size:0.86rem;color:var(--muted);line-height:1.7;text-align:left;margin-bottom:22px}
 .dial{width:96px;height:96px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;background:rgba(224,155,26,0.08);border:2px solid var(--border2);font-size:1.9rem;transition:all .2s;position:relative}
 .dial.live{border-color:var(--red);background:rgba(245,109,109,0.1)}
 .dial.live::after{content:'';position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--red);animation:ring 1.4s ease-out infinite}
@@ -251,6 +255,7 @@ body.preview .card{border-color:var(--border2)}
         <h3>Before you begin</h3>
         <p class="sub">Your application is reviewed automatically as a first step. Based on that review, we decide on next steps — which may also be automated or handled by a member of our team. Please read and agree to continue.</p>
         <p class="sub" style="margin-top:-14px">💻📱 One more time: this goes much better on a <strong style="color:var(--white);font-weight:600">laptop with your phone beside you</strong>, in one sitting of about 30 minutes, somewhere you can record a short voice note.</p>
+        <p class="sub" style="margin-top:-14px">🗣️ And if we take things further, we'll <strong style="color:var(--white);font-weight:600">talk through these same answers with you live</strong> — so please answer in your own words. It's your thinking we're interested in, not a polished essay.</p>
         <label class="consent"><input type="checkbox" id="c1"><span>I consent to CPC Direct reviewing my written answers and voice recording for this hiring process. I understand the first step is reviewed automatically, and later steps may be automated or reviewed by a person.</span></label>
         <label class="consent"><input type="checkbox" id="c2"><span>I confirm my answers are my own work and truthful, and I agree to the <a href="#terms" onclick="openTerms(event)">terms of this process</a>. My information will be used only to assess my application and kept confidential.</span></label>
         <div class="err-msg" id="e0"></div>
@@ -359,7 +364,9 @@ body.preview .card{border-color:var(--border2)}
         <h3>Your voice pitch <span class="req">*</span></h3>
         <p class="sub">Last step — and the easy one. 🎧 It's audio only, so <b>no camera and nobody sees you</b>. Take as many attempts as you like; only the take you keep gets sent.</p>
         <div class="rec">
-          <div class="rec-prompt">Speak for <b>60–90 seconds</b> — and honestly, <b>talk about anything you like</b>. 😊 You could introduce yourself and say why this role is for you, expand on anything you wrote earlier in this form, or simply talk about something you care about. There's no script and no wrong answer — we just want to hear you in your own voice, so relax and be yourself.</div>
+          <div class="rec-prompt"><span class="rp-step">First</span>say your <b>full name</b> and <b>today's date</b> — <span id="todayDate"></span>.</div>
+          <div class="rec-prompt rp-live"><span class="rp-step">Then</span><span id="voicePromptText">…</span></div>
+          <div class="rec-note">Aim for <b>60–90 seconds</b>, and once you've covered that, feel free to <b>talk about anything else you like</b>. 😊 There's no script and no wrong answer — we just want to hear you in your own voice, so relax and be yourself.</div>
           <div class="dial" id="dial">🎙️</div>
           <div class="timer" id="timer">0:00</div>
           <div class="rec-hint" id="recHint">Up to 2 minutes · required · your mic stays on this page only</div>
@@ -424,7 +431,9 @@ body.preview .card{border-color:var(--border2)}
       <li><strong>Optional:</strong> your age, location, and any links you choose to share.</li>
       <li><strong>Your answers</strong> to the written questions, including the conversational ones — all of which you may skip.</li>
       <li><strong>A voice recording</strong> you make in your browser. It is audio only; no video or image of you is captured, and your camera is never accessed.</li>
+      <li><strong>Basic technical information about how the form was completed</strong> — roughly how long you took, and whether text was pasted into a field. We use this only to help confirm the work is your own. We do not track you anywhere else, and we do not use cookies to follow you around the web.</li>
     </ul>
+    <p>The question you are asked to speak about is chosen for you at the recording step, and is drawn from what you have written. This is simply so we can be confident we are hearing from you.</p>
 
     <h4>3. How your application is reviewed</h4>
     <p>The first step is <strong>reviewed automatically</strong>. An automated system reads your written answers and scores them to help us shortlist fairly and consistently. Based on that review we decide on next steps, which may also be automated or handled by a member of our team.</p>
@@ -446,7 +455,7 @@ body.preview .card{border-color:var(--border2)}
     <p>We handle your information in line with the Nigeria Data Protection Act 2023.</p>
 
     <h4>7. Honesty</h4>
-    <p>Your answers and your recording should be your own work and truthful. If we find that material information was false or that someone else completed this for you, we will end consideration of your application.</p>
+    <p>Your answers and your recording should be your own work and truthful. If we find that material information was false or that someone else completed this for you, we will end consideration of your application. If we take things further, we will talk through these same answers with you in a live conversation.</p>
 
     <h4>8. No offer of employment</h4>
     <p>Submitting this form does not create a contract, an offer, or a guarantee of an interview or a role. We are not able to give individual feedback on every application, and we will only contact you if we are taking things further.</p>
@@ -483,6 +492,7 @@ function next(from){
   var e=document.getElementById('e'+from); if(e)e.textContent='';
   if(from===0){
     if(!document.getElementById('c1').checked || !document.getElementById('c2').checked){ e.textContent='Please tick both boxes to continue.'; return; }
+    if(!startedAt) startedAt=Date.now();
   }
   if(from===1){
     if(!v('name')){ e.textContent='Please tell us your name.'; return; }
@@ -497,6 +507,8 @@ function next(from){
   if(from===4){
     if(v('q4').length<40){ e.textContent='Please have a go at the first one — rough thinking is genuinely fine.'; return; }
     if(v('q5').length<40){ e.textContent='Please answer the month-four question — a few sentences is plenty.'; return; }
+    if(!VOICE_PROMPT) buildVoicePrompt();   // drawn from their own answers, revealed only now
+    showToday();
   }
   if(from===5){
     // the voice pitch is required
@@ -509,6 +521,42 @@ function next(from){
   showStep(from+1);
 }
 function back(from){ showStep(from-1); }
+
+/* ---------- Authenticity: randomised voice prompt + light signals ----------
+   The spoken prompt is drawn from what THIS candidate just wrote and is only
+   revealed at the recording step, so a stand-in (or a clip prepared in advance)
+   can't anticipate it. We also note how long the form took and whether text was
+   pasted — a signal for the founder, never a verdict. Both are disclosed in the
+   terms. */
+var VOICE_PROMPT='', startedAt=0, pasted={};
+
+document.addEventListener('paste', function(e){
+  var t=e.target;
+  if(t && (t.tagName==='TEXTAREA' || t.tagName==='INPUT') && t.id) pasted[t.id]=true;
+}, true);
+
+function buildVoicePrompt(){
+  var pool=[];
+  function add(cond,txt){ if(cond) pool.push(txt); }
+  add(v('x3'),      'you told us about something you’re proud of that wouldn’t show up on a CV. Tell us that story out loud — what happened, and why it stayed with you.');
+  add(v('x_recent'),'you described what you’ve been doing this past year. Talk us through it in your own words — what you enjoyed, and what frustrated you.');
+  add(v('x_excite'),'you told us what excites you beyond money. Say more about that out loud.');
+  add(v('x_news'),  'you mentioned a Nigerian news story that caught your attention. Talk us through why it stuck with you.');
+  add(v('q5'),      'you wrote what you’d get on with in month four while I’m unreachable. Say it out loud — as if you were leaving me a voicemail update.');
+  add(v('q4'),      'explain out loud how you’d get this business making money — as if you were explaining it to a friend who isn’t in business.');
+  add(v('q7'),      'tell us about the first person you’d hire and why — out loud, as if you were convincing me.');
+  add(v('q6'),      'you wrote about something you love. Say that same thing out loud, the way you’d actually say it to a friend.');
+  add(v('q1'),      'in your own words, tell us what you think CPC Direct does — and where you’d grow it first.');
+  if(!pool.length) pool.push('introduce yourself and tell us why you’re the right person to take CPC Direct from startup to profitable in a year.');
+  VOICE_PROMPT = pool[Math.floor(Math.random()*pool.length)];
+  var el=document.getElementById('voicePromptText'); if(el) el.textContent=VOICE_PROMPT;
+}
+
+function showToday(){
+  var el=document.getElementById('todayDate'); if(!el) return;
+  try{ el.textContent=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'}); }
+  catch(_){ el.textContent=new Date().toDateString(); }
+}
 
 /* ---------- Terms panel ---------- */
 function openTerms(ev){
@@ -631,7 +679,7 @@ function buildReview(){
   html+=rblock('Running the business · Month four, on your own', v('q5'), 4);
   html+=rblock('Running the business · Telling a friend', v('q6'), 4);
   html+=rblock('Running the business · First hire', v('q7'), 4);
-  html+='<div class="review-block"><span class="edit" onclick="showStep(5)">edit</span><h4>Voice pitch</h4><p>'+(audioB64?('Recorded ('+fmt(seconds)+') ✓'):'<span class="empty">— no recording —</span>')+'</p></div>';
+  html+='<div class="review-block"><span class="edit" onclick="showStep(5)">edit</span><h4>Voice pitch</h4><p>'+(audioB64?('Recorded ('+fmt(seconds)+') ✓'):'<span class="empty">— no recording —</span>')+(VOICE_PROMPT?('<br><span class="empty">You were asked to: '+esc(VOICE_PROMPT)+'</span>'):'')+'</p></div>';
   document.getElementById('reviewBox').innerHTML=html;
 }
 
@@ -644,7 +692,9 @@ async function submitApp(){
   var payload={
     name:v('name'), gender:v('gender'), age:v('age'), location:v('location'), contact:v('contact'), links:v('links'),
     x1:v('x1'), x_recent:v('x_recent'), x_excite:v('x_excite'), x_forward:v('x_forward'), x3:v('x3'), x_news:v('x_news'), x_news_take:v('x_news_take'),
-    q1:v('q1'), q2:v('q2'), q3:v('q3'), q4:v('q4'), q5:v('q5'), q6:v('q6'), q7:v('q7'), audio:audioB64
+    q1:v('q1'), q2:v('q2'), q3:v('q3'), q4:v('q4'), q5:v('q5'), q6:v('q6'), q7:v('q7'), audio:audioB64,
+    voicePrompt:VOICE_PROMPT,
+    signals:{ minutes: startedAt ? Math.round((Date.now()-startedAt)/60000) : null, pasted: Object.keys(pasted) }
   };
   try{
     var r=await fetch('/api/gm-apply',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
@@ -665,6 +715,7 @@ function previewAll(){
   var b=document.getElementById('previewBanner'); if(b) b.hidden=false;
   var p=document.getElementById('prog'); if(p) p.style.display='none';
   var f=document.getElementById('newsFollow'); if(f) f.hidden=false;   // reveal the conditional question
+  buildVoicePrompt(); showToday();                                     // show one example of the randomised prompt
   document.querySelectorAll('.step').forEach(function(s){ s.classList.add('on'); });
 }
 

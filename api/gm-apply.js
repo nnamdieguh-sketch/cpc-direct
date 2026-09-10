@@ -29,11 +29,14 @@ This is a CRITICAL hire and most applicants will not be a fit. Score the WRITTEN
 - Writing: clarity, structure and professionalism of their written English.
 - Drive: initiative, curiosity and evidence of figuring things out or leading without a playbook. (Q3)
 
-Then write two sharp, specific questions the founder should ask this person live.
+Then judge AUTHENTICITY — whether this reads like the candidate's own work. You are given light signals: how long they spent on the form and which fields were pasted into rather than typed. Weigh them sensibly: pasting one link or re-pasting their own draft means nothing, and a slow, thoughtful applicant is a good sign, not a suspicious one. Real concerns look like generic essay-speak that never touches the specifics of THIS business, answers that contradict each other, polish that does not match the rest of the application, or several long answers pasted in within a very short total time. Say plainly if nothing concerns you — most applicants are honest.
+
+Finally write two sharp, specific questions the founder should ask this person live.
 
 Reply in EXACTLY this plain-text format, nothing else, no markdown, no verdict line:
 SCORES: Strategy _/10 · Business _/10 · Commercial _/10 · Ownership _/10 · Writing _/10 · Drive _/10
 NOTES: <2-3 candid sentences on the strongest and weakest parts>
+AUTHENTICITY: <one line — either "nothing of concern" or the specific thing that gives you pause>
 ASK LIVE:
 1) <question>
 2) <question>`;
@@ -73,7 +76,11 @@ Q6 — Telling a friend in Abuja about something they love (persuasion in their 
 ${app.q6 || '—'}
 
 Q7 — Their first hire — what role, and how they would find and choose them:
-${app.q7 || '—'}`;
+${app.q7 || '—'}
+
+COMPLETION SIGNALS (context for AUTHENTICITY only — never score these):
+Time spent on the form: ${app.minutes === null ? 'unknown' : app.minutes + ' minutes'}
+Fields pasted into rather than typed: ${app.pastedList || 'none detected'}`;
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -148,7 +155,18 @@ module.exports = async (req, res) => {
     q5: String(body.q5 || '').slice(0, 4000),
     q6: String(body.q6 || '').slice(0, 4000),
     q7: String(body.q7 || '').slice(0, 4000),
+    voicePrompt: String(body.voicePrompt || '').slice(0, 400),
   };
+  // Light completion signals (disclosed in the page's terms). A signal for the
+  // founder and for the AUTHENTICITY note — never part of the score.
+  const sig = (body && typeof body.signals === 'object' && body.signals) || {};
+  app.minutes = (typeof sig.minutes === 'number' && isFinite(sig.minutes)) ? Math.max(0, Math.round(sig.minutes)) : null;
+  const pastedArr = Array.isArray(sig.pasted) ? sig.pasted.filter((x) => typeof x === 'string').slice(0, 30) : [];
+  app.pastedList = pastedArr.length ? pastedArr.join(', ') : '';
+  // Hard flag: several long answers pasted in, in implausibly little time.
+  const taskPasted = pastedArr.filter((f) => /^(q[1-7])$/.test(f)).length;
+  app.rushFlag = (app.minutes !== null && app.minutes < 8 && taskPasted >= 3);
+
   if (!app.name || !app.contact || !app.q1 || !app.q2) { res.status(400).json({ ok: false, error: 'Missing required fields.' }); return; }
 
   const rk = process.env.RESEND_API_KEY;
@@ -157,6 +175,7 @@ module.exports = async (req, res) => {
 
   const raw = await review(app);
   const g = grade(raw);
+  if (g && app.rushFlag && g.verdict === 'ADVANCE') { g.verdict = 'MAYBE'; g.downgraded = true; }
   const tag = g ? ' — ' + g.verdict : '';
 
   let reviewBlock;
@@ -164,7 +183,8 @@ module.exports = async (req, res) => {
     reviewBlock = `— AUTOMATED FIRST-PASS REVIEW —\n`
       + `Verdict: ${g.verdict}  (avg ${g.avg}/10, lowest ${g.min}/10)\n`
       + `Scores: Strategy ${g.scores.Strategy}/10 · Business ${g.scores.Business}/10 · Commercial ${g.scores.Commercial}/10 · Ownership ${g.scores.Ownership}/10 · Writing ${g.scores.Writing}/10 · Drive ${g.scores.Drive}/10\n\n`
-      + `${raw}\n\n`;
+      + `${raw}\n\n`
+      + (g.downgraded ? `[Held back from ADVANCE: several long answers were pasted in within a very short time. Scores were strong — worth a look, but verify it is their own work.]\n\n` : '');
   } else if (raw) {
     reviewBlock = `— AUTOMATED FIRST-PASS REVIEW —\n${raw}\n\n(Verdict not computed — scores couldn't be read; judge the notes above.)\n\n`;
   } else {
@@ -183,7 +203,10 @@ module.exports = async (req, res) => {
     + `— A LITTLE ABOUT THEM —\nWhat draws them to the role:\n${app.x1 || '—'}\n\nThis past year (study/work + likes/dislikes):\n${app.x_recent || '—'}\n\nExcites them beyond money:\n${app.x_excite || '—'}\n\nLooking forward to:\n${app.x_forward || '—'}\n\nProud of (not on a CV):\n${app.x3 || '—'}\n\nLatest Nigerian news that caught their eye:\n${app.x_news || '—'}\n\nTheir take on it:\n${app.x_news_take || '—'}\n\n`
     + `— WRITTEN TASK —\nQ1 (CPC Direct + opportunity):\n${app.q1}\n\nQ2 (first 90 days / path to profit):\n${app.q2}\n\nQ3 (figured-it-out / led-without-a-playbook):\n${app.q3 || '—'}\n\n`
     + `— RUNNING THE BUSINESS —\nBreak-even (1/month is the answer; look for margin thinking):\n${app.q4 || '—'}\n\nMonth four, founder unreachable:\n${app.q5 || '—'}\n\nTelling a friend about something they love:\n${app.q6 || '—'}\n\nTheir first hire:\n${app.q7 || '—'}\n\n`
-    + (attachments.length ? `A voice pitch is attached to this email.` : `No voice pitch was recorded.`);
+    + `— HOW IT WAS COMPLETED —\nTime on the form: ${app.minutes === null ? 'unknown' : app.minutes + ' minutes'}\nPasted rather than typed: ${app.pastedList || 'none detected'}\n\n`
+    + (attachments.length
+        ? `A voice pitch is attached to this email.\nThey were asked to say their full name and today's date, then: ${app.voicePrompt || '(prompt not recorded)'}`
+        : `No voice pitch was recorded.`);
 
   // Send as careers@cpc-direct.com. That only works once cpc-direct.com is a
   // verified domain in Resend — until then Resend rejects it, so fall back to
