@@ -158,19 +158,31 @@ module.exports = async (req, res) => {
     + `— WRITTEN TASK —\nQ1 (CPC Direct + opportunity):\n${app.q1}\n\nQ2 (first 90 days / path to profit):\n${app.q2}\n\nQ3 (figured-it-out / led-without-a-playbook):\n${app.q3 || '—'}\n\n`
     + (attachments.length ? `A voice pitch is attached to this email.` : `No voice pitch was recorded.`);
 
+  // Send as careers@cpc-direct.com. That only works once cpc-direct.com is a
+  // verified domain in Resend — until then Resend rejects it, so fall back to
+  // the shared sender rather than lose someone's application.
+  const FROM_PRIMARY = process.env.SUPPORT_FROM_EMAIL || 'CPC Direct Careers <careers@cpc-direct.com>';
+  const FROM_FALLBACK = 'CPC Direct Careers <onboarding@resend.dev>';
+  const send = (from) => fetch('https://api.resend.com/emails', {
+    method: 'POST', headers: { Authorization: `Bearer ${rk}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from,
+      to,
+      subject: `GM application — ${app.name}${tag}`,
+      reply_to: /@/.test(app.contact) ? app.contact : undefined,
+      text,
+      attachments,
+    }),
+  });
+
   try {
-    const r = await fetch('https://api.resend.com/emails', {
-      method: 'POST', headers: { Authorization: `Bearer ${rk}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: process.env.SUPPORT_FROM_EMAIL || 'CPC Direct Careers <onboarding@resend.dev>',
-        to,
-        subject: `GM application — ${app.name}${tag}`,
-        reply_to: /@/.test(app.contact) ? app.contact : undefined,
-        text,
-        attachments,
-      }),
-    });
-    res.status(200).json({ ok: r.ok });
+    let r = await send(FROM_PRIMARY);
+    let usedFallback = false;
+    if (!r.ok && FROM_PRIMARY !== FROM_FALLBACK) {
+      r = await send(FROM_FALLBACK);
+      usedFallback = r.ok;
+    }
+    res.status(200).json({ ok: r.ok, fallbackSender: usedFallback });
   } catch (e) {
     res.status(200).json({ ok: false, error: 'Could not submit right now.' });
   }

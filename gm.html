@@ -233,15 +233,15 @@ audio{width:100%;margin-top:18px;filter:saturate(0.9)}
     <!-- STEP 2 — A little about you (conversational, all optional) -->
     <div class="step" data-step="2">
       <div class="card">
-        <h3>A little about you</h3>
-        <p class="sub">This part is just a conversation — no right answers, and you can skip anything you'd rather not share. We simply like to know the person behind the application.</p>
-        <div class="field"><label>What draws you to a role like this? <span class="hint">Optional</span></label><textarea id="x1" maxlength="3000" placeholder="What makes this one interesting to you…"></textarea></div>
-        <div class="field"><label>Tell us about your last year — what have you been studying or doing? <span class="hint">Optional — it doesn't have to be a formal job. A role, a hustle, a project, school — all count. What do you enjoy about it, and what frustrates you?</span></label><textarea id="x_recent" maxlength="3000" placeholder="What you've been up to, and what you like or dislike about it…"></textarea></div>
-        <div class="field"><label>Other than money, what gets you excited? <span class="hint">Optional</span></label><textarea id="x_excite" maxlength="3000" placeholder="What genuinely energises you…"></textarea></div>
-        <div class="field"><label>What are you looking forward to? <span class="hint">Optional — near or far, work or life.</span></label><textarea id="x_forward" maxlength="3000" placeholder="Something you're looking forward to…"></textarea></div>
-        <div class="field"><label>Something you're proud of that wouldn't show up on a CV? <span class="hint">Optional</span></label><textarea id="x3" maxlength="3000" placeholder="Something you built, led, or figured out…"></textarea></div>
-        <div class="field"><label>What's the latest thing in Nigerian news that caught your attention? <span class="hint">Optional — anything at all, and why it stuck with you.</span></label><textarea id="x_news" maxlength="3000" oninput="checkNews()" placeholder="A story you've been following…"></textarea></div>
-        <div class="field" id="newsFollow" hidden><label>That's close to what we work on — what's your take on it? <span class="hint">Where's the opportunity or the risk, and what might a company like ours do about it?</span></label><textarea id="x_news_take" maxlength="3000" placeholder="Your read on it…"></textarea></div>
+        <h3>A little about you 😊</h3>
+        <p class="sub">Relax — this part is just a friendly chat. ✨ There are no right answers, nothing is being marked, and you can skip anything you'd rather not share. We simply like to know the person behind the application.</p>
+        <div class="field"><label>What draws you to a role like this? 💡 <span class="hint">Optional</span></label><textarea id="x1" maxlength="3000" placeholder="What makes this one interesting to you…"></textarea></div>
+        <div class="field"><label>Tell us about your last year — what have you been studying or doing? 🌱 <span class="hint">Optional — it doesn't have to be a formal job. A role, a hustle, a project, school — all count. What do you enjoy about it, and what frustrates you?</span></label><textarea id="x_recent" maxlength="3000" placeholder="What you've been up to, and what you like or dislike about it…"></textarea></div>
+        <div class="field"><label>Other than money, what gets you excited? ⚡ <span class="hint">Optional</span></label><textarea id="x_excite" maxlength="3000" placeholder="What genuinely energises you…"></textarea></div>
+        <div class="field"><label>What are you looking forward to? 🌟 <span class="hint">Optional — near or far, work or life.</span></label><textarea id="x_forward" maxlength="3000" placeholder="Something you're looking forward to…"></textarea></div>
+        <div class="field"><label>Something you're proud of that wouldn't show up on a CV? 🙌 <span class="hint">Optional</span></label><textarea id="x3" maxlength="3000" placeholder="Something you built, led, or figured out…"></textarea></div>
+        <div class="field"><label>What's the latest thing in Nigerian news that caught your attention? 📰 <span class="hint">Optional — anything at all, and why it stuck with you.</span></label><textarea id="x_news" maxlength="3000" oninput="checkNews()" placeholder="A story you've been following…"></textarea></div>
+        <div class="field" id="newsFollow" hidden><label>Oh, that's close to what we work on — what's your take on it? 💬 <span class="hint">No pressure — just your honest read. Where's the opportunity or the risk, and what might a company like ours do about it?</span></label><textarea id="x_news_take" maxlength="3000" placeholder="Your read on it…"></textarea></div>
         <div class="err-msg" id="e2"></div>
         <div class="nav-row"><button class="btn btn-o" type="button" onclick="back(2)">← Back</button><span class="spacer"></span><button class="btn btn-g" type="button" onclick="next(2)">Continue →</button></div>
       </div>
@@ -275,13 +275,13 @@ audio{width:100%;margin-top:18px;filter:saturate(0.9)}
     <!-- STEP 4 — Voice pitch -->
     <div class="step" data-step="4">
       <div class="card">
-        <h3>Your voice pitch</h3>
-        <p class="sub">This is your chance to make an impression in your own voice. Record it right here — no camera, audio only. You can re-record as many times as you like before moving on.</p>
+        <h3>Your voice pitch <span class="req">*</span></h3>
+        <p class="sub">Last step — and the easy one. 🎧 It's audio only, so <b>no camera and nobody sees you</b>. Take as many attempts as you like; only the take you keep gets sent.</p>
         <div class="rec">
-          <div class="rec-prompt">Speak for <b>60–90 seconds</b>. Imagine you're pitching a partner: <b>introduce yourself</b> and tell us <b>why you're the right person</b> to take CPC Direct from startup to profitable in a year. Speak naturally — we're listening for clarity and confidence, not a script.</div>
+          <div class="rec-prompt">Speak for <b>60–90 seconds</b> — and honestly, <b>talk about anything you like</b>. 😊 You could introduce yourself and say why this role is for you, expand on anything you wrote earlier in this form, or simply talk about something you care about. There's no script and no wrong answer — we just want to hear you in your own voice, so relax and be yourself.</div>
           <div class="dial" id="dial">🎙️</div>
           <div class="timer" id="timer">0:00</div>
-          <div class="rec-hint" id="recHint">Up to 2 minutes · your mic stays on this page only</div>
+          <div class="rec-hint" id="recHint">Up to 2 minutes · required · your mic stays on this page only</div>
           <div class="rec-btns">
             <button class="btn btn-g btn-sm" type="button" id="recBtn" onclick="toggleRec()">Start recording</button>
             <button class="btn btn-o btn-sm" type="button" id="reRecBtn" onclick="resetRec()" style="display:none">Re-record</button>
@@ -358,11 +358,11 @@ function next(from){
     if(v('q2').length<40){ e.textContent='Please answer question 2 — a few sentences at least.'; return; }
   }
   if(from===4){
-    // recording optional but strongly encouraged
+    // the voice pitch is required
     if(!audioB64){
-      if(!e.dataset.warned){ e.textContent='Heads up — no recording yet. The voice pitch is a big part of this. Tap “Review” again to continue without it, or record above.'; e.dataset.warned='1'; return; }
+      e.textContent='Please record your voice pitch to continue 🎙️ — it takes about a minute, you can talk about anything you like, and you can re-record as many times as you want.';
+      return;
     }
-    e.dataset.warned='';
     buildReview();
   }
   showStep(from+1);
