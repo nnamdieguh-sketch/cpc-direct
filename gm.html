@@ -202,7 +202,7 @@ body.preview .card{border-color:var(--border2)}
   <!-- INTRO -->
   <div class="eyebrow">Now hiring · Abuja</div>
   <h1>Operations Manager,<br><span class="ac">CPC Direct</span></h1>
-  <p class="lede">We're looking for someone to run the day-to-day of CPC Direct — every app, every service — with AI doing much of the heavy lifting. You'll build a small team behind you, take the business to profitable by month 13, and grow into running it independently. You'll be the face of the company. This first step is done entirely here: a few questions, a short written exercise, and a voice pitch you record in your browser. Set aside about 30 minutes.</p>
+  <p class="lede">We're looking for someone to run the day-to-day of CPC Direct — every app, every service — with good systems doing much of the heavy lifting. You'll build a small team behind you, take the business to profitable by month 13, and grow into running it independently. You'll be the face of the company. This first step is done entirely here: a few questions, a short written exercise, and a voice pitch you record in your browser. Set aside about 30 minutes.</p>
   <div class="facts">
     <span class="fact"><span class="d"></span>Abuja · work from home</span>
     <span class="fact"><span class="d"></span>Salary + commission + profit-share</span>
@@ -223,7 +223,7 @@ body.preview .card{border-color:var(--border2)}
     <ul>
       <li><span class="dot"></span>Own the day-to-day across <b>every CPC Direct app and service</b> — launches, delivery, customers, and the reporting that shows how we're doing.</li>
       <li><span class="dot"></span>Take the business to <b>profitable by month 13</b>, and keep it there.</li>
-      <li><span class="dot"></span><b>Run an AI-heavy operation.</b> Most routine work here is done with AI, so you need to genuinely understand how it works and how to put it to use — not just have heard of it.</li>
+      <li><span class="dot"></span><b>Run a lean, systems-driven operation.</b> A lot of the routine work here is handled by software rather than people, so you should be comfortable with tools — and quick to pick up new ones.</li>
       <li><span class="dot"></span>Build the team behind you — a sales and marketing hire first, then a tech consultant.</li>
       <li><span class="dot"></span>Be the face of the company — clear, articulate and credible with clients and partners.</li>
     </ul>
@@ -355,8 +355,8 @@ body.preview .card{border-color:var(--border2)}
           <textarea id="q7" maxlength="4000" placeholder="Who you'd hire first, and why…"></textarea>
         </div>
         <div class="field">
-          <label>5. How do you use AI? <span class="req">*</span><span class="hint">We run this place with AI doing a lot of the heavy lifting — drafting, research, support, reporting. Tell us honestly how you use it today, and where you think it could take work off our hands here. "I'm still learning it" is a fine answer if it's the true one — we'd rather know.</span></label>
-          <textarea id="q8" maxlength="4000" placeholder="What you actually use, what for, and what you'd put it to work on here…"></textarea>
+          <label>5. What's the last new tool you taught yourself? <span class="req">*</span><span class="hint">Anything counts — software, an app, a system at work, something for a side project. Tell us what it was, why you picked it up, and how you went about learning it. We're not after a long list; we want to see how you learn something new, because you'll be doing plenty of that here.</span></label>
+          <textarea id="q8" maxlength="4000" placeholder="What it was, why, and how you got to grips with it…"></textarea>
         </div>
         <div class="err-msg" id="e4"></div>
         <div class="nav-row"><button class="btn btn-o" type="button" onclick="back(4)">← Back</button><span class="spacer"></span><button class="btn btn-g" type="button" onclick="next(4)">Continue →</button></div>
@@ -512,7 +512,7 @@ function next(from){
   if(from===4){
     if(v('q4').length<40){ e.textContent='Please have a go at the first one — rough thinking is genuinely fine.'; return; }
     if(v('q5').length<40){ e.textContent='Please answer the month-four question — a few sentences is plenty.'; return; }
-    if(v('q8').length<25){ e.textContent='Please tell us how you use AI — an honest short answer is better than none.'; return; }
+    if(v('q8').length<25){ e.textContent='Please tell us about the last tool you taught yourself — a short honest answer is fine.'; return; }
     if(!VOICE_PROMPT) buildVoicePrompt();   // drawn from their own answers, revealed only now
     showToday();
   }
@@ -552,7 +552,7 @@ function buildVoicePrompt(){
   add(v('q4'),      'explain out loud how you’d get this business making money — as if you were explaining it to a friend who isn’t in business.');
   add(v('q7'),      'tell us about the first person you’d hire and why — out loud, as if you were convincing me.');
   add(v('q6'),      'you wrote about something you love. Say that same thing out loud, the way you’d actually say it to a friend.');
-  add(v('q8'),      'you told us how you use AI. Talk us through that out loud — what you actually use it for, and what you\u2019d put it to work on here.');
+  add(v('q8'),      'you told us about the last new tool you taught yourself. Talk us through that out loud — what it was, and how you got to grips with it.');
   add(v('q1'),      'in your own words, tell us what you think CPC Direct does — and where you’d grow it first.');
   if(!pool.length) pool.push('introduce yourself and tell us why you’re the right person to run CPC Direct’s operations and take it to profitable by month 13.');
   VOICE_PROMPT = pool[Math.floor(Math.random()*pool.length)];
@@ -686,7 +686,7 @@ function buildReview(){
   html+=rblock('Running the business · Month four, on your own', v('q5'), 4);
   html+=rblock('Running the business · Telling a friend', v('q6'), 4);
   html+=rblock('Running the business · First hire', v('q7'), 4);
-  html+=rblock('Running the business · How you use AI', v('q8'), 4);
+  html+=rblock('Running the business · Learning something new', v('q8'), 4);
   html+='<div class="review-block"><span class="edit" onclick="showStep(5)">edit</span><h4>Voice pitch</h4><p>'+(audioB64?('Recorded ('+fmt(seconds)+') ✓'):'<span class="empty">— no recording —</span>')+(VOICE_PROMPT?('<br><span class="empty">You were asked to: '+esc(VOICE_PROMPT)+'</span>'):'')+'</p></div>';
   document.getElementById('reviewBox').innerHTML=html;
 }

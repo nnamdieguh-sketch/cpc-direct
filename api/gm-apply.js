@@ -19,14 +19,14 @@ module.exports.config = { maxDuration: 60 };
 
 const MODEL = 'claude-opus-4-8'; // deep first-pass; hiring is low-volume, high-stakes
 
-const RUBRIC = `You are the automated first-pass reviewer for the Operations Manager role at CPC Direct, a digital business-development company based in Abuja, Nigeria (it builds ventures and delivers digital services — automation, product build, advisory — including work with Access Emerging Markets). The Operations Manager runs the day-to-day of every CPC Direct app and service, must take the business to profitable by month 13, runs an AI-heavy operation (most routine work is done with AI), builds a small team behind them (a sales and marketing hire, then a tech consultant), works from home, and is the confident, articulate face of the company. The founder intends to step back over about two years.
+const RUBRIC = `You are the automated first-pass reviewer for the Operations Manager role at CPC Direct, a digital business-development company based in Abuja, Nigeria (it builds ventures and delivers digital services — automation, product build, advisory — including work with Access Emerging Markets). The Operations Manager runs the day-to-day of every CPC Direct app and service, must take the business to profitable by month 13, runs a lean systems-driven operation (much of the routine work is handled by software rather than people), builds a small team behind them (a sales and marketing hire, then a tech consultant), works from home, and is the confident, articulate face of the company. The founder intends to step back over about two years.
 
 This is a CRITICAL hire and most applicants will not be a fit. Score the WRITTEN answers only. A separate voice recording lets the founder judge diction — do NOT comment on speech or accent. Score each dimension 1-10 and be STRICT and calibrated: 5 is an average applicant, 7 is clearly good, 9-10 is exceptional and rare. Do NOT inflate — a thin, vague or generic answer scores low (1-3). The "about you" answers are context only; score the task questions.
 - Strategy: clarity and realism of the growth / first-90-days plan, and prioritisation — including what they would deliberately NOT do. (Q2)
 - Business: grasp of what a digital business-development company does and where the opportunity is. (Q1)
 - Commercial: revenue instinct. On the break-even question, do they reason in MARGIN (only ~N200,000 of each N500,000 sale is real) or fixate on the top line? Are their improvement ideas concrete — raise price, cut delivery cost, recurring retainers — or vague ("more marketing")? Does the "tell a friend" answer actually persuade? (Q4, Q6)
 - Ownership: would they drive things with nobody watching? The month-four answer is the tell — do they act, prioritise and decide, or wait for the founder? Does the first-hire answer show they can build a team? (Q5, Q7)
-- AI: practical fluency. Do they actually use AI in real work, with specifics about what and how — or do they gesture at buzzwords? Concrete, modest, honest use beats grand claims. Someone still learning who says so plainly and shows curiosity scores better than someone bluffing. (Q8)
+- Learning: can they teach themselves, and are they coachable? Look for a specific tool they actually picked up, a real reason for picking it up, and a concrete account of HOW they learned it. Reward curiosity, resourcefulness and comfort with software. Someone modest and specific scores well; someone who name-drops tools without saying what they did with them does not. Penalise any hint that they already know everything and would be hard to teach — this person will be trained. (Q8)
 - Writing: clarity, structure and professionalism of their written English.
 - Drive: initiative, curiosity and evidence of figuring things out or leading without a playbook. (Q3)
 
@@ -35,7 +35,7 @@ Then judge AUTHENTICITY — whether this reads like the candidate's own work. Yo
 Finally write two sharp, specific questions the founder should ask this person live.
 
 Reply in EXACTLY this plain-text format, nothing else, no markdown, no verdict line:
-SCORES: Strategy _/10 · Business _/10 · Commercial _/10 · Ownership _/10 · AI _/10 · Writing _/10 · Drive _/10
+SCORES: Strategy _/10 · Business _/10 · Commercial _/10 · Ownership _/10 · Learning _/10 · Writing _/10 · Drive _/10
 NOTES: <2-3 candid sentences on the strongest and weakest parts>
 AUTHENTICITY: <one line — either "nothing of concern" or the specific thing that gives you pause>
 ASK LIVE:
@@ -79,7 +79,7 @@ ${app.q6 || '—'}
 Q7 — Their first hire — what role, and how they would find and choose them:
 ${app.q7 || '—'}
 
-Q8 — How they use AI today, and where they would put it to work here:
+Q8 — The last new tool they taught themselves, and how they went about learning it:
 ${app.q8 || '—'}
 
 COMPLETION SIGNALS (context for AUTHENTICITY only — never score these):
@@ -116,7 +116,7 @@ function grade(txt) {
   const s = {
     Strategy: scoreOf(txt, 'Strategy'), Business: scoreOf(txt, 'Business'),
     Commercial: scoreOf(txt, 'Commercial'), Ownership: scoreOf(txt, 'Ownership'),
-    AI: scoreOf(txt, '\\bAI\\b'), Writing: scoreOf(txt, 'Writing'), Drive: scoreOf(txt, 'Drive'),
+    Learning: scoreOf(txt, 'Learning'), Writing: scoreOf(txt, 'Writing'), Drive: scoreOf(txt, 'Drive'),
   };
   const vals = Object.keys(s).map((k) => s[k]).filter((v) => v !== null);
   if (vals.length < 7) return null;
@@ -187,7 +187,7 @@ module.exports = async (req, res) => {
   if (g) {
     reviewBlock = `— AUTOMATED FIRST-PASS REVIEW —\n`
       + `Verdict: ${g.verdict}  (avg ${g.avg}/10, lowest ${g.min}/10)\n`
-      + `Scores: Strategy ${g.scores.Strategy}/10 · Business ${g.scores.Business}/10 · Commercial ${g.scores.Commercial}/10 · Ownership ${g.scores.Ownership}/10 · AI ${g.scores.AI}/10 · Writing ${g.scores.Writing}/10 · Drive ${g.scores.Drive}/10\n\n`
+      + `Scores: Strategy ${g.scores.Strategy}/10 · Business ${g.scores.Business}/10 · Commercial ${g.scores.Commercial}/10 · Ownership ${g.scores.Ownership}/10 · Learning ${g.scores.Learning}/10 · Writing ${g.scores.Writing}/10 · Drive ${g.scores.Drive}/10\n\n`
       + `${raw}\n\n`
       + (g.downgraded ? `[Held back from ADVANCE: several long answers were pasted in within a very short time. Scores were strong — worth a look, but verify it is their own work.]\n\n` : '');
   } else if (raw) {
@@ -207,7 +207,7 @@ module.exports = async (req, res) => {
     + `— CANDIDATE —\nName: ${app.name}\nGender: ${app.gender || '—'}\nAge: ${app.age || '—'}\nLocation: ${app.location || '—'}\nContact: ${app.contact}\nLinks: ${app.links || '—'}\n\n`
     + `— A LITTLE ABOUT THEM —\nWhat draws them to the role:\n${app.x1 || '—'}\n\nThis past year (study/work + likes/dislikes):\n${app.x_recent || '—'}\n\nExcites them beyond money:\n${app.x_excite || '—'}\n\nLooking forward to:\n${app.x_forward || '—'}\n\nProud of (not on a CV):\n${app.x3 || '—'}\n\nLatest Nigerian news that caught their eye:\n${app.x_news || '—'}\n\nTheir take on it:\n${app.x_news_take || '—'}\n\n`
     + `— WRITTEN TASK —\nQ1 (CPC Direct + opportunity):\n${app.q1}\n\nQ2 (first 90 days / path to profit):\n${app.q2}\n\nQ3 (figured-it-out / led-without-a-playbook):\n${app.q3 || '—'}\n\n`
-    + `— RUNNING THE BUSINESS —\nBreak-even (1/month is the answer; look for margin thinking):\n${app.q4 || '—'}\n\nMonth four, founder unreachable:\n${app.q5 || '—'}\n\nTelling a friend about something they love:\n${app.q6 || '—'}\n\nTheir first hire:\n${app.q7 || '—'}\n\nHow they use AI:\n${app.q8 || '—'}\n\n`
+    + `— RUNNING THE BUSINESS —\nBreak-even (1/month is the answer; look for margin thinking):\n${app.q4 || '—'}\n\nMonth four, founder unreachable:\n${app.q5 || '—'}\n\nTelling a friend about something they love:\n${app.q6 || '—'}\n\nTheir first hire:\n${app.q7 || '—'}\n\nLast tool they taught themselves:\n${app.q8 || '—'}\n\n`
     + `— HOW IT WAS COMPLETED —\nTime on the form: ${app.minutes === null ? 'unknown' : app.minutes + ' minutes'}\nPasted rather than typed: ${app.pastedList || 'none detected'}\n\n`
     + (attachments.length
         ? `A voice pitch is attached to this email.\nThey were asked to say their full name and today's date, then: ${app.voicePrompt || '(prompt not recorded)'}`
