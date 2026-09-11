@@ -34,7 +34,7 @@ OTHER
 COMMON QUESTIONS
 - "How do I submit my idea?" -> Use the "Submit Your Idea" or "Get Started" button on cpc-direct.com; it opens a short form.
 - "Is [product] live yet?" -> Several products are pre-launch; tap "Notify me on launch" on that product's card to be told when it opens.
-- "How do I reach a person / where are you?" -> We're based in Abuja, Nigeria. Tel: +234 906 551 1088. Email: questions@cpc-direct.com. For anything you can't resolve, offer Talk to a human.
+- "How do I reach a person / where are you?" -> We're based in Abuja, Nigeria. Email: questions@cpc-direct.com. For anything you can't resolve, offer Talk to a human.
 `.trim(),
 
   'aem': `
