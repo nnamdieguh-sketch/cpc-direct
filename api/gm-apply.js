@@ -9,7 +9,7 @@
 // taken from the model's own say-so — so it always tracks the scores.
 //
 // POST { name, gender, age, location, contact, links, x1/x_recent/x_excite/
-//        x_forward/x3/x_news/x_news_take, q1..q8, audio(base64) } -> { ok }
+//        x_forward/x3/x_news/x_news_take, q1..q9, audio(base64) } -> { ok }
 // GET  -> { configured }
 //
 // Env: ANTHROPIC_API_KEY (review), RESEND_API_KEY + GM_NOTIFY_EMAIL
@@ -23,9 +23,9 @@ const RUBRIC = `You are the automated first-pass reviewer for the Operations Man
 
 This is a CRITICAL hire and most applicants will not be a fit. Score the WRITTEN answers only. A separate voice recording lets the founder judge diction — do NOT comment on speech or accent. Score each dimension 1-10 and be STRICT and calibrated: 5 is an average applicant, 7 is clearly good, 9-10 is exceptional and rare. Do NOT inflate — a thin, vague or generic answer scores low (1-3). The "about you" answers are context only; score the task questions.
 - Strategy: clarity and realism of the growth / first-90-days plan, and prioritisation — including what they would deliberately NOT do. (Q2)
-- Business: grasp of what a digital business-development company does and where the opportunity is. (Q1)
+- Business: grasp of what a digital business-development company does and where the opportunity is. On the events question, did they clearly go and LOOK at AEM's Events Center, or answer in generalities that could have been written without opening it? A specific, grounded view — including what worries them — scores well; vague enthusiasm does not. (Q1, Q9)
 - Commercial: revenue instinct. On the break-even question, do they reason in MARGIN (only ~N200,000 of each N500,000 sale is real) or fixate on the top line? Are their improvement ideas concrete — raise price, cut delivery cost, recurring retainers — or vague ("more marketing")? Does the "tell a friend" answer actually persuade? (Q4, Q6)
-- Ownership: would they drive things with nobody watching? The month-four answer is the tell — do they act, prioritise and decide, or wait for the founder? Does the first-hire answer show they can build a team? (Q5, Q7)
+- Ownership: would they drive things with nobody watching? The month-four answer is the tell — do they act, prioritise and decide, or wait for the founder? On the first-hire question we deliberately TOLD them our own plan (sales and marketing first, then a tech consultant) and invited disagreement. Reward a reasoned independent view either way — someone who agrees but says WHY, or who argues for a different first hire, both score well. Mark down an answer that simply echoes our plan back with no reasoning of its own. (Q5, Q7)
 - Learning: can they teach themselves, and are they coachable? Look for a specific tool they actually picked up, a real reason for picking it up, and a concrete account of HOW they learned it. Reward curiosity, resourcefulness and comfort with software. Someone modest and specific scores well; someone who name-drops tools without saying what they did with them does not. Penalise any hint that they already know everything and would be hard to teach — this person will be trained. (Q8)
 - Writing: clarity, structure and professionalism of their written English.
 - Drive: initiative, curiosity and evidence of figuring things out or leading without a playbook. (Q3)
@@ -81,6 +81,9 @@ ${app.q7 || '—'}
 
 Q8 — The last new tool they taught themselves, and how they went about learning it:
 ${app.q8 || '—'}
+
+Q9 — Running trade shows and events online (after looking at AEM's Events Center): the opportunity, and what worries them:
+${app.q9 || '—'}
 
 COMPLETION SIGNALS (context for AUTHENTICITY only — never score these):
 Time spent on the form: ${app.minutes === null ? 'unknown' : app.minutes + ' minutes'}
@@ -160,6 +163,7 @@ module.exports = async (req, res) => {
     q6: String(body.q6 || '').slice(0, 4000),
     q7: String(body.q7 || '').slice(0, 4000),
     q8: String(body.q8 || '').slice(0, 4000),
+    q9: String(body.q9 || '').slice(0, 4000),
     voicePrompt: String(body.voicePrompt || '').slice(0, 400),
   };
   // Light completion signals (disclosed in the page's terms). A signal for the
@@ -207,7 +211,7 @@ module.exports = async (req, res) => {
     + reviewBlock
     + `— CANDIDATE —\nName: ${app.name}\nGender: ${app.gender || '—'}\nAge: ${app.age || '—'}\nLocation: ${app.location || '—'}\nContact: ${app.contact}\nLinks: ${app.links || '—'}\n\n`
     + `— A LITTLE ABOUT THEM —\nWhat draws them to the role:\n${app.x1 || '—'}\n\nThis past year (study/work + likes/dislikes):\n${app.x_recent || '—'}\n\nExcites them beyond money:\n${app.x_excite || '—'}\n\nLooking forward to:\n${app.x_forward || '—'}\n\nProud of (not on a CV):\n${app.x3 || '—'}\n\nLatest Nigerian news that caught their eye:\n${app.x_news || '—'}\n\nTheir take on it:\n${app.x_news_take || '—'}\n\n`
-    + `— WRITTEN TASK —\nQ1 (CPC Direct + opportunity):\n${app.q1}\n\nQ2 (first 90 days / path to profit):\n${app.q2}\n\nQ3 (figured-it-out / led-without-a-playbook):\n${app.q3 || '—'}\n\n`
+    + `— WRITTEN TASK —\nQ1 (CPC Direct + opportunity):\n${app.q1}\n\nQ2 (first 90 days / path to profit):\n${app.q2}\n\nQ3 (figured-it-out / led-without-a-playbook):\n${app.q3 || '—'}\n\nQ4 (events online — did they actually look at the Events Center?):\n${app.q9 || '—'}\n\n`
     + `— RUNNING THE BUSINESS —\nBreak-even (1/month is the answer; look for margin thinking):\n${app.q4 || '—'}\n\nMonth four, founder unreachable:\n${app.q5 || '—'}\n\nTelling a friend about something they love:\n${app.q6 || '—'}\n\nTheir first hire:\n${app.q7 || '—'}\n\nLast tool they taught themselves:\n${app.q8 || '—'}\n\n`
     + `— HOW IT WAS COMPLETED —\nTime on the form: ${app.minutes === null ? 'unknown' : app.minutes + ' minutes'}\nPasted rather than typed: ${app.pastedList || 'none detected'}\n\n`
     + (attachments.length

@@ -343,6 +343,10 @@ body.preview .card{border-color:var(--border2)}
           <textarea id="q3" maxlength="5000" oninput="cc(this,'cc3')" placeholder="A short, real story…"></textarea>
           <div class="count" id="cc3">0 / 5000</div>
         </div>
+        <div class="field">
+          <label>4. Events, online. <span class="req">*</span><span class="hint">Access Emerging Markets runs an Events Center — its own summits and briefings, plus a platform where other organisations host their events online. Have a look at it, then tell us what you make of running trade shows and events online: where's the opportunity, and what would worry you?</span></label>
+          <textarea id="q9" maxlength="4000" placeholder="What you saw, what you'd do with it, and what gives you pause…"></textarea>
+        </div>
         <div class="err-msg" id="e3"></div>
         <div class="nav-row"><button class="btn btn-o" type="button" onclick="back(3)">← Back</button><span class="spacer"></span><button class="btn btn-g" type="button" onclick="next(3)">Continue →</button></div>
       </div>
@@ -366,8 +370,8 @@ body.preview .card{border-color:var(--border2)}
           <textarea id="q6" maxlength="4000" placeholder="Say it in your own voice…"></textarea>
         </div>
         <div class="field">
-          <label>4. Your first hire. <span class="hint">Optional but recommended — what role would you bring on first, and how would you find and choose them?</span></label>
-          <textarea id="q7" maxlength="4000" placeholder="Who you'd hire first, and why…"></textarea>
+          <label>4. Your first hire — and do you agree with ours? <span class="hint">Optional but recommended — our plan is a sales and marketing person first, then a tech consultant. Would you do the same, or would you hire someone different first? If you'd do it differently, say so and tell us why. We'd genuinely rather hear what you think than have you agree with us.</span></label>
+          <textarea id="q7" maxlength="4000" placeholder="Agree, disagree, or something else entirely — and why…"></textarea>
         </div>
         <div class="field">
           <label>5. What's the last new tool you taught yourself? <span class="req">*</span><span class="hint">Anything counts — software, an app, a system at work, something for a side project. Tell us what it was, why you picked it up, and how you went about learning it. We're not after a long list; we want to see how you learn something new, because you'll be doing plenty of that here.</span></label>
@@ -488,7 +492,7 @@ body.preview .card{border-color:var(--border2)}
 </div>
 
 <script>
-var STEP=0, MAXVISITED=0;
+var STEP=0, MAXVISITED=0, booted=false;
 var mediaRec=null, chunks=[], audioBlob=null, audioB64='', stream=null, tInt=null, seconds=0, MAXSEC=100;
 
 function showStep(n){
@@ -501,7 +505,16 @@ function showStep(n){
     st.classList.toggle('active', s===pi);
     st.classList.toggle('done', s<pi);
   });
-  window.scrollTo({top:0,behavior:'smooth'});
+  // Scroll to the form, not the top of the page — otherwise every "Continue"
+  // throws the candidate back above the hero and role card. Skipped on first
+  // load so the page opens where it should.
+  if(booted){
+    var anchor=document.getElementById('prog');
+    if(anchor){
+      var y=anchor.getBoundingClientRect().top+window.pageYOffset-72;
+      window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+    }
+  }
 }
 function v(id){ var el=document.getElementById(id); return el?el.value.trim():''; }
 function cc(el,id){ document.getElementById(id).textContent = el.value.length + ' / 5000'; }
@@ -523,6 +536,7 @@ function next(from){
   if(from===3){
     if(v('q1').length<40){ e.textContent='Please answer question 1 — a few sentences at least.'; return; }
     if(v('q2').length<40){ e.textContent='Please answer question 2 — a few sentences at least.'; return; }
+    if(v('q9').length<40){ e.textContent='Please answer the question on running events online — have a look at the Events Center first if you haven\'t.'; return; }
   }
   if(from===4){
     if(v('q4').length<40){ e.textContent='Please have a go at the first one — rough thinking is genuinely fine.'; return; }
@@ -568,6 +582,7 @@ function buildVoicePrompt(){
   add(v('q7'),      'tell us about the first person you’d hire and why — out loud, as if you were convincing me.');
   add(v('q6'),      'you wrote about something you love. Say that same thing out loud, the way you’d actually say it to a friend.');
   add(v('q8'),      'you told us about the last new tool you taught yourself. Talk us through that out loud — what it was, and how you got to grips with it.');
+  add(v('q9'),      'you gave us your view on running events and trade shows online. Say that out loud — the opportunity you see, and what worries you.');
   add(v('q1'),      'in your own words, tell us what you think CPC Direct does — and where you’d grow it first.');
   if(!pool.length) pool.push('introduce yourself and tell us why you’re the right person to run CPC Direct’s operations and take it to profitable by month 13.');
   VOICE_PROMPT = pool[Math.floor(Math.random()*pool.length)];
@@ -705,6 +720,7 @@ function buildReview(){
   html+=rblock('Q1 · CPC Direct + opportunity', v('q1'), 3);
   html+=rblock('Q2 · First 90 days / path to profit', v('q2'), 3);
   html+=rblock('Q3 · Figured-it-out story', v('q3'), 3);
+  html+=rblock('Q4 · Events, online', v('q9'), 3);
   html+=rblock('Running the business · Break-even', v('q4'), 4);
   html+=rblock('Running the business · Month four, on your own', v('q5'), 4);
   html+=rblock('Running the business · Telling a friend', v('q6'), 4);
@@ -723,7 +739,7 @@ async function submitApp(){
   var payload={
     name:v('name'), gender:v('gender'), age:v('age'), location:v('location'), contact:v('contact'), links:v('links'),
     x1:v('x1'), x_recent:v('x_recent'), x_excite:v('x_excite'), x_forward:v('x_forward'), x3:v('x3'), x_news:v('x_news'), x_news_take:v('x_news_take'),
-    q1:v('q1'), q2:v('q2'), q3:v('q3'), q4:v('q4'), q5:v('q5'), q6:v('q6'), q7:v('q7'), q8:v('q8'), audio:audioB64,
+    q1:v('q1'), q2:v('q2'), q3:v('q3'), q4:v('q4'), q5:v('q5'), q6:v('q6'), q7:v('q7'), q8:v('q8'), q9:v('q9'), audio:audioB64,
     voicePrompt:VOICE_PROMPT,
     signals:{ minutes: startedAt ? Math.round((Date.now()-startedAt)/60000) : null, pasted: Object.keys(pasted) }
   };
@@ -762,6 +778,7 @@ window.addEventListener('beforeunload', function(e){
 });
 
 if(PREVIEW) previewAll(); else showStep(0);
+booted=true;   // scrolling only kicks in once the candidate starts navigating
 </script>
 
 </body>
